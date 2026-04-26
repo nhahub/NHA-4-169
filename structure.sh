@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p frontend
 cd frontend
 
 mkdir -p assets/images assets/icons assets/fonts
@@ -12,6 +13,7 @@ touch components-html/modal.html
 
 mkdir -p scripts/core scripts/services scripts/controllers scripts/components
 touch scripts/main.js
+
 touch scripts/core/api.js
 touch scripts/core/config.js
 touch scripts/core/helpers.js
@@ -34,6 +36,7 @@ touch scripts/components/sidebar.js
 
 mkdir -p styles/base styles/layout styles/components styles/pages
 touch styles/main.css
+
 touch styles/base/reset.css
 touch styles/base/variables.css
 touch styles/base/typography.css
@@ -50,4 +53,4 @@ touch styles/pages/auth.css
 touch styles/pages/dashboard.css
 touch styles/pages/roles.css
 touch styles/pages/users.css
-touch styles/pages/categories.cssbash structure.sh
+touch styles/pages/categories.css
