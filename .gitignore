@@ -5,3 +5,5 @@
 /.vs
 /backend(.net)/BayTack/.vs/BayTack/CopilotIndices/17.14.1686.8233
 /.gitignore
+/backend(.net)/BayTack/.vs/BayTack.slnx
+/.gitignore
