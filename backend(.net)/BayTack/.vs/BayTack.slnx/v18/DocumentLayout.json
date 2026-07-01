@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7FD4054F-B9C2-4A22-A717-D31D9126B168}|ChatApp.API\\ChatApp.API.csproj|c:\\users\\mmsaa\\onedrive\\desktop\\depi_project\\backend(.net)\\baytack\\chatapp.api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7FD4054F-B9C2-4A22-A717-D31D9126B168}|ChatApp.API\\ChatApp.API.csproj|solutionrelative:chatapp.api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE6178DA-6043-4B79-BD03-232C8BA7D880}|BayTack.Domain\\BayTack.Domain.csproj|c:\\users\\mmsaa\\onedrive\\desktop\\depi_project\\backend(.net)\\baytack\\baytack.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE6178DA-6043-4B79-BD03-232C8BA7D880}|BayTack.Domain\\BayTack.Domain.csproj|solutionrelative:baytack.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C446BCD-D54E-4633-9827-514922152F54}|BayTack.Infrastructure\\BayTack.Infrastructure.csproj|c:\\users\\mmsaa\\onedrive\\desktop\\depi_project\\backend(.net)\\baytack\\baytack.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C446BCD-D54E-4633-9827-514922152F54}|BayTack.Infrastructure\\BayTack.Infrastructure.csproj|solutionrelative:baytack.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7087265-7D6B-4497-B829-F80A3E0515FF}|BayTack.Application\\BayTack.Application.csproj|c:\\users\\mmsaa\\onedrive\\desktop\\depi_project\\backend(.net)\\baytack\\baytack.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7087265-7D6B-4497-B829-F80A3E0515FF}|BayTack.Application\\BayTack.Application.csproj|solutionrelative:baytack.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 599,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\ChatApp.API\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "ChatApp.API\\WeatherForecast.cs",
+              "ToolTip": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\ChatApp.API\\WeatherForecast.cs",
+              "RelativeToolTip": "ChatApp.API\\WeatherForecast.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-01T20:49:30.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\Class1.cs",
+              "RelativeDocumentMoniker": "BayTack.Domain\\Class1.cs",
+              "ToolTip": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\Class1.cs",
+              "RelativeToolTip": "BayTack.Domain\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-01T20:41:55.977Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Infrastructure\\Class1.cs",
+              "RelativeDocumentMoniker": "BayTack.Infrastructure\\Class1.cs",
+              "ToolTip": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Infrastructure\\Class1.cs",
+              "RelativeToolTip": "BayTack.Infrastructure\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-01T20:40:48.874Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Application\\Class1.cs",
+              "RelativeDocumentMoniker": "BayTack.Application\\Class1.cs",
+              "ToolTip": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Application\\Class1.cs",
+              "RelativeToolTip": "BayTack.Application\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-01T20:39:41.391Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
