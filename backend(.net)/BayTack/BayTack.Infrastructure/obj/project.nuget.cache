@@ -1,8 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "d44lVMCj6L8=",
+  "dgSpecHash": "mJT88FEna4Y=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Infrastructure\\BayTack.Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "E:\\Education\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Infrastructure\\BayTack.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mmsaa\\.nuget\\packages\\mediatr\\14.1.0\\mediatr.14.1.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.0\\microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.0\\microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.14.0\\microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.14.0\\microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.identitymodel.logging\\8.14.0\\microsoft.identitymodel.logging.8.14.0.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.14.0\\microsoft.identitymodel.tokens.8.14.0.nupkg.sha512"
+  ],
   "logs": []
 }

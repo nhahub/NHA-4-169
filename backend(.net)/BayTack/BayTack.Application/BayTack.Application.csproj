@@ -10,4 +10,9 @@
     <ProjectReference Include="..\BayTack.Domain\BayTack.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\IRepository\" />
+    <Folder Include="Abstractions\Interfaces\" />
+  </ItemGroup>
+
 </Project>
