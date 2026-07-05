@@ -1,4 +1,6 @@
 ﻿
+using BayTack.Application.Common.Models;
+
 namespace BayTack.Application.Abstractions.Messaging
 {
     public interface IQueryHandler<TQuery, TResponse> : IRequestHandler<TQuery, Result<TResponse>>

@@ -1,4 +1,7 @@
-﻿namespace ChatApp.API.Controllers.Abstractions
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ChatApp.API.Controllers.Abstractions
 {
     [ApiController]
     [Route("api/[controller]")]

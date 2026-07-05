@@ -14,4 +14,8 @@
     <ProjectReference Include="..\BayTack.Application\BayTack.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Provider\" />
+  </ItemGroup>
+
 </Project>

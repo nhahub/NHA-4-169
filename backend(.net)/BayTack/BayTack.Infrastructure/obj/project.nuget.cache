@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "6Kn/Q0rvx60=",
+  "dgSpecHash": "wsLa7UEAyqM=",
   "success": true,
   "projectFilePath": "E:\\Education\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Infrastructure\\BayTack.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mmsaa\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\mmsaa\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\mmsaa\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
     "C:\\Users\\mmsaa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\mmsaa\\.nuget\\packages\\mediatr\\14.2.0\\mediatr.14.2.0.nupkg.sha512",
     "C:\\Users\\mmsaa\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
