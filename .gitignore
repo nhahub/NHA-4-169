@@ -10,3 +10,5 @@
 /backend(.net)/BayTack/BayTack.slnx
 /backend(.net)/BayTack/BayTack.slnx
 /backend(.net)/BayTack/ChatApp.API/ChatApp.API.csproj.user
+/backend(.net)/BayTack/BayTack.Application/obj/Debug/net10.0
+/backend(.net)/BayTack/ChatApp.API
