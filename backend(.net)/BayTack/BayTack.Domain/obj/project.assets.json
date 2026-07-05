@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\BayTack.Domain.csproj",
+      "projectUniqueName": "E:\\Education\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\BayTack.Domain.csproj",
       "projectName": "BayTack.Domain",
-      "projectPath": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\BayTack.Domain.csproj",
+      "projectPath": "E:\\Education\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\BayTack.Domain.csproj",
       "packagesPath": "C:\\Users\\mmsaa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mmsaa\\OneDrive\\Desktop\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\obj\\",
+      "outputPath": "E:\\Education\\DEPI_project\\backend(.net)\\BayTack\\BayTack.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
