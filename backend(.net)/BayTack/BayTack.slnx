@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="BayTack.Application/BayTack.Application.csproj" />
-  <Project Path="BayTack.Domain/BayTack.Domain.csproj" />
-  <Project Path="BayTack.Infrastructure/BayTack.Infrastructure.csproj" />
-  <Project Path="ChatApp.API/ChatApp.API.csproj" />
-</Solution>
