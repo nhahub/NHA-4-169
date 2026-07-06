@@ -1,4 +1,4 @@
-﻿using BayTack.Application.Abstractions.Interfaces;
+﻿using BayTack.Application.Abstractions.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;

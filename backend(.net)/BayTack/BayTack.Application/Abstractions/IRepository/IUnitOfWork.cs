@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BayTack.Application.Abstractions.Interfaces
+namespace BayTack.Application.Abstractions.IRepository
 {
 	public interface IUnitOfWork
 	{

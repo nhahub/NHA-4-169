@@ -1,4 +1,4 @@
-﻿using BayTack.Application.Abstractions.Interfaces;
+﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Abstractions.Messaging;
 using BayTack.Domain.Entities.JobAggregate;
 using BayTack.Domain.ValueObjects;

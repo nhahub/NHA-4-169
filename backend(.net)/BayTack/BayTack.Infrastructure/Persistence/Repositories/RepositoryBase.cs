@@ -1,4 +1,4 @@
-﻿using BayTack.Application.Abstractions.Interfaces;
+﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Domain.Common.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using System;

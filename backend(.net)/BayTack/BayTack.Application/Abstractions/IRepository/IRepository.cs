@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BayTack.Application.Abstractions.Interfaces
+namespace BayTack.Application.Abstractions.IRepository
 {
 	public interface IRepository<T, TId> where T : BaseEntity<TId>
 	{
