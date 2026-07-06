@@ -29,3 +29,5 @@ artifacts/
 *.db
 *.cache
 *.backup.json
+/backend(.net)/BayTack/BayTack.Application/obj/Release/net10.0/BayTack.Application.AssemblyInfo.cs
+/backend(.net)/BayTack/BayTack.Application/obj/Release/net10.0/BayTack.Application.AssemblyInfoInputs.cache
