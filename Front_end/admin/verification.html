@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Provider Verification — BayTack Admin"/>
+  <title>Verification — BayTack Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <link rel="stylesheet" href="../styles/pages/verification.css"/>
+</head>
+
+<body data-page="verification">
+
+<div class="admin-layout">
+
+  <!-- BayTack ADMIN — Sidebar Partial -->
+<aside class="admin-sidebar" id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+
+  <!-- Brand -->
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">handyman</span>
+    </div>
+    <div>
+      <img src="../assets/images/baytack-logo.png" alt="BayTack" style="height:1.8rem;width:auto;object-fit:contain;filter:brightness(0) invert(1)" />
+      <p class="admin-sidebar__brand-subtitle">Admin Panel</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="admin-sidebar__nav">
+
+    <a href="analytics.html" class="admin-sidebar__nav-link" data-page="analytics">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Analytics
+    </a>
+
+    <a href="user-management.html" class="admin-sidebar__nav-link" data-page="user-management">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      User Management
+    </a>
+
+
+
+    <a href="categories.html" class="admin-sidebar__nav-link" data-page="categories">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a href="orders.html" class="admin-sidebar__nav-link" data-page="orders">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Orders &amp; Payments
+    </a>
+
+    <a href="verification.html" class="admin-sidebar__nav-link" data-page="verification">
+      <span class="material-symbols-outlined">verified</span>
+      Verification
+    </a>
+
+    <a href="roles.html" class="admin-sidebar__nav-link" data-page="roles">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Roles
+    </a>
+
+    <a href="settings.html" class="admin-sidebar__nav-link" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="admin-sidebar__footer" style="display:flex;flex-direction:column;gap:var(--sp-1)">
+    <a href="../index.html" class="admin-sidebar__nav-link" style="color:var(--color-on-surface-variant)">
+      <span class="material-symbols-outlined">home</span>
+      Back to Site
+    </a>
+    <button class="admin-sidebar__nav-link btn" id="admin-logout-btn" style="width:100%;justify-content:flex-start;color:var(--color-error)">
+      <span class="material-symbols-outlined">logout</span>
+      Logout
+    </button>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>
+
+  <main class="admin-main">
+
+    <!-- BayTack ADMIN — Header Partial -->
+<header class="admin-header" id="admin-header" role="banner">
+
+  <!-- Left: Hamburger + Search -->
+  <div class="admin-header__left">
+    <button class="admin-header__hamburger" id="admin-sidebar-toggle" aria-label="Open navigation menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="admin-header__search">
+      <span class="admin-header__search-icon material-symbols-outlined">search</span>
+      <input
+        class="admin-header__search-input"
+        type="search"
+        placeholder="Search anything…"
+        autocomplete="off"
+        aria-label="Global search"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Notifications + User -->
+  <div class="admin-header__right">
+    <div class="admin-header__actions">
+      <button class="admin-header__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="admin-header__badge" aria-hidden="true"></span>
+      </button>
+      <button class="admin-header__icon-btn" aria-label="Help">
+        <span class="material-symbols-outlined">help</span>
+      </button>
+    </div>
+
+    <div class="admin-header__user">
+      <div class="admin-header__user-info">
+        <p class="admin-header__user-name" id="admin-header-username">Admin User</p>
+        <p class="admin-header__user-role">Super Admin</p>
+      </div>
+      <img
+        class="admin-header__avatar"
+        id="admin-header-avatar"
+        src="https://ui-avatars.com/api/?name=Admin&background=0050d4&color=fff&size=80"
+        alt="Admin avatar"
+        width="40"
+        height="40"
+      />
+    </div>
+  </div>
+
+</header>
+
+    <div class="admin-page-canvas">
+
+      <!-- Page Hero -->
+      <section class="admin-page-hero">
+        <div>
+          <h1 class="admin-page-hero__title">Provider Verification</h1>
+          <p class="admin-page-hero__subtitle">
+            Review and authorize professional service providers to maintain the Ekhdemni quality standard.
+          </p>
+        </div>
+        <div class="admin-page-hero__actions">
+          <button class="btn btn--surface" style="border-radius:var(--radius-full)">
+            <span class="material-symbols-outlined">filter_list</span>
+            Filter Status
+          </button>
+          <button class="btn btn--tertiary" id="vd-export-btn">
+            <span class="material-symbols-outlined">download</span>
+            Export Logs
+          </button>
+        </div>
+      </section>
+
+      <!-- Bento Stats -->
+      <section class="vd-bento-grid" aria-label="Verification statistics">
+
+        <div class="vd-bento-card vd-bento-card--primary">
+          <div class="vd-bento-icon" style="background:var(--color-primary)">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">pending_actions</span>
+          </div>
+          <p class="vd-bento-number">24</p>
+          <p class="vd-bento-label">Pending Review</p>
+        </div>
+
+        <div class="vd-bento-card vd-bento-card--surface">
+          <div class="vd-bento-icon" style="background:var(--color-tertiary)">
+            <span class="material-symbols-outlined" style="color:var(--color-surface-container-lowest)">visibility</span>
+          </div>
+          <p class="vd-bento-number">08</p>
+          <p class="vd-bento-label">Under Review</p>
+        </div>
+
+        <div class="vd-bento-card vd-bento-card--secondary vd-bento-card--wide">
+          <div class="vd-bento-wide-content">
+            <div>
+              <h3 class="vd-bento-wide-title">Weekly Performance</h3>
+              <p class="vd-bento-wide-sub">Verification speed increased by 12%</p>
+            </div>
+            <div class="vd-mini-chart">
+              <div class="vd-mini-bar" style="height:40%"></div>
+              <div class="vd-mini-bar" style="height:60%"></div>
+              <div class="vd-mini-bar" style="height:50%"></div>
+              <div class="vd-mini-bar vd-mini-bar--strong" style="height:80%"></div>
+              <div class="vd-mini-bar vd-mini-bar--full" style="height:100%"></div>
+            </div>
+          </div>
+          <span class="vd-bento-bg-icon material-symbols-outlined">trending_up</span>
+        </div>
+
+        <div class="vd-bento-card vd-bento-card--surface">
+          <div class="vd-bento-icon" style="background:var(--color-secondary)">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;color:var(--color-secondary-container)">verified</span>
+          </div>
+          <p class="vd-bento-number" style="color:var(--color-secondary)">142</p>
+          <p class="vd-bento-label">Approved This Month</p>
+        </div>
+
+      </section>
+
+      <!-- Verification Table -->
+      <div class="providers-table-wrap">
+        <div class="vd-table-header">
+          <h2 class="vd-table-title">Recent Submissions</h2>
+          <div class="admin-header__search" style="display:block;max-width:22rem">
+            <span class="admin-header__search-icon material-symbols-outlined">search</span>
+            <input
+              class="admin-header__search-input"
+              type="search"
+              id="vd-search"
+              placeholder="Search providers…"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="providers-table" aria-label="Verification submissions">
+            <thead>
+              <tr>
+                <th>Provider Name</th>
+                <th>Date Submitted</th>
+                <th>Service Type</th>
+                <th>Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vd-tbody">
+
+              <tr>
+                <td>
+                  <div class="provider-cell">
+                    <div class="provider-cell__avatar vd-avatar-wrap">
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIW0NCrj4kdz52HkoE8LtTlw469YGqsV5LTE0kOsY9_EiGA4yJiQnKsOdIeKC9tdDlLqqj50q-DmRSyBh55VVaseNc0pooFHWCN3QNXPTwzvFjhnJjIHOMtDBU6rN0UaBCjFeOognUK0Pv9E8OtNBXZdk4nOtxI0v0-NZFh6MKu5wEHXTT2zqVSzS3oG3nw5ZJX3nBUhDvOBnC4nv81I7oFlkBUDC8IB41x1qlSYQTpRf9ASADOIHAqqzKMjgUZcncMNgxNukM0DY"
+                        alt="Khaled Mansour"
+                        class="vd-avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <p class="provider-cell__name">Khaled Mansour</p>
+                      <p class="provider-cell__meta">ID: #PV-8892</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="provider-cell__meta">Oct 24, 2024</span></td>
+                <td><span class="vd-type-chip">Electrician</span></td>
+                <td>
+                  <div class="vd-status vd-status--pending">
+                    <span class="vd-status-dot"></span>
+                    Pending
+                  </div>
+                </td>
+                <td style="text-align:right">
+                  <a href="verification-review.html" class="btn btn--primary btn--sm vd-review-btn">
+                    Review Application
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="provider-cell">
+                    <div class="provider-cell__avatar vd-avatar-wrap">
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_CtAX6X2405z09utYuC1lUojgHmP37svE7kMlyyJbxShSUUbX4ZeSm94Yx78mPDgKv-1KjXScOkAFjtW-HhVJQg8JUua7X7tvU1c0nmUgwx-SYHNx5jmj3T7wtgzcSDR0gUg6IR39p7vTcGQhakwIkFrl7ueLT7WSUmYQO4aULy0AccNE9LkUoGcculgBH9nCqO7VZ_CtYY2cMV29FiBo272T4Xd5ET3Wst-93S-WBgwk3AYeMsytjiTIRRNqQhY1F7dGw6ozUyA"
+                        alt="Sara El-Din"
+                        class="vd-avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <p class="provider-cell__name">Sara El-Din</p>
+                      <p class="provider-cell__meta">ID: #PV-8901</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="provider-cell__meta">Oct 23, 2024</span></td>
+                <td><span class="vd-type-chip">House Cleaning</span></td>
+                <td>
+                  <div class="vd-status vd-status--review">
+                    <span class="vd-status-dot"></span>
+                    Under Review
+                  </div>
+                </td>
+                <td style="text-align:right">
+                  <a href="verification-review.html" class="btn btn--primary btn--sm vd-review-btn">
+                    Review Application
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="provider-cell">
+                    <div class="provider-cell__avatar vd-avatar-wrap">
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4L9sSIFsQpWku_CXFD0-o2YB-JHLgYyHfU_-TdtPM9BvJXDmgMfkWavqp3KQofbP-Z83OKnPhzEnhw9T2VlCOFn94A84qtzR2kB5evwq8jxEBKTdSvnVrSGVZs9UyurQmVxG_I6pAb8tyy5OkaRWb937F3O5z-51RJqRn-cyNq7Sp0COHGGa6m1qZpS1RfXrJuuhNWBH_BrfsweaUlSjbQe5gZ3VxYHqg6KvTmr8By-GPmV83cpNcGEOkqe4usN9LwzZYYS4Qb4E"
+                        alt="Mustafa Kamel"
+                        class="vd-avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <p class="provider-cell__name">Mustafa Kamel</p>
+                      <p class="provider-cell__meta">ID: #PV-8877</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="provider-cell__meta">Oct 22, 2024</span></td>
+                <td><span class="vd-type-chip">Plumber</span></td>
+                <td>
+                  <div class="vd-status vd-status--pending">
+                    <span class="vd-status-dot"></span>
+                    Pending
+                  </div>
+                </td>
+                <td style="text-align:right">
+                  <a href="verification-review.html" class="btn btn--primary btn--sm vd-review-btn">
+                    Review Application
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="provider-cell">
+                    <div class="provider-cell__avatar vd-avatar-wrap">
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWInHeDZeQFzEAjX_poieU8OZ8t0XfTX-mMm9KiXYvdexbEwKE-gWNl3HROn63aHT1xP5MFGLK5iwFHj3DEGfqofD7ABitsTSpBYE8qwn6_J-SUl-pbCCv-ezv3QNEZkZ04NsSgGWzO6ier90yjzyEfCQa4qcwOCzaHAkW2MC2Xc5hMHuPNCG9A6Yzy3BL-mb-G-gQ5qDoaloVa4g8pndin_oran5EPFIpFkBBk4Nqpz98T-1pypJCGP-CzXgPemaf4eHSBg6-k3o"
+                        alt="Hassan Zaki"
+                        class="vd-avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <p class="provider-cell__name">Hassan Zaki</p>
+                      <p class="provider-cell__meta">ID: #PV-8899</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="provider-cell__meta">Oct 22, 2024</span></td>
+                <td><span class="vd-type-chip">AC Technician</span></td>
+                <td>
+                  <div class="vd-status vd-status--review">
+                    <span class="vd-status-dot"></span>
+                    Under Review
+                  </div>
+                </td>
+                <td style="text-align:right">
+                  <a href="verification-review.html" class="btn btn--primary btn--sm vd-review-btn">
+                    Review Application
+                  </a>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-pagination">
+          <p class="table-pagination__info">Showing 4 of 24 pending applications</p>
+          <div class="pagination-controls">
+            <button class="pagination-btn" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+            <button class="pagination-btn pagination-btn--active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-bottom-nav-spacer"></div>
+
+    </div>
+  </main>
+</div>
+
+<!-- BayTack ADMIN — Mobile Bottom Navigation -->
+<nav class="admin-bottom-nav" id="admin-bottom-nav" role="navigation" aria-label="Mobile navigation">
+
+  <button class="admin-bottom-nav__item" data-page="analytics" aria-label="Analytics">
+    <span class="material-symbols-outlined">bar_chart</span>
+    Analytics
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="orders" aria-label="Orders">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Orders
+  </button>
+
+  <!-- FAB -->
+  <div class="admin-bottom-nav__fab">
+    <button class="admin-bottom-nav__fab-btn" aria-label="Quick actions">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  </div>
+
+  <button class="admin-bottom-nav__item" data-page="user-management" aria-label="Users">
+    <span class="material-symbols-outlined">manage_accounts</span>
+    Users
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="settings" aria-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+    Settings
+  </button>
+
+</nav>
+
+<script type="module" src="../scripts/main.js"></script>
+<script type="module" src="../scripts/controllers/verificationController.js"></script>
+</body>
+</html>

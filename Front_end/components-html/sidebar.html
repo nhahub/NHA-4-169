@@ -1,0 +1,72 @@
+<!-- BayTack ADMIN — Sidebar Partial -->
+<aside class="admin-sidebar" id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+
+  <!-- Brand -->
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">handyman</span>
+    </div>
+    <div>
+      <p class="admin-sidebar__brand-title">BayTack</p>
+      <p class="admin-sidebar__brand-subtitle">Admin Panel</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="admin-sidebar__nav">
+
+    <a href="analytics.html" class="admin-sidebar__nav-link" data-page="analytics">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Analytics
+    </a>
+
+    <a href="user-management.html" class="admin-sidebar__nav-link" data-page="user-management">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      User Management
+    </a>
+
+
+
+    <a href="categories.html" class="admin-sidebar__nav-link" data-page="categories">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a href="orders.html" class="admin-sidebar__nav-link" data-page="orders">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Orders &amp; Payments
+    </a>
+
+    <a href="verification.html" class="admin-sidebar__nav-link" data-page="verification">
+      <span class="material-symbols-outlined">verified</span>
+      Verification
+    </a>
+
+    <a href="roles.html" class="admin-sidebar__nav-link" data-page="roles">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Roles
+    </a>
+
+    <a href="settings.html" class="admin-sidebar__nav-link" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="admin-sidebar__footer" style="display:flex;flex-direction:column;gap:var(--sp-1)">
+    <a href="../index.html" class="admin-sidebar__nav-link" style="color:var(--color-on-surface-variant)">
+      <span class="material-symbols-outlined">home</span>
+      Back to Site
+    </a>
+    <button class="admin-sidebar__nav-link btn" id="admin-logout-btn" style="width:100%;justify-content:flex-start;color:var(--color-error)">
+      <span class="material-symbols-outlined">logout</span>
+      Logout
+    </button>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>

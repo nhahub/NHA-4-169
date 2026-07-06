@@ -1,0 +1,155 @@
+/* ============================================
+   EKHDEMNI — Header / Navbar Layout
+   ============================================ */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: var(--z-fixed);
+  background: rgba(245, 247, 249, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--transition-base), background var(--transition-base);
+  height: var(--nav-height);
+}
+
+.nav--scrolled {
+  background: rgba(245, 247, 249, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  height: 100%;
+}
+
+/* ── Brand / Logo ── */
+.nav__brand {
+  font-family: var(--font-headline);
+  font-weight: var(--font-black);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.nav__brand:hover {
+  opacity: 0.85;
+}
+
+/* ── Actions Group ── */
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Icon Button ── */
+.nav__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.nav__icon-btn:hover {
+  background: rgba(0, 80, 212, 0.07);
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.nav__icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* ── Mobile Menu Toggle (hidden on desktop) ── */
+.nav__menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.nav__menu-toggle:hover {
+  background: var(--color-surface-container);
+}
+
+/* ── Mobile Drawer ── */
+.nav__drawer {
+  display: none;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  background: var(--color-surface-container-lowest);
+  border-bottom: 1px solid var(--color-outline-variant);
+  padding: var(--space-4) var(--space-6);
+  gap: var(--space-2);
+  flex-direction: column;
+  z-index: var(--z-fixed);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.nav__drawer.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav__drawer-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-base);
+  color: var(--color-on-surface-variant);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav__drawer-btn:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .nav__menu-toggle {
+    display: flex;
+  }
+
+  .nav__actions .nav__icon-btn {
+    display: none; /* collapse icon buttons into the drawer */
+  }
+
+  .nav__drawer {
+    display: flex;
+  }
+}

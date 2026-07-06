@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | Service Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="browse">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-7xl mx-auto px-6 pb-24">
+  <div id="bt-service-content"></div>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const serviceId = params.get('id');
+  const service = BTData.services.byId(serviceId) || BTData.services.all()[0];
+  let selectedPackage = 'standard';
+
+  function renderStars(rating) {
+    return '⭐'.repeat(Math.round(rating));
+  }
+
+  function similarServices() {
+    return BTData.services.all().filter(s => s.category === service.category && s.id !== service.id).slice(0, 3);
+  }
+
+  function packageCard(key) {
+    const p = service.packages[key];
+    const active = key === selectedPackage;
+    return `
+    <button data-pkg="${key}" class="bt-pkg-btn text-left w-full p-5 rounded-2xl border-2 transition-all ${active ? 'border-primary bg-primary/5' : 'border-outline-variant/30 hover:border-primary/50'}">
+      <p class="text-xs font-bold uppercase tracking-wide ${active ? 'text-primary' : 'text-on-surface-variant'}">${p.name}</p>
+      <p class="text-2xl font-headline font-extrabold mt-1">${p.price} EGP</p>
+      <p class="text-sm text-on-surface-variant mt-2">${p.desc}</p>
+      <p class="text-xs text-on-surface-variant mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span>${p.delivery}</p>
+    </button>`;
+  }
+
+  function render() {
+    const saved = BTData.saved.isSaved(service.id);
+    document.getElementById('bt-service-content').innerHTML = `
+      <!-- Gallery -->
+      <div class="rounded-3xl overflow-hidden mb-8 shadow-lg">
+        <img src="${service.image}" class="w-full h-72 md:h-96 object-cover" alt="${service.title}" />
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2 space-y-10">
+          <!-- Info -->
+          <div>
+            <span class="text-xs font-bold text-primary uppercase tracking-wide">${service.category}</span>
+            <h1 class="font-headline font-extrabold text-3xl md:text-4xl mt-2">${service.title}</h1>
+            <div class="flex items-center gap-4 mt-3 text-sm">
+              <span class="flex items-center gap-1">${renderStars(service.rating)} <span class="font-bold ml-1">${service.rating}</span> <span class="text-on-surface-variant">(${service.reviews} reviews)</span></span>
+              <span class="text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-base">location_on</span>${service.location}</span>
+            </div>
+          </div>
+
+          <!-- Provider card -->
+          <div class="bg-white rounded-3xl shadow p-6 flex items-center gap-4">
+            <img src="${service.avatar}" class="w-16 h-16 rounded-full object-cover" alt="${service.provider}" />
+            <div class="flex-1 min-w-0">
+              <p class="font-headline font-bold text-lg">${service.provider}</p>
+              <p class="text-sm text-on-surface-variant">${service.category} Specialist · ⭐ ${service.rating}</p>
+            </div>
+            <button id="bt-message-provider" class="px-5 py-2.5 border-2 border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition shrink-0">Message</button>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <h2 class="font-headline font-bold text-xl mb-3">Description</h2>
+            <p class="text-on-surface-variant leading-relaxed">${service.description}</p>
+          </div>
+
+          <!-- Features -->
+          <div>
+            <h2 class="font-headline font-bold text-xl mb-3">Features</h2>
+            <ul class="grid sm:grid-cols-2 gap-3">
+              ${service.features.map(f => `<li class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-secondary text-lg">check_circle</span>${f}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Requirements -->
+          <div>
+            <h2 class="font-headline font-bold text-xl mb-3">Requirements</h2>
+            <ul class="space-y-2">
+              ${service.requirements.map(r => `<li class="flex items-center gap-2 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-lg">info</span>${r}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Reviews -->
+          <div>
+            <h2 class="font-headline font-bold text-xl mb-3">Reviews</h2>
+            <div class="bg-white rounded-3xl shadow p-6 space-y-5">
+              <div class="flex gap-4">
+                <img src="https://i.pravatar.cc/100?img=25" class="w-11 h-11 rounded-full object-cover" alt="reviewer" />
+                <div>
+                  <p class="font-bold text-sm">Nourhan Samir <span class="text-yellow-500 ml-2">⭐⭐⭐⭐⭐</span></p>
+                  <p class="text-sm text-on-surface-variant mt-1">Excellent work, very professional and on time.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <img src="https://i.pravatar.cc/100?img=8" class="w-11 h-11 rounded-full object-cover" alt="reviewer" />
+                <div>
+                  <p class="font-bold text-sm">Mahmoud Tarek <span class="text-yellow-500 ml-2">⭐⭐⭐⭐⭐</span></p>
+                  <p class="text-sm text-on-surface-variant mt-1">Great communication and fair pricing. Recommended!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Similar services -->
+          <div>
+            <h2 class="font-headline font-bold text-xl mb-3">Similar Services</h2>
+            <div class="grid sm:grid-cols-3 gap-5">
+              ${similarServices().map(s => `
+                <a href="index.html?id=${s.id}" class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition">
+                  <img src="${s.image}" class="h-28 w-full object-cover" alt="${s.title}" />
+                  <div class="p-3">
+                    <p class="font-bold text-sm truncate">${s.title}</p>
+                    <p class="text-xs text-primary font-bold mt-1">From ${s.price} EGP</p>
+                  </div>
+                </a>`).join('') || '<p class="text-sm text-on-surface-variant">No similar services found.</p>'}
+            </div>
+          </div>
+        </div>
+
+        <!-- Book now sidebar -->
+        <aside class="lg:col-span-1">
+          <div class="bg-white rounded-3xl shadow-lg p-6 sticky top-28 space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="font-headline font-bold text-lg">Packages</h3>
+              <button id="bt-save-btn" class="flex items-center gap-1 text-sm font-bold ${saved ? 'text-error' : 'text-on-surface-variant'}">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' ${saved ? 1 : 0}">favorite</span>
+              </button>
+            </div>
+            <div class="space-y-3" id="bt-package-list">
+              ${packageCard('basic')}
+              ${packageCard('standard')}
+              ${packageCard('premium')}
+            </div>
+            <button id="bt-book-now" class="w-full bg-primary text-on-primary py-4 rounded-full font-bold text-lg hover:bg-primary-dim transition shadow-lg shadow-primary/20">Book Now</button>
+            <p class="text-xs text-center text-on-surface-variant">You won't be charged yet</p>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    document.querySelectorAll('.bt-pkg-btn').forEach(btn => {
+      btn.addEventListener('click', () => { selectedPackage = btn.dataset.pkg; render(); });
+    });
+    document.getElementById('bt-save-btn').addEventListener('click', () => { BTData.saved.toggle(service.id); render(); });
+    document.getElementById('bt-message-provider').addEventListener('click', () => { window.location.href = '../messages/index.html'; });
+    document.getElementById('bt-book-now').addEventListener('click', () => {
+      const pkg = service.packages[selectedPackage];
+      BTData.orders.add({
+        id: BTData.uid('ord'), serviceId: service.id, title: `${service.title} (${pkg.name})`,
+        provider: service.provider, avatar: service.avatar, price: pkg.price, status: 'active', progress: 10,
+        createdAt: new Date().toISOString(), timeline: [
+          { label: 'Order Placed', done: true }, { label: 'Provider Confirmed', done: false },
+          { label: 'In Progress', done: false }, { label: 'Completed', done: false },
+        ] });
+      window.location.href = '../orders/index.html';
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>

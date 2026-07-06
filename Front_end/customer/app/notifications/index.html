@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="notifications">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-3xl mx-auto px-6 pb-24">
+  <div class="flex items-center justify-between gap-4 mb-8">
+    <h1 class="font-headline font-extrabold text-3xl md:text-4xl">Notifications</h1>
+    <button id="bt-mark-all" class="text-primary font-bold text-sm hover:underline">Mark all as read</button>
+  </div>
+
+  <div id="bt-notif-groups" class="space-y-8"></div>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  const GROUP_LABELS = { today: 'Today', yesterday: 'Yesterday', week: 'This Week' };
+
+  function itemHtml(n) {
+    return `
+    <div data-id="${n.id}" class="flex items-start gap-4 p-4 rounded-2xl transition ${n.read ? '' : 'bg-blue-50'}">
+      <div class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center shrink-0 text-primary"><span class="material-symbols-outlined text-lg">${n.icon}</span></div>
+      <div class="flex-1 min-w-0">
+        <p class="font-bold text-sm">${n.title}</p>
+        <p class="text-sm text-on-surface-variant mt-0.5">${n.text}</p>
+        <p class="text-xs text-on-surface-variant mt-1">${n.time}</p>
+      </div>
+      ${!n.read ? '<span class="w-2.5 h-2.5 bg-primary rounded-full mt-1 shrink-0"></span>' : ''}
+    </div>`;
+  }
+
+  function render() {
+    const all = BTData.notifications.all();
+    const groups = ['today', 'yesterday', 'week'];
+    document.getElementById('bt-notif-groups').innerHTML = groups.map(g => {
+      const items = all.filter(n => n.group === g);
+      if (!items.length) return '';
+      return `
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wide text-on-surface-variant mb-3">${GROUP_LABELS[g]}</p>
+        <div class="bg-white rounded-3xl shadow divide-y divide-gray-100">${items.map(itemHtml).join('')}</div>
+      </div>`;
+    }).join('') || `<p class="text-center text-on-surface-variant py-16">You're all caught up!</p>`;
+
+    document.querySelectorAll('[data-id]').forEach(el => el.addEventListener('click', () => {
+      BTData.notifications.markRead(el.dataset.id);
+      render();
+    }));
+  }
+
+  document.getElementById('bt-mark-all').addEventListener('click', () => { BTData.notifications.markAllRead(); render(); });
+  render();
+</script>
+</body>
+</html>

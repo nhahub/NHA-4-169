@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="BayTack — Admin Analytics Dashboard"/>
+  <title>Analytics — BayTack Admin</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="../styles/main.css"/>
+</head>
+
+<body data-page="analytics">
+
+<div class="admin-layout">
+
+  <!-- Sidebar Slot -->
+  <!-- BayTack ADMIN — Sidebar Partial -->
+<aside class="admin-sidebar" id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+
+  <!-- Brand -->
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">handyman</span>
+    </div>
+    <div>
+      <img src="../assets/images/baytack-logo.png" alt="BayTack" style="height:1.8rem;width:auto;object-fit:contain;filter:brightness(0) invert(1)" />
+      <p class="admin-sidebar__brand-subtitle">Admin Panel</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="admin-sidebar__nav">
+
+    <a href="analytics.html" class="admin-sidebar__nav-link" data-page="analytics">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Analytics
+    </a>
+
+    <a href="user-management.html" class="admin-sidebar__nav-link" data-page="user-management">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      User Management
+    </a>
+
+
+
+    <a href="categories.html" class="admin-sidebar__nav-link" data-page="categories">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a href="orders.html" class="admin-sidebar__nav-link" data-page="orders">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Orders &amp; Payments
+    </a>
+
+    <a href="verification.html" class="admin-sidebar__nav-link" data-page="verification">
+      <span class="material-symbols-outlined">verified</span>
+      Verification
+    </a>
+
+    <a href="roles.html" class="admin-sidebar__nav-link" data-page="roles">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Roles
+    </a>
+
+    <a href="settings.html" class="admin-sidebar__nav-link" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="admin-sidebar__footer" style="display:flex;flex-direction:column;gap:var(--sp-1)">
+    <a href="../index.html" class="admin-sidebar__nav-link" style="color:var(--color-on-surface-variant)">
+      <span class="material-symbols-outlined">home</span>
+      Back to Site
+    </a>
+    <button class="admin-sidebar__nav-link btn" id="admin-logout-btn" style="width:100%;justify-content:flex-start;color:var(--color-error)">
+      <span class="material-symbols-outlined">logout</span>
+      Logout
+    </button>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- Header Slot -->
+    <!-- BayTack ADMIN — Header Partial -->
+<header class="admin-header" id="admin-header" role="banner">
+
+  <!-- Left: Hamburger + Search -->
+  <div class="admin-header__left">
+    <button class="admin-header__hamburger" id="admin-sidebar-toggle" aria-label="Open navigation menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="admin-header__search">
+      <span class="admin-header__search-icon material-symbols-outlined">search</span>
+      <input
+        class="admin-header__search-input"
+        type="search"
+        placeholder="Search anything…"
+        autocomplete="off"
+        aria-label="Global search"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Notifications + User -->
+  <div class="admin-header__right">
+    <div class="admin-header__actions">
+      <button class="admin-header__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="admin-header__badge" aria-hidden="true"></span>
+      </button>
+      <button class="admin-header__icon-btn" aria-label="Help">
+        <span class="material-symbols-outlined">help</span>
+      </button>
+    </div>
+
+    <div class="admin-header__user">
+      <div class="admin-header__user-info">
+        <p class="admin-header__user-name" id="admin-header-username">Admin User</p>
+        <p class="admin-header__user-role">Super Admin</p>
+      </div>
+      <img
+        class="admin-header__avatar"
+        id="admin-header-avatar"
+        src="https://ui-avatars.com/api/?name=Admin&background=0050d4&color=fff&size=80"
+        alt="Admin avatar"
+        width="40"
+        height="40"
+      />
+    </div>
+  </div>
+
+</header>
+
+    <!-- Page Canvas -->
+    <div class="admin-page-canvas">
+
+      <!-- Page Hero -->
+      <section class="admin-page-hero">
+        <div>
+          <h1 class="admin-page-hero__title">Marketplace Pulse</h1>
+          <p class="admin-page-hero__subtitle">
+            Comprehensive reporting and live analytics for Ekhdemni ecosystem.
+          </p>
+        </div>
+        <div class="admin-page-hero__actions">
+          <button class="btn btn--surface" id="admin-export-csv-btn">
+            <span class="material-symbols-outlined">csv</span>
+            Export CSV
+          </button>
+          <button class="btn btn--secondary" id="admin-export-pdf-btn">
+            <span class="material-symbols-outlined">picture_as_pdf</span>
+            Download PDF
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Grid -->
+      <section class="admin-kpi-grid" aria-label="Key Performance Indicators">
+
+        <!-- Revenue -->
+        <div class="card card--hover" style="padding:var(--sp-8);display:flex;flex-direction:column;gap:var(--sp-8)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="width:3rem;height:3rem;background:rgba(0,80,212,0.08);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--color-primary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">payments</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:9999px;background:rgba(105,246,184,0.15);color:var(--color-secondary);font-size:var(--text-sm);font-weight:700">
+              <span class="material-symbols-outlined" style="font-size:14px">trending_up</span>+12.5%
+            </span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <p style="font-size:var(--text-sm);color:var(--color-on-surface-variant);font-weight:500">Total Revenue</p>
+              <span style="font-size:var(--text-xs);color:var(--color-secondary);font-weight:700">+12% vs last month</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px">
+              <h3 class="text-headline-lg" style="font-size:var(--text-3xl);font-family:var(--font-headline)" id="admin-kpi-revenue">—</h3>
+              <span style="color:var(--color-on-surface-variant);font-size:var(--text-sm)">ج.م</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Users -->
+        <div class="card card--hover" style="padding:var(--sp-8);display:flex;flex-direction:column;gap:var(--sp-8)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="width:3rem;height:3rem;background:rgba(0,105,71,0.08);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--color-secondary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">group</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:9999px;background:rgba(105,246,184,0.15);color:var(--color-secondary);font-size:var(--text-sm);font-weight:700">
+              <span class="material-symbols-outlined" style="font-size:14px">trending_up</span>+8.2%
+            </span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <p style="font-size:var(--text-sm);color:var(--color-on-surface-variant);font-weight:500">Active Users</p>
+              <span style="font-size:var(--text-xs);color:var(--color-secondary);font-weight:700">+4% vs last week</span>
+            </div>
+            <h3 class="text-headline-lg" style="font-size:var(--text-3xl);font-family:var(--font-headline)" id="admin-kpi-users">—</h3>
+          </div>
+        </div>
+
+        <!-- Completed Orders -->
+        <div class="card card--hover" style="padding:var(--sp-8);display:flex;flex-direction:column;gap:var(--sp-8)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="width:3rem;height:3rem;background:rgba(254,208,27,0.15);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--color-tertiary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">task_alt</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:9999px;background:rgba(105,246,184,0.15);color:var(--color-secondary);font-size:var(--text-sm);font-weight:700">
+              <span class="material-symbols-outlined" style="font-size:14px">trending_up</span>+24%
+            </span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <p style="font-size:var(--text-sm);color:var(--color-on-surface-variant);font-weight:500">Completed Orders</p>
+              <span style="font-size:var(--text-xs);color:var(--color-secondary);font-weight:700">+18% growth</span>
+            </div>
+            <h3 class="text-headline-lg" style="font-size:var(--text-3xl);font-family:var(--font-headline)" id="admin-kpi-orders">—</h3>
+          </div>
+        </div>
+
+        <!-- New Providers -->
+        <div class="card card--hover" style="padding:var(--sp-8);display:flex;flex-direction:column;gap:var(--sp-8)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="width:3rem;height:3rem;background:rgba(123,156,255,0.12);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--color-primary-dim)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">engineering</span>
+            </div>
+            <span style="padding:4px 12px;border-radius:9999px;background:rgba(254,208,27,0.2);color:var(--color-tertiary);font-size:var(--text-sm);font-weight:700">New</span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <p style="font-size:var(--text-sm);color:var(--color-on-surface-variant);font-weight:500">New Providers</p>
+              <span style="font-size:var(--text-xs);color:var(--color-tertiary-fixed-dim);font-weight:700">+52 this week</span>
+            </div>
+            <h3 class="text-headline-lg" style="font-size:var(--text-3xl);font-family:var(--font-headline)" id="admin-kpi-providers">—</h3>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Analytics Charts Row -->
+      <section class="admin-analytics-grid">
+
+        <!-- Revenue Trend -->
+        <div class="card chart-card">
+          <div class="chart-card__header">
+            <div class="chart-card__title">
+              <h4 class="text-headline-md">Revenue Growth Trend</h4>
+              <span class="stat-badge" style="background:rgba(0,80,212,0.08);color:var(--color-primary)">Avg. Monthly: 104k</span>
+            </div>
+            <select class="select-field" id="admin-period-select" style="background:var(--color-surface-container-low)">
+              <option value="12m">Last 12 Months</option>
+              <option value="6m">Last 6 Months</option>
+              <option value="quarter">This Quarter</option>
+            </select>
+          </div>
+
+          <div class="admin-chart-area" style="position:relative">
+            <svg id="admin-trend-svg" class="admin-chart-svg" viewBox="0 0 1000 400" preserveAspectRatio="none"></svg>
+            <div class="admin-chart-tooltip" id="admin-trend-tooltip" style="top:-3rem">
+              <span class="tt-month" style="font-weight:700;display:block"></span>
+              <span class="tt-value" style="font-weight:900"></span>
+            </div>
+          </div>
+
+          <div class="admin-chart-x-labels">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+            <span>May</span><span>Jun</span><span>Jul</span><span>Aug</span>
+            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="card chart-card">
+          <h4 class="text-headline-md" style="margin-bottom:var(--sp-6)">Revenue by Category</h4>
+
+          <div class="admin-donut-container">
+            <svg viewBox="0 0 42 42" style="width:100%;height:100%;transform:rotate(-90deg)">
+              <circle cx="21" cy="21" r="15.91549" fill="transparent"
+                      stroke="var(--color-surface-container)" stroke-width="6"/>
+              <circle cx="21" cy="21" r="15.91549" fill="transparent"
+                      stroke="var(--color-primary)" stroke-width="6"
+                      stroke-dasharray="38 62" stroke-dashoffset="0"/>
+              <circle cx="21" cy="21" r="15.91549" fill="transparent"
+                      stroke="var(--color-secondary)" stroke-width="6"
+                      stroke-dasharray="25 75" stroke-dashoffset="-38"/>
+              <circle cx="21" cy="21" r="15.91549" fill="transparent"
+                      stroke="var(--color-tertiary-fixed-dim)" stroke-width="6"
+                      stroke-dasharray="18 82" stroke-dashoffset="-63"/>
+              <circle cx="21" cy="21" r="15.91549" fill="transparent"
+                      stroke="var(--color-primary-container)" stroke-width="6"
+                      stroke-dasharray="19 81" stroke-dashoffset="-81"/>
+            </svg>
+            <div class="admin-donut-center">
+              <span class="admin-donut-center__value">1.2M</span>
+              <span class="admin-donut-center__label">Total Revenue</span>
+            </div>
+          </div>
+
+          <div class="admin-donut-legend">
+            <div class="admin-donut-legend-item"><span class="admin-donut-legend-dot" style="background:var(--color-primary)"></span>AC Main. (38%)</div>
+            <div class="admin-donut-legend-item"><span class="admin-donut-legend-dot" style="background:var(--color-secondary)"></span>Plumbing (25%)</div>
+            <div class="admin-donut-legend-item"><span class="admin-donut-legend-dot" style="background:var(--color-tertiary-fixed-dim)"></span>Electrical (18%)</div>
+            <div class="admin-donut-legend-item"><span class="admin-donut-legend-dot" style="background:var(--color-primary-container)"></span>Others (19%)</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Bottom Row -->
+      <section class="admin-bottom-grid">
+
+        <!-- Transactions Table -->
+        <div class="card" style="overflow:hidden">
+          <div style="padding:var(--sp-8);border-bottom:1px solid var(--color-surface-container-low);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--sp-3)">
+            <div style="display:flex;align-items:center;gap:var(--sp-3)">
+              <h4 class="text-headline-md">High-Value Transactions</h4>
+              <span class="stat-badge" style="background:rgba(0,105,71,0.1);color:var(--color-secondary)">Top Earners</span>
+            </div>
+            <a href="orders.html" style="color:var(--color-primary);font-weight:700;font-size:var(--text-sm);text-decoration:underline;text-underline-offset:4px">View All Orders</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="admin-data-table">
+              <thead class="admin-data-table__head">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Service Impact</th>
+                  <th style="text-align:right">Amount</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="admin-transactions-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Providers Panel -->
+        <div class="card chart-card admin-providers-panel">
+          <div class="admin-providers-panel__header">
+            <h4 class="text-headline-md">New Providers</h4>
+            <span class="stat-badge" style="background:rgba(251,81,81,0.1);color:var(--color-error)">12 Pending</span>
+          </div>
+          <div class="admin-providers-list" id="admin-providers-list"></div>
+          <a href="providers.html" class="btn btn--primary btn--full" style="margin-top:var(--sp-6)">
+            Review All Applications
+          </a>
+        </div>
+
+      </section>
+
+      <!-- Mobile spacer -->
+      <div class="admin-bottom-nav-spacer"></div>
+
+    </div><!-- /admin-page-canvas -->
+  </main>
+</div>
+
+<!-- Footer Slot -->
+<!-- BayTack ADMIN — Mobile Bottom Navigation -->
+<nav class="admin-bottom-nav" id="admin-bottom-nav" role="navigation" aria-label="Mobile navigation">
+
+  <button class="admin-bottom-nav__item" data-page="analytics" aria-label="Analytics">
+    <span class="material-symbols-outlined">bar_chart</span>
+    Analytics
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="orders" aria-label="Orders">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Orders
+  </button>
+
+  <!-- FAB -->
+  <div class="admin-bottom-nav__fab">
+    <button class="admin-bottom-nav__fab-btn" aria-label="Quick actions">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  </div>
+
+  <button class="admin-bottom-nav__item" data-page="user-management" aria-label="Users">
+    <span class="material-symbols-outlined">manage_accounts</span>
+    Users
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="settings" aria-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+    Settings
+  </button>
+
+</nav>
+
+<script type="module" src="../scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/* ============================================================
+   TYPOGRAPHY — Radiant Pro / BayTack
+   ============================================================ */
+
+/* ── Google Fonts Import ── */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap");
+
+/* ── Material Symbols ── */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+/* ── Icon defaults ── */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 1.5rem;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Scale ── */
+.text-xs   { font-size: var(--text-xs);  }
+.text-sm   { font-size: var(--text-sm);  }
+.text-base { font-size: var(--text-base);}
+.text-md   { font-size: var(--text-md);  }
+.text-lg   { font-size: var(--text-lg);  }
+.text-xl   { font-size: var(--text-xl);  }
+.text-2xl  { font-size: var(--text-2xl); }
+.text-3xl  { font-size: var(--text-3xl); }
+.text-4xl  { font-size: var(--text-4xl); }
+.text-5xl  { font-size: var(--text-5xl); }
+
+/* ── Weights ── */
+.font-normal    { font-weight: 400; }
+.font-medium    { font-weight: 500; }
+.font-semibold  { font-weight: 600; }
+.font-bold      { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-black     { font-weight: 900; }
+
+/* ── Font families ── */
+.font-headline { font-family: var(--font-headline); }
+.font-body     { font-family: var(--font-body);     }
+.font-label    { font-family: var(--font-label);    }
+
+/* ── Tracking ── */
+.tracking-tight  { letter-spacing: -0.02em; }
+.tracking-widest { letter-spacing: 0.12em;  }

@@ -1,0 +1,153 @@
+/* ============================================================
+   COMPONENT — Form Inputs
+   ============================================================ */
+
+/* ── Field Wrapper ── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ── Label ── */
+.form-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.form-label__hint {
+  font-weight: 400;
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Text Input ── */
+.form-input {
+  width: 100%;
+  background: var(--color-surface-container-lowest);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-on-surface);
+  font-size: var(--text-base);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  transition: box-shadow var(--transition-fast), ring var(--transition-fast);
+}
+
+.form-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 80, 212, 0.18), var(--shadow-sm);
+}
+
+.form-input::placeholder {
+  color: var(--color-outline-variant);
+}
+
+/* ── Textarea ── */
+.form-textarea {
+  width: 100%;
+  background: var(--color-surface-container-lowest);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-on-surface);
+  font-size: var(--text-base);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  resize: none;
+  transition: box-shadow var(--transition-fast);
+}
+
+.form-textarea:focus {
+  box-shadow: 0 0 0 3px rgba(0, 80, 212, 0.18), var(--shadow-sm);
+}
+
+.form-textarea::placeholder {
+  color: var(--color-outline-variant);
+}
+
+/* ── Select ── */
+.form-select {
+  width: 100%;
+  background: var(--color-surface-container-lowest);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-on-surface);
+  font-size: var(--text-base);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23595c5e' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 1rem center;
+  background-size: 1.25rem;
+}
+
+.form-select:focus {
+  box-shadow: 0 0 0 3px rgba(0, 80, 212, 0.18), var(--shadow-sm);
+}
+
+/* ── Input with inline prefix/suffix ── */
+.form-input-wrapper {
+  position: relative;
+}
+
+.form-input-wrapper .form-input {
+  padding-left: 3.5rem;
+}
+
+.form-input-wrapper__suffix {
+  position: absolute;
+  left: var(--space-6);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+/* ── Toggle Switch ── */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.toggle__track {
+  position: relative;
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-outline-variant);
+  transition: background var(--transition-base);
+  flex-shrink: 0;
+}
+
+.toggle__track--on {
+  background: var(--color-primary);
+}
+
+.toggle__thumb {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--radius-full);
+  background: white;
+  transition: transform var(--transition-base);
+}
+
+.toggle__track--on .toggle__thumb {
+  transform: translateX(1.5rem);
+}

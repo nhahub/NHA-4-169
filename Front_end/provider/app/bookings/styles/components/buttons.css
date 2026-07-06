@@ -1,0 +1,90 @@
+/* ============================================================
+   COMPONENTS: BUTTONS — The Radiant Marketplace
+   ============================================================ */
+
+/* ── Base ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-base);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* ── Primary ── */
+.btn--primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-fixed));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,80,212,0.25);
+}
+
+.btn--primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(0,80,212,0.35);
+}
+
+/* ── Secondary / Outline ── */
+.btn--outline {
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.btn--outline:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ── Ghost ── */
+.btn--ghost {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.btn--ghost:hover {
+  background-color: rgba(179,27,37,0.10);
+  color: var(--color-error);
+}
+
+/* ── Text/Link ── */
+.btn--text {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.btn--text:hover {
+  background-color: rgba(0,80,212,0.05);
+}
+
+/* ── Sizes ── */
+.btn--sm {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+}
+
+.btn--lg {
+  padding: var(--space-4) var(--space-10);
+  font-size: var(--text-md);
+}
+
+/* ── Full width ── */
+.btn--full {
+  width: 100%;
+}

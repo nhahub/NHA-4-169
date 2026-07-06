@@ -1,0 +1,178 @@
+/* ============================================================
+   EKHDEMNI ADMIN — Loading Page Styles
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;900&family=Be+Vietnam+Pro:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body.loading-page {
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.admin-loader-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* Background grid */
+.admin-loader-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 80, 212, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 80, 212, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* Logo ring */
+.admin-loader-logo-wrap {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.admin-loader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #0050d4;
+  border-right-color: #0050d4;
+  animation: adminSpin 1.4s linear infinite;
+}
+
+.admin-loader-ring-outer {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-bottom-color: #006947;
+  border-left-color: #006947;
+  animation: adminSpin 2s linear infinite reverse;
+}
+
+@keyframes adminSpin { to { transform: rotate(360deg); } }
+
+.admin-loader-logo-inner {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #0050d4 0%, #7b9cff 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(0, 80, 212, 0.25);
+}
+
+/* Brand name */
+.admin-loader-brand {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  animation: adminFadeUp 0.8s ease 0.2s both;
+}
+
+.admin-loader-brand__primary { color: #0050d4; }
+.admin-loader-brand__secondary {
+  color: #006947;
+  margin-left: 0.35rem;
+}
+
+.admin-loader-tagline {
+  font-size: 0.75rem;
+  color: #595c5e;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  animation: adminFadeUp 0.8s ease 0.4s both;
+}
+
+@keyframes adminFadeUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Progress bar */
+.admin-loader-progress-track {
+  width: 220px;
+  height: 3px;
+  background: rgba(0, 80, 212, 0.1);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 0.875rem;
+  animation: adminFadeUp 0.8s ease 0.5s both;
+}
+
+.admin-loader-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #0050d4, #006947);
+  transition: width 0.3s ease;
+}
+
+/* Loading text */
+.admin-loader-text {
+  font-size: 0.875rem;
+  color: #595c5e;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.admin-loader-dot {
+  animation: adminDotFade 1.4s infinite;
+}
+.admin-loader-dot--1 { animation-delay: 0s; }
+.admin-loader-dot--2 { animation-delay: 0.25s; }
+.admin-loader-dot--3 { animation-delay: 0.5s; }
+
+@keyframes adminDotFade {
+  0%, 100% { opacity: 0; }
+  50%       { opacity: 1; }
+}
+
+/* Particles */
+.admin-loader-particles { position: absolute; inset: 0; pointer-events: none; }
+
+.admin-loader-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: adminFloatUp linear infinite;
+  opacity: 0;
+}
+
+@keyframes adminFloatUp {
+  0%   { transform: translateY(100%) scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-80px) scale(1); opacity: 0; }
+}
+
+/* Fade-out transition */
+.admin-loader-wrapper.is-fading {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}

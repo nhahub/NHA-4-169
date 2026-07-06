@@ -1,0 +1,82 @@
+/* ============================================================
+   BayTack — Typography
+   ============================================================ */
+
+/* Material Symbols icon font settings */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Display */
+.text-display {
+  font-family: var(--font-headline);
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Headings */
+.text-headline-lg {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.text-headline-md {
+  font-family: var(--font-headline);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.text-headline-sm {
+  font-family: var(--font-headline);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+/* Body */
+.text-body-lg {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.7;
+}
+
+.text-body-md {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.text-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+/* Labels */
+.text-label-lg {
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.text-label-sm {
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Color utilities */
+.text-primary         { color: var(--color-primary); }
+.text-secondary       { color: var(--color-secondary); }
+.text-tertiary        { color: var(--color-tertiary); }
+.text-on-surface      { color: var(--color-on-surface); }
+.text-on-surface-var  { color: var(--color-on-surface-variant); }
+.text-muted           { color: var(--color-outline); }

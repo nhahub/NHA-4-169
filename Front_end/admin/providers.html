@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Manage service providers — BayTack Admin"/>
+  <title>Providers — BayTack Admin</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <link rel="stylesheet" href="../styles/pages/providers.css"/>
+</head>
+
+<body data-page="providers">
+
+<div class="admin-layout">
+
+  <!-- Sidebar Slot -->
+  <!-- BayTack ADMIN — Sidebar Partial -->
+<aside class="admin-sidebar" id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+
+  <!-- Brand -->
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">handyman</span>
+    </div>
+    <div>
+      <img src="../assets/images/baytack-logo.png" alt="BayTack" style="height:1.8rem;width:auto;object-fit:contain;filter:brightness(0) invert(1)" />
+      <p class="admin-sidebar__brand-subtitle">Admin Panel</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="admin-sidebar__nav">
+
+    <a href="analytics.html" class="admin-sidebar__nav-link" data-page="analytics">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Analytics
+    </a>
+
+    <a href="user-management.html" class="admin-sidebar__nav-link" data-page="user-management">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      User Management
+    </a>
+
+
+
+    <a href="categories.html" class="admin-sidebar__nav-link" data-page="categories">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a href="orders.html" class="admin-sidebar__nav-link" data-page="orders">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Orders &amp; Payments
+    </a>
+
+    <a href="verification.html" class="admin-sidebar__nav-link" data-page="verification">
+      <span class="material-symbols-outlined">verified</span>
+      Verification
+    </a>
+
+    <a href="roles.html" class="admin-sidebar__nav-link" data-page="roles">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Roles
+    </a>
+
+    <a href="settings.html" class="admin-sidebar__nav-link" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="admin-sidebar__footer" style="display:flex;flex-direction:column;gap:var(--sp-1)">
+    <a href="../index.html" class="admin-sidebar__nav-link" style="color:var(--color-on-surface-variant)">
+      <span class="material-symbols-outlined">home</span>
+      Back to Site
+    </a>
+    <button class="admin-sidebar__nav-link btn" id="admin-logout-btn" style="width:100%;justify-content:flex-start;color:var(--color-error)">
+      <span class="material-symbols-outlined">logout</span>
+      Logout
+    </button>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>
+
+  <main class="admin-main">
+
+    <!-- Header Slot -->
+    <!-- BayTack ADMIN — Header Partial -->
+<header class="admin-header" id="admin-header" role="banner">
+
+  <!-- Left: Hamburger + Search -->
+  <div class="admin-header__left">
+    <button class="admin-header__hamburger" id="admin-sidebar-toggle" aria-label="Open navigation menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="admin-header__search">
+      <span class="admin-header__search-icon material-symbols-outlined">search</span>
+      <input
+        class="admin-header__search-input"
+        type="search"
+        placeholder="Search anything…"
+        autocomplete="off"
+        aria-label="Global search"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Notifications + User -->
+  <div class="admin-header__right">
+    <div class="admin-header__actions">
+      <button class="admin-header__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="admin-header__badge" aria-hidden="true"></span>
+      </button>
+      <button class="admin-header__icon-btn" aria-label="Help">
+        <span class="material-symbols-outlined">help</span>
+      </button>
+    </div>
+
+    <div class="admin-header__user">
+      <div class="admin-header__user-info">
+        <p class="admin-header__user-name" id="admin-header-username">Admin User</p>
+        <p class="admin-header__user-role">Super Admin</p>
+      </div>
+      <img
+        class="admin-header__avatar"
+        id="admin-header-avatar"
+        src="https://ui-avatars.com/api/?name=Admin&background=0050d4&color=fff&size=80"
+        alt="Admin avatar"
+        width="40"
+        height="40"
+      />
+    </div>
+  </div>
+
+</header>
+
+    <!-- Page Canvas -->
+    <div class="admin-page-canvas">
+
+      <!-- Page Hero -->
+      <section class="admin-page-hero">
+        <div>
+          <h1 class="admin-page-hero__title">Manage Providers</h1>
+          <p class="admin-page-hero__subtitle">
+            Oversee your service network and maintain quality standards.
+          </p>
+        </div>
+        <div class="admin-page-hero__actions">
+          <div class="admin-header__search" style="display:block;max-width:22rem">
+            <span class="admin-header__search-icon material-symbols-outlined">search</span>
+            <input
+              class="admin-header__search-input"
+              type="search"
+              id="admin-provider-search"
+              placeholder="Search by name or ID…"
+              autocomplete="off"
+            />
+          </div>
+          <button class="btn btn--primary" id="admin-add-provider-btn">
+            <span class="material-symbols-outlined">person_add</span>
+            Add New Provider
+          </button>
+        </div>
+      </section>
+
+      <!-- Stats Strip -->
+      <section class="providers-stats-grid" aria-label="Provider statistics">
+
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <div class="stat-card__icon" style="background:rgba(0,80,212,0.07);color:var(--color-primary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">group</span>
+            </div>
+            <span class="stat-card__label">Global Reach</span>
+          </div>
+          <div class="stat-card__value" id="admin-stat-total">—</div>
+          <div class="stat-card__sub" style="color:var(--color-on-surface-variant)">Total Providers</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <div class="stat-card__icon" style="background:rgba(105,246,184,0.15);color:var(--color-secondary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">verified</span>
+            </div>
+            <span class="stat-card__label">Active Pros</span>
+          </div>
+          <div class="stat-card__value" id="admin-stat-verified">—</div>
+          <div class="stat-card__sub" style="color:var(--color-secondary)">Verified &amp; Online</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <div class="stat-card__icon" style="background:rgba(254,208,27,0.15);color:var(--color-tertiary)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">pending_actions</span>
+            </div>
+            <span class="stat-card__label">Growth Pipeline</span>
+          </div>
+          <div class="stat-card__value" id="admin-stat-pending">—</div>
+          <div class="stat-card__sub" style="color:var(--color-tertiary-fixed-dim)">Pending Approval</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <div class="stat-card__icon" style="background:rgba(251,81,81,0.1);color:var(--color-error)">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">gavel</span>
+            </div>
+            <span class="stat-card__label">Compliance</span>
+          </div>
+          <div class="stat-card__value" id="admin-stat-suspended">—</div>
+          <div class="stat-card__sub" style="color:var(--color-error)">Suspended Accounts</div>
+        </div>
+
+      </section>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar" role="search" aria-label="Filter providers">
+        <div class="filter-bar__left">
+          <span class="filter-bar__label">Filter by:</span>
+          <select class="filter-select" id="admin-filter-category" aria-label="Category">
+            <option value="">All Categories</option>
+            <option value="plumbing">Plumbing</option>
+            <option value="electrical">Electrician</option>
+            <option value="cleaning">Cleaning</option>
+            <option value="carpentry">Carpentry</option>
+          </select>
+          <select class="filter-select" id="admin-filter-status" aria-label="Status">
+            <option value="">All Statuses</option>
+            <option value="verified">Verified</option>
+            <option value="pending">Pending</option>
+            <option value="review">Under Review</option>
+            <option value="suspended">Suspended</option>
+          </select>
+          <select class="filter-select" id="admin-filter-experience" aria-label="Experience">
+            <option value="">Any Experience</option>
+            <option value="1-3">1–3 Years</option>
+            <option value="3-5">3–5 Years</option>
+            <option value="5+">5+ Years</option>
+          </select>
+        </div>
+        <button class="btn btn--surface" id="admin-reset-filters-btn" style="border-radius:var(--radius-full)">
+          <span class="material-symbols-outlined">filter_list_off</span>
+          Reset Filters
+        </button>
+      </div>
+
+      <!-- Providers Table -->
+      <div class="providers-table-wrap">
+        <div class="overflow-x-auto">
+          <table class="providers-table" aria-label="Providers list">
+            <thead>
+              <tr>
+                <th>Provider Details</th>
+                <th>Service Category</th>
+                <th style="text-align:center">Type</th>
+                <th style="text-align:center">Experience</th>
+                <th>Verification Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+              <!-- Type column injected by ProvidersController dynamically -->
+            </thead>
+            <tbody id="admin-providers-tbody">
+              <!-- Rows injected by ProvidersController -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="table-pagination">
+          <p class="table-pagination__info" id="admin-pagination-info">Loading…</p>
+          <div class="pagination-controls" id="admin-pagination-controls"></div>
+        </div>
+      </div>
+
+      <!-- Milestone Banner -->
+      <div class="milestone-banner" role="complementary" aria-label="Quality milestone">
+        <div class="milestone-banner__body">
+          <div class="milestone-banner__icon-wrap">
+            <span class="material-symbols-outlined" style="font-size:2rem;color:#fff;font-variation-settings:'FILL' 1">celebration</span>
+          </div>
+          <div>
+            <h3 class="milestone-banner__title">Quality Milestone Reached!</h3>
+            <p class="milestone-banner__sub">
+              98% of your active providers have completed the new Safety Certification. Great job, Team!
+            </p>
+          </div>
+        </div>
+        <button class="btn" style="background:#fff;color:var(--color-primary);flex-shrink:0">
+          View Report
+        </button>
+      </div>
+
+      <!-- Mobile spacer -->
+      <div class="admin-bottom-nav-spacer"></div>
+
+    </div><!-- /admin-page-canvas -->
+  </main>
+</div>
+
+<!-- Footer Slot -->
+<!-- BayTack ADMIN — Mobile Bottom Navigation -->
+<nav class="admin-bottom-nav" id="admin-bottom-nav" role="navigation" aria-label="Mobile navigation">
+
+  <button class="admin-bottom-nav__item" data-page="analytics" aria-label="Analytics">
+    <span class="material-symbols-outlined">bar_chart</span>
+    Analytics
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="orders" aria-label="Orders">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Orders
+  </button>
+
+  <!-- FAB -->
+  <div class="admin-bottom-nav__fab">
+    <button class="admin-bottom-nav__fab-btn" aria-label="Quick actions">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  </div>
+
+  <button class="admin-bottom-nav__item" data-page="user-management" aria-label="Users">
+    <span class="material-symbols-outlined">manage_accounts</span>
+    Users
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="settings" aria-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+    Settings
+  </button>
+
+</nav>
+
+<script type="module" src="../scripts/main.js"></script>
+</body>
+</html>

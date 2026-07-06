@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | Browse Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="browse">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-7xl mx-auto px-6 pb-24">
+
+  <div class="mb-8">
+    <h1 class="font-headline font-extrabold text-3xl md:text-4xl">Browse Services</h1>
+    <p class="text-on-surface-variant mt-2">Explore verified professionals for every home need.</p>
+  </div>
+
+  <!-- Large search bar -->
+  <div class="bg-white rounded-3xl shadow p-3 flex items-center gap-3 mb-6">
+    <span class="material-symbols-outlined text-on-surface-variant ml-2">search</span>
+    <input id="bt-search" type="text" placeholder="Search for a service, category, or provider..." class="flex-1 outline-none bg-transparent text-sm md:text-base" />
+    <button id="bt-search-btn" class="bg-primary text-on-primary px-6 py-3 rounded-2xl font-bold hover:bg-primary-dim transition shrink-0">Search</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3 mb-8 items-center">
+    <select id="bt-filter-category" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
+      <option value="">All Categories</option>
+    </select>
+    <select id="bt-filter-location" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
+      <option value="">All Locations</option>
+    </select>
+    <select id="bt-filter-price" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
+      <option value="">Any Price</option>
+      <option value="0-300">Up to 300 EGP</option>
+      <option value="300-600">300 - 600 EGP</option>
+      <option value="600-99999">600+ EGP</option>
+    </select>
+    <select id="bt-filter-rating" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
+      <option value="">Any Rating</option>
+      <option value="4.5">4.5 & up</option>
+      <option value="4.8">4.8 & up</option>
+    </select>
+    <select id="bt-sort" class="ml-auto rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
+      <option value="popular">Sort: Most Popular</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="rating">Highest Rated</option>
+    </select>
+  </div>
+
+  <!-- Grid of service cards -->
+  <div id="bt-service-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <p id="bt-empty-state" class="hidden text-center text-on-surface-variant py-16">No services match your filters. Try adjusting them.</p>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-center gap-2 mt-10" id="bt-pagination"></div>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  const PAGE_SIZE = 6;
+  let currentPage = 1;
+  const allServices = BTData.services.all();
+
+  /* Populate filter dropdowns dynamically */
+  const categories = [...new Set(allServices.map(s => s.category))];
+  const locations = [...new Set(allServices.map(s => s.location))];
+  document.getElementById('bt-filter-category').innerHTML += categories.map(c => `<option value="${c}">${c}</option>`).join('');
+  document.getElementById('bt-filter-location').innerHTML += locations.map(l => `<option value="${l}">${l}</option>`).join('');
+
+  function cardHtml(s) {
+    const saved = BTData.saved.isSaved(s.id);
+    return `
+    <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-2xl transition group">
+      <a href="../service/index.html?id=${s.id}" class="block relative">
+        <img src="${s.image}" class="h-52 w-full object-cover group-hover:scale-105 transition duration-500" alt="${s.title}" />
+        <span class="absolute top-3 left-3 bg-white/90 text-primary text-xs font-bold px-3 py-1 rounded-full">${s.category}</span>
+      </a>
+      <button data-fav="${s.id}" class="absolute mt-3 ml-3 bt-fav-btn" aria-label="Save to favorites"></button>
+      <div class="p-6">
+        <div class="flex justify-between items-start gap-2">
+          <a href="../service/index.html?id=${s.id}"><h3 class="font-headline font-bold text-lg leading-snug hover:text-primary transition">${s.title}</h3></a>
+          <button data-fav="${s.id}" class="bt-fav-btn shrink-0" aria-label="Save">
+            <span class="material-symbols-outlined ${saved ? 'text-error' : 'text-outline-variant'}" style="font-variation-settings:'FILL' ${saved ? 1 : 0}">favorite</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 mt-3">
+          <img src="${s.avatar}" class="w-7 h-7 rounded-full object-cover" alt="${s.provider}" />
+          <span class="text-sm text-on-surface-variant">${s.provider}</span>
+        </div>
+        <div class="flex items-center justify-between mt-4">
+          <div class="flex items-center gap-1 text-sm"><span class="text-yellow-500">⭐</span> ${s.rating} <span class="text-on-surface-variant">(${s.reviews})</span></div>
+          <span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span>${s.delivery}</span>
+        </div>
+        <div class="flex items-center justify-between mt-5">
+          <span class="font-bold text-primary">From ${s.price} EGP</span>
+          <a href="../service/index.html?id=${s.id}" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dim transition">Book Now</a>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('bt-search').value.trim().toLowerCase();
+    const cat = document.getElementById('bt-filter-category').value;
+    const loc = document.getElementById('bt-filter-location').value;
+    const price = document.getElementById('bt-filter-price').value;
+    const rating = parseFloat(document.getElementById('bt-filter-rating').value || 0);
+    const sort = document.getElementById('bt-sort').value;
+
+    let list = allServices.filter(s => {
+      if (q && !(`${s.title} ${s.provider} ${s.category}`.toLowerCase().includes(q))) return false;
+      if (cat && s.category !== cat) return false;
+      if (loc && s.location !== loc) return false;
+      if (rating && s.rating < rating) return false;
+      if (price) {
+        const [min, max] = price.split('-').map(Number);
+        if (s.price < min || s.price > max) return false;
+      }
+      return true;
+    });
+
+    if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+    else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+    else if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
+    else list.sort((a, b) => b.reviews - a.reviews);
+
+    render(list);
+  }
+
+  function render(list) {
+    const grid = document.getElementById('bt-service-grid');
+    const empty = document.getElementById('bt-empty-state');
+    const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = list.slice(start, start + PAGE_SIZE);
+
+    grid.innerHTML = pageItems.map(cardHtml).join('');
+    empty.classList.toggle('hidden', list.length > 0);
+
+    document.querySelectorAll('.bt-fav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = btn.dataset.fav;
+        BTData.saved.toggle(id);
+        applyFilters();
+      });
+    });
+
+    const pag = document.getElementById('bt-pagination');
+    pag.innerHTML = '';
+    if (totalPages > 1) {
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = `w-10 h-10 rounded-full font-bold text-sm transition ${i === currentPage ? 'bg-primary text-on-primary' : 'bg-white text-on-surface-variant hover:bg-surface-container'}`;
+        btn.addEventListener('click', () => { currentPage = i; applyFilters(); window.scrollTo({top:0, behavior:'smooth'}); });
+        pag.appendChild(btn);
+      }
+    }
+  }
+
+  ['bt-filter-category','bt-filter-location','bt-filter-price','bt-filter-rating','bt-sort'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { currentPage = 1; applyFilters(); });
+  });
+  document.getElementById('bt-search-btn').addEventListener('click', () => { currentPage = 1; applyFilters(); });
+  document.getElementById('bt-search').addEventListener('keydown', (e) => { if (e.key === 'Enter') { currentPage = 1; applyFilters(); } });
+
+  applyFilters();
+</script>
+</body>
+</html>

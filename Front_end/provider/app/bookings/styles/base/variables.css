@@ -1,0 +1,137 @@
+/* ============================================================
+   DESIGN TOKENS — The Radiant Marketplace
+   ============================================================ */
+
+:root {
+  /* ── Brand Colors ── */
+  --color-primary:               #0050d4;
+  --color-primary-dim:           #0046bb;
+  --color-primary-fixed:         #7b9cff;
+  --color-primary-fixed-dim:     #658eff;
+  --color-primary-container:     #7b9cff;
+  --color-inverse-primary:       #618bff;
+  --color-on-primary:            #f1f2ff;
+  --color-on-primary-fixed:      #000000;
+  --color-on-primary-fixed-variant: #00266e;
+  --color-on-primary-container:  #001e5a;
+
+  /* ── Secondary ── */
+  --color-secondary:             #006947;
+  --color-secondary-dim:         #005c3d;
+  --color-secondary-fixed:       #69f6b8;
+  --color-secondary-fixed-dim:   #58e7ab;
+  --color-secondary-container:   #69f6b8;
+  --color-on-secondary:          #c8ffe0;
+  --color-on-secondary-fixed:    #00452d;
+  --color-on-secondary-fixed-variant: #006544;
+  --color-on-secondary-container: #005a3c;
+
+  /* ── Tertiary ── */
+  --color-tertiary:              #6f5900;
+  --color-tertiary-dim:          #614d00;
+  --color-tertiary-fixed:        #fed01b;
+  --color-tertiary-fixed-dim:    #eec200;
+  --color-tertiary-container:    #fed01b;
+  --color-on-tertiary:           #fff2d3;
+  --color-on-tertiary-fixed:     #433500;
+  --color-on-tertiary-fixed-variant: #645000;
+  --color-on-tertiary-container: #594700;
+
+  /* ── Error ── */
+  --color-error:                 #b31b25;
+  --color-error-dim:             #9f0519;
+  --color-error-container:       #fb5151;
+  --color-on-error:              #ffefee;
+  --color-on-error-container:    #570008;
+
+  /* ── Surface ── */
+  --color-surface:               #f5f7f9;
+  --color-surface-bright:        #f5f7f9;
+  --color-surface-dim:           #d0d5d8;
+  --color-surface-variant:       #d9dde0;
+  --color-surface-tint:          #0050d4;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:    #eef1f3;
+  --color-surface-container:        #e5e9eb;
+  --color-surface-container-high:   #dfe3e6;
+  --color-surface-container-highest:#d9dde0;
+
+  /* ── On-Surface / Neutral ── */
+  --color-on-surface:            #2c2f31;
+  --color-on-surface-variant:    #595c5e;
+  --color-on-background:         #2c2f31;
+  --color-background:            #f5f7f9;
+  --color-outline:               #747779;
+  --color-outline-variant:       #abadaf;
+  --color-inverse-surface:       #0b0f10;
+  --color-inverse-on-surface:    #9a9d9f;
+
+  /* ── Typography ── */
+  --font-headline:  'Plus Jakarta Sans', sans-serif;
+  --font-body:      'Be Vietnam Pro', sans-serif;
+  --font-label:     'Be Vietnam Pro', sans-serif;
+
+  --text-xs:    0.625rem;   /* 10px */
+  --text-sm:    0.75rem;    /* 12px */
+  --text-base:  0.875rem;   /* 14px */
+  --text-md:    1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+  --text-5xl:   3rem;       /* 48px */
+
+  /* ── Spacing ── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* ── Border Radius ── */
+  --radius-sm:   0.5rem;
+  --radius-md:   1rem;
+  --radius-lg:   2rem;
+  --radius-xl:   3rem;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 1px 3px rgba(44,47,49,0.08);
+  --shadow-md:  0 4px 16px rgba(44,47,49,0.10);
+  --shadow-lg:  0 8px 32px rgba(44,47,49,0.12);
+  --shadow-xl:  0 16px 48px rgba(44,47,49,0.15);
+  --shadow-nav: 0px 12px 32px rgba(44,47,49,0.06);
+  --shadow-primary: 0 8px 24px rgba(0,80,212,0.20);
+
+  /* ── Transitions ── */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow:   0.5s ease;
+
+  /* ── Layout ── */
+  --sidebar-width:    18rem;    /* 288px */
+  --header-height:    5rem;     /* 80px */
+  --content-max-width: 80rem;  /* 1280px */
+  --mobile-nav-height: 5rem;
+}
+
+/* ── Dark Mode Overrides ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface:                  #0d1117;
+    --color-surface-bright:           #1a1f26;
+    --color-surface-container-lowest: #0d1117;
+    --color-surface-container-low:    #141920;
+    --color-surface-container:        #1a2030;
+    --color-surface-container-high:   #1f2535;
+    --color-on-surface:               #e8eaed;
+    --color-on-surface-variant:       #9aa0a6;
+    --color-background:               #0d1117;
+  }
+}

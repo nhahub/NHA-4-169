@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack | Step 2 — Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0050d4;
+      --primary-dark: #003fa3;
+      --secondary: #6f5900;
+      --tertiary: #006c4e;
+      --surface: #f5f7f9;
+      --surface-card: #ffffff;
+      --on-surface: #1a1c20;
+      --on-surface-var: #44474e;
+      --outline: #74777f;
+      --outline-var: #c4c6d0;
+      --error: #ba1a1a;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-full: 9999px;
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface); color: var(--on-surface); min-height: 100vh; }
+
+    /* ── Header ── */
+    .header { background: white; border-bottom: 1px solid var(--outline-var); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__brand { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .header__step  { font-size: 0.85rem; color: var(--on-surface-var); font-weight: 600; }
+
+    /* ── Review Banner ── */
+    .review-banner { background: #fff8e1; border-bottom: 2px solid #fde68a; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: #78350f; font-weight: 600; }
+    .review-banner .material-symbols-outlined { color: #f59e0b; font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── Layout ── */
+    .page { max-width: 640px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Progress Steps ── */
+    .steps { display: flex; align-items: center; gap: 0; margin-bottom: 2.5rem; }
+    .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: 1; position: relative; }
+    .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 60%; width: 80%; height: 2px; background: var(--outline-var); z-index: 0; }
+    .step-item.done::after { background: #1a7a4a; }
+    .step-dot { width: 2rem; height: 2rem; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; z-index: 1; background: var(--outline-var); color: white; position: relative; }
+    .step-item.done   .step-dot { background: #1a7a4a; }
+    .step-item.active .step-dot { background: var(--primary); box-shadow: 0 0 0 4px rgba(0,80,212,0.15); }
+    .step-label { font-size: 0.68rem; font-weight: 600; color: var(--outline); text-align: center; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-item.done   .step-label { color: #1a7a4a; }
+
+    /* ── Cards ── */
+    .card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.75rem; margin-bottom: 1.25rem; }
+    .card__header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .card__icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card__icon--primary   { background: rgba(0,80,212,0.1);   }
+    .card__icon--secondary { background: rgba(111,89,0,0.1);   }
+    .card__icon--tertiary  { background: rgba(0,108,78,0.1);   }
+    .card__icon .material-symbols-outlined { font-size: 1.3rem; }
+    .card__icon--primary   .material-symbols-outlined { color: var(--primary); }
+    .card__icon--secondary .material-symbols-outlined { color: var(--secondary); }
+    .card__icon--tertiary  .material-symbols-outlined { color: var(--tertiary); }
+    .card__title    { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 800; }
+    .card__subtitle { font-size: 0.82rem; color: var(--on-surface-var); margin-top: 0.15rem; }
+
+    /* ── Textarea (bio) ── */
+    .textarea { width: 100%; padding: 0.9rem 1rem; border: 2px solid var(--outline-var); border-radius: var(--radius-md); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: white; transition: border-color 0.2s; resize: vertical; min-height: 110px; }
+    .textarea:focus { outline: none; border-color: var(--primary); }
+    .char-count { text-align: right; font-size: 0.78rem; color: var(--outline); margin-top: 0.35rem; }
+    .bio-tip { background: rgba(0,80,212,0.05); border-left: 3px solid var(--primary); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 0.6rem 0.85rem; font-size: 0.8rem; color: var(--on-surface-var); margin-top: 0.75rem; }
+    .bio-tip strong { color: var(--primary); }
+
+    /* ── Experience Slider ── */
+    .exp-display { text-align: center; margin-bottom: 1.25rem; }
+    .exp-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .exp-unit  { font-size: 0.8rem; font-weight: 700; color: var(--on-surface-var); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+    .exp-label { font-size: 0.82rem; color: var(--on-surface-var); margin-top: 0.5rem; }
+    .range-wrap { position: relative; margin: 0.5rem 0; }
+    input[type="range"] { width: 100%; height: 6px; border-radius: 3px; appearance: none; background: linear-gradient(to right, var(--primary) 0%, var(--primary) 37%, var(--outline-var) 37%); cursor: pointer; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { appearance: none; width: 1.5rem; height: 1.5rem; border-radius: var(--radius-full); background: var(--primary); box-shadow: 0 2px 8px rgba(0,80,212,0.4); cursor: pointer; transition: transform 0.15s; }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .range-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--outline); margin-top: 0.35rem; }
+    .exp-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .exp-badge { padding: 0.3rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; background: var(--surface); color: var(--on-surface-var); border: 1.5px solid var(--outline-var); cursor: pointer; transition: all 0.15s; }
+    .exp-badge.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* ── Skills tags ── */
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem; }
+    .skill-tag { display: flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-full); border: 2px solid var(--outline-var); font-size: 0.78rem; font-weight: 600; color: var(--on-surface-var); cursor: pointer; transition: all 0.15s; user-select: none; }
+    .skill-tag:hover { border-color: var(--primary); color: var(--primary); }
+    .skill-tag.selected { border-color: var(--primary); background: rgba(0,80,212,0.1); color: var(--primary); }
+    .skill-tag .material-symbols-outlined { font-size: 0.85rem; }
+
+    /* ── Pricing ── */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-group { margin-bottom: 0; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--on-surface-var); margin-bottom: 0.4rem; }
+    .input-wrap { position: relative; }
+    .input-wrap .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--outline); font-size: 1rem; pointer-events: none; }
+    .input-wrap .suffix { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 0.78rem; font-weight: 700; color: var(--outline); }
+    .input { width: 100%; padding: 0.8rem 3rem 0.8rem 2.5rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: white; transition: border-color 0.2s; }
+    .input:focus { outline: none; border-color: var(--primary); }
+
+    /* ── Photo Upload ── */
+    .photo-upload-zone { border: 2px dashed var(--outline-var); border-radius: var(--radius-lg); padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface); }
+    .photo-upload-zone:hover { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .photo-upload-zone .material-symbols-outlined { font-size: 2.5rem; color: var(--outline); margin-bottom: 0.5rem; }
+    .photo-upload-zone p { font-size: 0.85rem; color: var(--on-surface-var); }
+    .photo-upload-zone strong { color: var(--primary); }
+    .photo-preview { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .photo-thumb { width: 4.5rem; height: 4.5rem; border-radius: var(--radius-md); object-fit: cover; border: 2px solid var(--outline-var); }
+
+    /* ── Nav ── */
+    .nav-row { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+    .btn-primary { flex: 1; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: inherit; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-ghost { padding: 1rem 1.25rem; border: 2px solid var(--outline-var); background: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; color: var(--on-surface); font-family: inherit; display: flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    @media (max-width: 480px) {
+      .page { padding: 1.5rem 1rem 3rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <img src="../../assets/images/baytack-logo.png" alt="BayTack" style="height:6rem;width:auto;object-fit:contain" />
+    <span class="header__step">Step 3 of 5 — Experience</span>
+  </header>
+
+  <!-- Under Review Banner -->
+  <div class="review-banner">
+    <span class="material-symbols-outlined">schedule</span>
+    Account Under Review — Keep going, your profile is almost complete.
+  </div>
+
+  <main class="page">
+
+    <!-- Progress -->
+    <div class="steps">
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Sign Up</span>
+      </div>
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Profile</span>
+      </div>
+      <div class="step-item active">
+        <div class="step-dot">3</div>
+        <span class="step-label">Experience</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">4</div>
+        <span class="step-label">Documents</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">5</div>
+        <span class="step-label">Dashboard</span>
+      </div>
+    </div>
+
+    <!-- 1. Professional Bio -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--primary">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+        </div>
+        <div>
+          <p class="card__title">Your Story</p>
+          <p class="card__subtitle">Why should customers choose you?</p>
+        </div>
+      </div>
+      <textarea class="textarea" id="bio-textarea" maxlength="500" placeholder="Explain your craft, your passion, and why customers should choose you…"></textarea>
+      <p class="char-count"><span id="bio-count">0</span> / 500</p>
+      <div class="bio-tip">A detailed bio increases your booking rate by up to <strong>35%</strong>. Be personal and specific!</div>
+    </div>
+
+    <!-- 2. Years of Experience -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--tertiary">
+          <span class="material-symbols-outlined">history_edu</span>
+        </div>
+        <div>
+          <p class="card__title">Years of Experience</p>
+          <p class="card__subtitle">How long have you been practicing?</p>
+        </div>
+      </div>
+      <div class="exp-display">
+        <div class="exp-value" id="exp-value">5</div>
+        <div class="exp-unit">Years</div>
+        <div class="exp-label" id="exp-label">Getting established</div>
+      </div>
+      <div class="range-wrap">
+        <input type="range" id="exp-slider" min="1" max="30" value="5" oninput="updateExp(this.value)" />
+      </div>
+      <div class="range-labels"><span>Beginner (1yr)</span><span>Expert (30yrs)</span></div>
+      <div class="exp-badges" style="margin-top:1rem">
+        <span class="exp-badge" onclick="setExp(1)">1 yr</span>
+        <span class="exp-badge" onclick="setExp(3)">3 yrs</span>
+        <span class="exp-badge active" onclick="setExp(5)">5 yrs</span>
+        <span class="exp-badge" onclick="setExp(10)">10 yrs</span>
+        <span class="exp-badge" onclick="setExp(15)">15 yrs</span>
+        <span class="exp-badge" onclick="setExp(20)">20+ yrs</span>
+      </div>
+    </div>
+
+    <!-- 3. Skills & Specializations -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--secondary">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">workspace_premium</span>
+        </div>
+        <div>
+          <p class="card__title">Skills & Specializations</p>
+          <p class="card__subtitle">Select all that apply to your work</p>
+        </div>
+      </div>
+      <div class="skills-wrap" id="skills-wrap">
+        <!-- injected by JS based on service category -->
+      </div>
+    </div>
+
+    <!-- 4. Pricing -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--primary">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <div>
+          <p class="card__title">Pricing</p>
+          <p class="card__subtitle">Set your hourly rate and minimum charge</p>
+        </div>
+      </div>
+      <div class="pricing-grid">
+        <div class="form-group">
+          <label class="form-label" for="hourly-rate">Hourly Rate</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">payments</span>
+            <input class="input" id="hourly-rate" type="number" min="50" max="2000" placeholder="200" />
+            <span class="suffix">EGP/hr</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="min-charge">Minimum Charge</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">price_check</span>
+            <input class="input" id="min-charge" type="number" min="50" max="5000" placeholder="300" />
+            <span class="suffix">EGP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Workshop Photos -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--secondary">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">add_a_photo</span>
+        </div>
+        <div>
+          <p class="card__title">Portfolio Photos</p>
+          <p class="card__subtitle">Show your previous work (optional but recommended)</p>
+        </div>
+      </div>
+      <div class="photo-upload-zone" id="photo-zone" onclick="document.getElementById('photo-input').click()">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <p>Click to upload photos of your work</p>
+        <p><strong>JPEG, PNG</strong> — up to 5MB each</p>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="previewPhotos(this)" />
+      <div class="photo-preview" id="photo-preview"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-row">
+      <button class="btn-ghost" onclick="history.back()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back
+      </button>
+      <button class="btn-primary" id="continue-btn" onclick="saveAndContinue()">
+        Continue to Documents
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+
+  </main>
+
+  <script>
+    // Skills per service
+    const SKILLS_MAP = {
+      carpentry:  ['Furniture Making','Door & Window Frames','Kitchen Cabinets','Custom Woodwork','Flooring','Restoration'],
+      painting:   ['Interior Painting','Exterior Painting','Decorative Finishes','Wallpaper','Texture Coating','Water Proofing'],
+      ac_repair:  ['AC Installation','AC Maintenance','Duct Cleaning','Refrigerant Refill','Split Unit Repair','Central AC'],
+      electrical: ['Wiring & Rewiring','Electrical Panel','Lighting Installation','Socket & Switch','Generator Setup','Smart Home'],
+      plumbing:   ['Pipe Repair','Bathroom Fitting','Water Heater','Sewage System','Water Tank','Leak Detection'],
+      cleaning:   ['Deep Cleaning','Move-in/out','Post-construction','Carpet & Sofa','AC Duct Cleaning','Pest Control'],
+    };
+
+    const signup = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
+    const service = signup.service || 'plumbing';
+    const skills  = SKILLS_MAP[service] || SKILLS_MAP.plumbing;
+    const selectedSkills = new Set();
+
+    // Render skill tags
+    const wrap = document.getElementById('skills-wrap');
+    skills.forEach(skill => {
+      const tag = document.createElement('span');
+      tag.className = 'skill-tag';
+      tag.innerHTML = `<span class="material-symbols-outlined">add</span>${skill}`;
+      tag.addEventListener('click', () => {
+        if (selectedSkills.has(skill)) {
+          selectedSkills.delete(skill);
+          tag.classList.remove('selected');
+          tag.querySelector('.material-symbols-outlined').textContent = 'add';
+        } else {
+          selectedSkills.add(skill);
+          tag.classList.add('selected');
+          tag.querySelector('.material-symbols-outlined').textContent = 'check';
+        }
+      });
+      wrap.appendChild(tag);
+    });
+
+    // Pre-fill bio from step1
+    if (signup.bio) {
+      document.getElementById('bio-textarea').value = signup.bio;
+      document.getElementById('bio-count').textContent = signup.bio.length;
+    }
+
+    // Bio counter
+    document.getElementById('bio-textarea').addEventListener('input', function() {
+      document.getElementById('bio-count').textContent = this.value.length;
+    });
+
+    // Experience slider
+    const EXP_LABELS = {
+      1:'Just starting out', 3:'Building experience', 5:'Getting established',
+      10:'Highly experienced', 15:'Senior professional', 20:'Industry veteran', 30:'Master craftsman'
+    };
+    function updateExp(val) {
+      const n = parseInt(val);
+      document.getElementById('exp-value').textContent = n;
+      const closest = Object.keys(EXP_LABELS).reduce((a,b) => Math.abs(b-n) < Math.abs(a-n) ? b : a);
+      document.getElementById('exp-label').textContent = EXP_LABELS[closest];
+      // Update slider fill
+      const pct = ((n - 1) / 29) * 100;
+      document.getElementById('exp-slider').style.background =
+        `linear-gradient(to right, var(--primary) ${pct}%, var(--outline-var) ${pct}%)`;
+      // Update badge actives
+      document.querySelectorAll('.exp-badge').forEach(b => b.classList.remove('active'));
+    }
+    function setExp(val) {
+      document.getElementById('exp-slider').value = val;
+      updateExp(val);
+      document.querySelectorAll('.exp-badge').forEach(b => {
+        b.classList.toggle('active', parseInt(b.textContent) === val || b.textContent.startsWith(val));
+      });
+    }
+    updateExp(5);
+
+    // Photo preview
+    let uploadedPhotos = [];
+    function previewPhotos(input) {
+      const preview = document.getElementById('photo-preview');
+      Array.from(input.files).slice(0, 8).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.className = 'photo-thumb';
+          img.title = file.name;
+          preview.appendChild(img);
+          // Persist alongside the preview so this carries through to
+          // step3 → ek_accounts → the provider's Portfolio page.
+          uploadedPhotos.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function saveAndContinue() {
+      const btn = document.getElementById('continue-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span> Saving…';
+
+      const step2Data = {
+        ...signup,
+        bio:          document.getElementById('bio-textarea').value.trim(),
+        experience:   parseInt(document.getElementById('exp-slider').value),
+        skills:       [...selectedSkills],
+        hourlyRate:   document.getElementById('hourly-rate').value,
+        minCharge:    document.getElementById('min-charge').value,
+        photos:       uploadedPhotos,
+      };
+      sessionStorage.setItem('ek_provider_signup', JSON.stringify(step2Data));
+
+      setTimeout(() => { window.location.href = '../step3-verification/index.html'; }, 600);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+
+  <script>
+    /* BayTack: Sync provider data from session */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || "Provider";
+        document.querySelectorAll(".provider-name,.user-name,[data-provider-name]").forEach(function(el) {
+          el.textContent = name;
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

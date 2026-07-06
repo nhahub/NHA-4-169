@@ -1,0 +1,192 @@
+/* ============================================================
+   BayTack — Page: Job Details
+   ============================================================ */
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+.breadcrumb__sep {
+  font-size: 16px;
+  color: var(--color-outline-variant);
+}
+
+.breadcrumb__current {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Page layout grid ── */
+.job-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .job-layout {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+/* ── Left column sections ── */
+.job-details-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Job header ── */
+.job-header {
+  margin-bottom: var(--space-6);
+}
+
+.job-title {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--color-on-surface);
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-4);
+  line-height: 1.15;
+}
+
+@media (max-width: 480px) {
+  .job-title {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* ── Description ── */
+.job-description h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+.job-description p {
+  color: var(--color-on-surface-variant);
+  line-height: 1.75;
+}
+
+/* ── Photo gallery ── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .photo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Client info row ── */
+.client-avatar-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: rgba(0, 80, 212, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.client-avatar-wrap .material-symbols-outlined {
+  color: var(--color-primary);
+  font-size: 24px;
+}
+
+.client-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.client-name {
+  font-weight: 700;
+  color: var(--color-on-surface);
+  font-size: var(--text-base);
+}
+
+.client-meta {
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+  margin-top: 2px;
+}
+
+/* ── Map section ── */
+.map-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.map-container {
+  width: 100%;
+  height: 256px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface-container);
+}
+
+.map-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter var(--transition-slow);
+}
+
+.map-container:hover img {
+  filter: grayscale(30%);
+}
+
+/* ── Right column: sticky bid sidebar ── */
+.bid-col {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .bid-col {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+  }
+}
+
+/* ── Bid form heading ── */
+.bid-form-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  margin-bottom: var(--space-6);
+}
+
+/* ── Bento grid (Safe Pay / Pro) ── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.bento-card__icon {
+  font-size: 24px;
+}
+
+.bento-card__label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+}

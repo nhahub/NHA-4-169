@@ -1,0 +1,167 @@
+/* ============================================================
+   _onboarding.css — Provider Onboarding Page Styles
+   ============================================================ */
+
+/* ── Page Layout ─────────────────────────────────────────────── */
+.page-onboarding {
+  min-height: 100vh;
+  padding-top: calc(var(--header-height) + var(--space-8));
+  padding-bottom: var(--space-12);
+  padding-left: var(--content-padding);
+  padding-right: var(--content-padding);
+}
+
+@media (max-width: 767px) {
+  .page-onboarding {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--space-8));
+  }
+}
+
+.page-onboarding__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+  .page-onboarding__inner {
+    flex-direction: row;
+    padding: 0 var(--space-8);
+  }
+}
+
+/* ── Form Panel ──────────────────────────────────────────────── */
+.onboarding-form-panel {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .onboarding-form-panel {
+    width: 58.333%;   /* 7/12 */
+    flex: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .onboarding-form-panel {
+    width: 66.666%;   /* 8/12 */
+  }
+}
+
+/* ── Form Card ───────────────────────────────────────────────── */
+.onboarding-form-card {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-xs);
+}
+
+@media (min-width: 768px) {
+  .onboarding-form-card {
+    padding: var(--space-12);
+  }
+}
+
+/* ── Step Indicator ──────────────────────────────────────────── */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-10);
+}
+
+.step-badge {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-full);
+  font-family: var(--font-headline);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.step-progress-track {
+  flex: 1;
+  height: 4px;
+  background: var(--color-surface-container-high);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  width: 33.333%;
+  transition: width var(--transition-slow);
+}
+
+.step-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+}
+
+/* ── Form Title ──────────────────────────────────────────────── */
+.onboarding-form-card h2 {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+}
+
+.onboarding-form-card .subtitle {
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-10);
+}
+
+/* ── Form Body ───────────────────────────────────────────────── */
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Form Footer Actions ─────────────────────────────────────── */
+.form-actions {
+  padding-top: var(--space-8);
+  border-top: 1.5px solid var(--color-surface-container-high);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .form-actions {
+    flex-direction: row;
+  }
+
+  .form-actions .btn--primary {
+    width: auto;
+  }
+}
+
+/* ── Animate In ──────────────────────────────────────────────── */
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.onboarding-form-card {
+  animation: fade-slide-up 0.4s ease both;
+}
+
+.sidebar {
+  animation: fade-slide-up 0.4s ease 0.1s both;
+}

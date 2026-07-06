@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Provider Settings — Ekhdemni" />
+  <title>BayTack Provider — settings</title>
+
+  <!-- Preconnect to font origins for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<!--
+  data-page is read by main.js to determine which controller to boot.
+-->
+<body data-page="settings">
+  <!-- ═══ EKHDEMNI: Under Review Banner ═══ -->
+  <div id="ek-review-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #fde68a;padding:0.7rem 1.5rem;align-items:center;gap:0.6rem;font-size:0.85rem;color:#78350f;font-weight:600;position:sticky;top:0;z-index:9999">
+    <span style="font-family:'Material Symbols Outlined';font-size:1.1rem;color:#f59e0b">&#xe8b5;</span>
+    &nbsp;<strong>Account Under Review</strong> — Your profile is being verified.
+    <a href="../../dashboard/index.html" style="margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap">View Status &rarr;</a>
+  </div>
+  <script>
+    (function(){
+      try {
+        var signup = JSON.parse(sessionStorage.getItem('ek_provider_signup')||'{}');
+        var accts  = JSON.parse(localStorage.getItem('ek_accounts')||'[]');
+        var sess   = JSON.parse(localStorage.getItem('ek_user_session')||'{}');
+        var phone  = signup.phone || sess.phone || '';
+        var acct   = accts.find(function(a){ return a.phone === phone; });
+        if (acct && (acct.status === 'pending_review' || acct.status === 'pending')) {
+          document.getElementById('ek-review-banner').style.display = 'flex';
+        }
+      } catch(e){}
+    })();
+  </script>
+
+
+
+
+    <!-- ── HEADER (components-html/header.html) ── -->
+    <header class="site-header" role="banner">
+    <nav class="top-nav w-100" role="navigation" aria-label="Main navigation">
+    <div class="top-nav__inner">
+      <a href="../../dashboard/index.html" class="top-nav__brand"><img src="assets/images/logo.jpeg" alt=""></a>
+
+      <ul class="top-nav__links" role="list">
+        <li><a href="../../dashboard/index.html" data-page="dashboard"   class="top-nav__link ">Home</a></li>
+        <li><a href="../bookings/index.html" data-page="bookings"  class="top-nav__link">My Bookings</a></li>
+        <li><a href="../portfolio/index.html" data-page="portfolio" class="top-nav__link">Portfolio</a></li>
+        <li><a href="../settings/index.html"   class="top-nav__link" data-page="settings">Account</a></li>
+      </ul>
+
+      <div class="top-nav__actions">
+        <div class="top-nav__search" role="search">
+          <span class="material-symbols-outlined top-nav__search-icon" aria-hidden="true">search</span>
+          <input class="top-nav__search-input" type="search" placeholder="Search services…" aria-label="Search services" />
+        </div>
+        <button class="top-nav__icon-btn" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="top-nav__icon-btn" aria-label="Messages">
+          <span class="material-symbols-outlined">chat</span>
+        </button>
+        <!-- <button class="top-nav__icon-btn" data-action="toggle-theme" aria-label="Toggle theme">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button> -->
+        <img class="top-nav__avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcwjkCs_EKVeStxWei1c0vqDC5YfNIk4ixJH6c-BHJdcdzOBAo4NntZs6jt5_DEZnC2qdV55b5i_trn-SxOezy3jUoqiP8oVxbTzIzc0UhQAU4v5kMf4ejZ6V8-rfPgQsbfV-3e7KKxNmXk4qID-KGVrS8WhxgE0BYAlioyM2qtyOvo-gsF04JWA-UqC8lFh1RRDqvohAB0bLMLg_xZqcD5Y9P6fpYANZVLN0Fo-yj1_ZAu4kTF74QEqmQuROqQbrx6xu115BqU20"
+          alt="User Profile" width="40" height="40" />
+        <button class="top-nav__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  </header>
+    <!-- ── /HEADER ── -->
+
+    <aside class="site-sidebar" id="site-sidebar" role="navigation" aria-label="Provider Hub navigation">
+    <div class="sidebar__inner">
+      <div class="sidebar__hub">
+        <span class="sidebar__hub-title">Provider Hub</span>
+        <span class="sidebar__hub-subtitle">Managing Egyptian Homes</span>
+      </div>
+
+      <nav class="sidebar__nav" aria-label="Main navigation">
+        <a class="nav-link" href="../../dashboard/index.html" aria-current="page">
+          <span class="material-symbols-outlined icon-filled" aria-hidden="true">event_available</span>
+          <span>Bookings</span>
+        </a>
+        <a class="nav-link" href="../earnings/index.html" data-page="earnings">
+          <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+          <span>Earnings</span>
+        </a>
+        <a class="nav-link" href="../reviews/index.html" data-page="reviews">
+          <span class="material-symbols-outlined" aria-hidden="true">star_rate</span>
+          <span>Reviews</span>
+        </a>
+        <a class="nav-link" href="../settings/index.html" data-page="settings">
+          <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__cta">
+        <button class="cta-btn" type="button">
+          <span>Serve Me</span>
+          <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ═══════════════════════════════════════
+       MAIN CONTENT CANVAS
+       ═══════════════════════════════════════ -->
+  <main class="page-canvas" id="main-content" tabindex="-1">
+    <!-- ── PAGE BODY ── -->
+    <div class="page-inner">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-header__title">Provider Settings</h1>
+        <p class="page-header__subtitle">
+          Refine your public profile, set your service availability, and manage
+          how you receive marketplace updates.
+        </p>
+      </div>
+
+      <!-- Settings Grid -->
+      <div class="settings-grid">
+
+        <!-- ══════════════════════════════
+             LEFT COLUMN: Profile & Address
+             ══════════════════════════════ -->
+        <div class="settings-col-left">
+
+          <!-- ── Public Identity Card ── -->
+          <section class="card" aria-labelledby="identity-heading">
+            <div class="card__header">
+              <div class="card__icon card__icon--primary" aria-hidden="true">
+                <span class="material-symbols-outlined">person_edit</span>
+              </div>
+              <h2 class="card__title" id="identity-heading">Public Identity</h2>
+            </div>
+
+            <div class="space-y-6">
+              <div class="form-grid-2">
+                <div class="field">
+                  <label class="field__label" for="field-display-name">Display Name</label>
+                  <input
+                    id="field-display-name"
+                    class="input"
+                    type="text"
+                    value="Ahmed Mahmoud"
+                    autocomplete="name"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="field-title">Professional Title</label>
+                  <input
+                    id="field-title"
+                    class="input"
+                    type="text"
+                    value="Master Plumber &amp; Interior Specialist"
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="field-bio">Provider Bio</label>
+                <textarea
+                  id="field-bio"
+                  class="textarea"
+                  rows="4"
+                >I have over 15 years of experience serving households across Cairo and Giza. Specializing in high-end plumbing fixtures and sustainable home maintenance.</textarea>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="field-experience">Experience Level (Years)</label>
+                <input
+                  id="field-experience"
+                  class="input input--narrow"
+                  type="number"
+                  value="15"
+                  min="0"
+                  max="60"
+                />
+              </div>
+            </div>
+          </section>
+          <!-- ── /Public Identity Card ── -->
+
+
+          <!-- ── Workshop Address Card ── -->
+          <section class="card" aria-labelledby="address-heading">
+            <div class="card__header">
+              <div class="card__icon card__icon--secondary" aria-hidden="true">
+                <span class="material-symbols-outlined">home_pin</span>
+              </div>
+              <h2 class="card__title" id="address-heading">Workshop Address</h2>
+            </div>
+
+            <div class="workshop-grid">
+              <div class="space-y-6">
+                <div class="field">
+                  <label class="field__label" for="field-street">Street Address</label>
+                  <input
+                    id="field-street"
+                    class="input"
+                    type="text"
+                    value="24 Al Maadi St, Floor 3"
+                    autocomplete="street-address"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="field-district">District / Area</label>
+                  <select id="field-district" class="select" autocomplete="address-level2">
+                    <option selected>Maadi</option>
+                    <option>Zamalek</option>
+                    <option>Heliopolis</option>
+                    <option>New Cairo</option>
+                    <option>Dokki</option>
+                    <option>Mohandessin</option>
+                    <option>6th of October</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="map-placeholder" role="img" aria-label="Map showing workshop location in Maadi">
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMILqg1PUFizwANMwvyDiBSHtQjWEx4G99pckAPRjMAOX9neRorXEJpt3N7wpNvmpZPh2D4ai-0lWpOr6t2AnK1EMepsVv-oNFRaqooNDPA6rRGHiutWkU2BGBNakyBRkSXlnE-iriCFhNdvYE1dDVYdv5SJrrzz36QBaqXmohp6wEz0x6LDwXiRmYxflmn7SzoDZUktoGdFquXAZ1Tu2g8V7Xysc9_pgrmVBS_CfDl6Du0Bpyad2gfnP-cULs3nngyZ0sITrafR4"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <div class="map-badge">
+                  <span class="map-badge__pill">Map Location Verified</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- ── /Workshop Address Card ── -->
+
+        </div>
+        <!-- ── /Left Column ── -->
+
+
+        <!-- ══════════════════════════════
+             RIGHT COLUMN: Schedule & Prefs
+             ══════════════════════════════ -->
+        <div class="settings-col-right">
+
+          <!-- ── Weekly Schedule Card ── -->
+          <section class="card card--bordered-top" aria-labelledby="schedule-heading">
+            <div class="card__header" style="justify-content: space-between;">
+              <div class="flex items-center gap-3">
+                <div class="card__icon card__icon--tertiary" aria-hidden="true">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                </div>
+                <h2 class="card__title" id="schedule-heading">Weekly Schedule</h2>
+              </div>
+              <span class="card__badge">Mon – Sun</span>
+            </div>
+
+            <div class="schedule-list" role="list">
+
+              <!-- Mon -->
+              <div class="schedule-row" data-day="Mon" role="listitem">
+                <span class="schedule-row__day">Mon</span>
+                <div class="schedule-row__times">
+                  <input class="input--time" type="time" value="09:00" aria-label="Monday start time" />
+                  <span class="schedule-row__sep">to</span>
+                  <input class="input--time" type="time" value="17:00" aria-label="Monday end time" />
+                </div>
+                <div class="schedule-row__check">
+                  <input
+                    class="checkbox"
+                    type="checkbox"
+                    checked
+                    aria-label="Enable Monday"
+                  />
+                </div>
+              </div>
+
+              <!-- Tue -->
+              <div class="schedule-row" data-day="Tue" role="listitem">
+                <span class="schedule-row__day">Tue</span>
+                <div class="schedule-row__times">
+                  <input class="input--time" type="time" value="09:00" aria-label="Tuesday start time" />
+                  <span class="schedule-row__sep">to</span>
+                  <input class="input--time" type="time" value="17:00" aria-label="Tuesday end time" />
+                </div>
+                <div class="schedule-row__check">
+                  <input
+                    class="checkbox"
+                    type="checkbox"
+                    checked
+                    aria-label="Enable Tuesday"
+                  />
+                </div>
+              </div>
+
+              <!-- Wed -->
+              <div class="schedule-row" data-day="Wed" role="listitem">
+                <span class="schedule-row__day">Wed</span>
+                <div class="schedule-row__times">
+                  <input class="input--time" type="time" value="09:00" aria-label="Wednesday start time" />
+                  <span class="schedule-row__sep">to</span>
+                  <input class="input--time" type="time" value="17:00" aria-label="Wednesday end time" />
+                </div>
+                <div class="schedule-row__check">
+                  <input
+                    class="checkbox"
+                    type="checkbox"
+                    checked
+                    aria-label="Enable Wednesday"
+                  />
+                </div>
+              </div>
+
+              <!-- Thu (unavailable) -->
+              <div class="schedule-row schedule-row--unavailable" data-day="Thu" role="listitem">
+                <span class="schedule-row__day">Thu</span>
+                <div class="schedule-row__times">
+                  <span class="schedule-row__unavail-text">Unavailable / Break Day</span>
+                </div>
+                <div class="schedule-row__check">
+                  <input
+                    class="checkbox"
+                    type="checkbox"
+                    aria-label="Enable Thursday"
+                  />
+                </div>
+              </div>
+
+              <!-- Fri -->
+              <div class="schedule-row" data-day="Fri" role="listitem">
+                <span class="schedule-row__day">Fri</span>
+                <div class="schedule-row__times">
+                  <input class="input--time" type="time" value="14:00" aria-label="Friday start time" />
+                  <span class="schedule-row__sep">to</span>
+                  <input class="input--time" type="time" value="20:00" aria-label="Friday end time" />
+                </div>
+                <div class="schedule-row__check">
+                  <input
+                    class="checkbox"
+                    type="checkbox"
+                    checked
+                    aria-label="Enable Friday"
+                  />
+                </div>
+              </div>
+
+            </div>
+
+            <div style="padding-top: var(--space-4);">
+              <button
+                id="btn-save-schedule"
+                class="btn btn--tonal btn--full"
+                type="button"
+              >
+                Save Schedule Changes
+              </button>
+            </div>
+          </section>
+          <!-- ── /Weekly Schedule Card ── -->
+
+
+          <!-- ── Preferences Card ── -->
+          <section class="card" aria-labelledby="prefs-heading">
+            <h2 class="card__title" id="prefs-heading" style="margin-bottom: var(--space-6);">
+              Preferences
+            </h2>
+
+            <div class="pref-list">
+
+              <!-- Push Notifications -->
+              <div class="pref-row">
+                <div class="pref-row__info">
+                  <p class="pref-row__title">Push Notifications</p>
+                  <p class="pref-row__subtitle">Instant alerts for new bookings</p>
+                </div>
+                <label class="toggle" aria-label="Toggle push notifications">
+                  <input id="toggle-push" class="toggle__input" type="checkbox" checked />
+                  <span class="toggle__track"></span>
+                </label>
+              </div>
+
+              <!-- Email Summaries -->
+              <div class="pref-row">
+                <div class="pref-row__info">
+                  <p class="pref-row__title">Email Summaries</p>
+                  <p class="pref-row__subtitle">Weekly earnings and review reports</p>
+                </div>
+                <label class="toggle" aria-label="Toggle email summaries">
+                  <input id="toggle-email" class="toggle__input" type="checkbox" />
+                  <span class="toggle__track"></span>
+                </label>
+              </div>
+
+              <!-- SMS Reminders -->
+              <div class="pref-row">
+                <div class="pref-row__info">
+                  <p class="pref-row__title">SMS Reminders</p>
+                  <p class="pref-row__subtitle">Texts 1 hour before an appointment</p>
+                </div>
+                <label class="toggle" aria-label="Toggle SMS reminders">
+                  <input id="toggle-sms" class="toggle__input" type="checkbox" checked />
+                  <span class="toggle__track"></span>
+                </label>
+              </div>
+
+            </div>
+          </section>
+          <!-- ── /Preferences Card ── -->
+
+
+          <!-- ── Danger Zone Card ── -->
+          <section class="card card--danger" aria-labelledby="danger-heading">
+            <p class="danger-label" id="danger-heading">Account Control</p>
+            <button
+              id="btn-pause-service"
+              class="btn btn--danger"
+              type="button"
+              aria-describedby="danger-heading"
+            >
+              Pause Service Availability Permanently
+            </button>
+          </section>
+          <!-- ── /Danger Zone Card ── -->
+
+        </div>
+        <!-- ── /Right Column ── -->
+
+      </div>
+      <!-- ── /Settings Grid ── -->
+
+      <!-- Floating Save Bar -->
+      <div id="save-bar" class="save-bar" role="status" aria-live="polite">
+        <p class="save-bar__text">You have unsaved changes</p>
+        <button id="btn-save-all" class="save-bar__btn-primary" type="button">
+          Save All Settings
+        </button>
+        <button id="btn-discard" class="save-bar__btn-secondary" type="button">
+          Discard
+        </button>
+      </div>
+
+    </div>
+    <!-- ── /Page Inner ── -->
+
+  </main>
+  <!-- ── /Main Content Canvas ── -->
+
+
+  <!-- ═══════════════════════════════════════
+       FOOTER (components-html/footer.html)
+       ═══════════════════════════════════════ -->
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="#" class="bottom-nav__link">
+      <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+      <span>Bookings</span>
+    </a>
+    <a href="#" class="bottom-nav__link">
+      <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+      <span>Earnings</span>
+    </a>
+    <button class="bottom-nav__fab" aria-label="New booking">
+      <span class="material-symbols-outlined" aria-hidden="true">add</span>
+    </button>
+    <a href="#" class="bottom-nav__link">
+      <span class="material-symbols-outlined" aria-hidden="true">star_rate</span>
+      <span>Reviews</span>
+    </a>
+    <a href="#" class="bottom-nav__link bottom-nav__link--active" aria-current="page">
+      <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">tune</span>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <!-- Scripts (ES modules) -->
+  <script type="module" src="scripts/main.js"></script>
+  <script src="../_shared/ekhdemni-provider-nav.js"></script>
+
+  <script>
+    /* BayTack: Sync provider data + status check */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || acct.username || "Provider";
+        var status = acct.status || "pending_review";
+
+        document.addEventListener("DOMContentLoaded", function() {
+          /* Fill names */
+          document.querySelectorAll(
+            ".provider-name,.user-name,.sidebar__user-name,.profile-name,[data-provider-name]"
+          ).forEach(function(el) { el.textContent = name; });
+
+          /* Status banner logic */
+          var banner = document.getElementById("ek-review-banner");
+          if (banner) {
+            if (status === "pending_review" || status === "pending") {
+              banner.style.display = "flex";
+              banner.style.background = "#fff8e1";
+              banner.style.borderBottom = "2px solid #fde68a";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#f59e0b;font-variation-settings:FILL 1'>schedule</span>&nbsp;<strong>Account Under Review</strong>&nbsp;&mdash; Your profile is being verified.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap'>View Status &rarr;</a>";
+            } else if (status === "suspended") {
+              banner.style.display = "flex";
+              banner.style.background = "#fde8e8";
+              banner.style.borderBottom = "2px solid #f87171";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#dc2626;font-variation-settings:FILL 1'>cancel</span>&nbsp;<strong>Application Rejected</strong>&nbsp;&mdash; Please re-apply.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#dc2626;font-weight:800;text-decoration:none;white-space:nowrap'>Re-apply &rarr;</a>";
+            }
+            /* verified: no banner */
+          }
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+/* ============================================================
+   MAIN CSS — Radiant Pro / BayTack
+   Import order matters: base → layout → components → pages
+   ============================================================ */
+
+/* ── Base ── */
+@import "./base/variables.css";
+@import "./base/reset.css";
+@import "./base/typography.css";
+
+/* ── Layout ── */
+@import "./layout/layout.css";
+@import "./layout/header.css";
+@import "./layout/sidebar.css";
+@import "./layout/footer.css";
+
+/* ── Components ── */
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/inputs.css";
+
+/* ── Pages ── */
+@import "./pages/portfolio.css";
+
+/* ============================================================
+   GLOBAL UTILITIES  (minimal — prefer component classes)
+   ============================================================ */
+
+/* Glass morphism helper */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Smooth scroll anchors */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout shift from scrollbar */
+html {
+  scrollbar-gutter: stable;
+}

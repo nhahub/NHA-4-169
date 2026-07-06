@@ -1,0 +1,70 @@
+/* ============================================================
+   BAYTACK — Landing Page Custom Styles
+   (Tailwind handles most; this file covers extras)
+   ============================================================ */
+
+/* Padding-top for fixed header */
+body {
+  padding-top: 80px;
+}
+
+/* Nav underline animation */
+nav a {
+  position: relative;
+}
+nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: #0050d4;
+  border-radius: 99px;
+  transition: width 0.25s ease;
+}
+nav a:hover::after {
+  width: 100%;
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #f8fafb 0%, #eaf2ff 100%);
+}
+
+/* Ambient shadow (used on floating cards) */
+.shadow-ambient {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Section scroll offset (for fixed header) */
+#about, #services, #contact {
+  scroll-margin-top: 96px;
+}
+
+/* Modal backdrop ensures pointer-events only on content */
+[id$="-modal"] > * {
+  pointer-events: auto;
+}
+
+/* Range input accent */
+input[type="range"] {
+  accent-color: #0050d4;
+}
+
+/* Material icons vertical align fix */
+.material-symbols-outlined {
+  vertical-align: middle;
+}
+
+/* ── Loading transition class ── */
+.bt-fade-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}

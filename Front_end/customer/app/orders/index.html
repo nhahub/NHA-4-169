@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | My Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="orders">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-5xl mx-auto px-6 pb-24">
+  <div class="mb-8">
+    <h1 class="font-headline font-extrabold text-3xl md:text-4xl">My Orders</h1>
+    <p class="text-on-surface-variant mt-2">Track the status and progress of every booking.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-8 bg-white rounded-full p-1.5 w-fit shadow">
+    <button data-tab="active" class="bt-tab px-6 py-2.5 rounded-full font-bold text-sm transition">Active</button>
+    <button data-tab="completed" class="bt-tab px-6 py-2.5 rounded-full font-bold text-sm transition">Completed</button>
+    <button data-tab="cancelled" class="bt-tab px-6 py-2.5 rounded-full font-bold text-sm transition">Cancelled</button>
+  </div>
+
+  <div id="bt-orders-list" class="space-y-5"></div>
+  <p id="bt-empty" class="hidden text-center text-on-surface-variant py-16">No orders in this category yet.</p>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  let activeTab = 'active';
+
+  function orderCard(o) {
+    return `
+    <div class="bg-white rounded-3xl shadow p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <img src="${o.avatar}" class="w-14 h-14 rounded-full object-cover" alt="${o.provider}" />
+          <div>
+            <h3 class="font-headline font-bold text-lg">${o.title}</h3>
+            <p class="text-sm text-on-surface-variant mt-1">${o.provider} · ${BTData.formatDate(o.createdAt)}</p>
+          </div>
+        </div>
+        <p class="font-bold text-primary text-lg">${o.price} EGP</p>
+      </div>
+
+      <!-- Status timeline -->
+      <div class="flex items-center mt-6 mb-2">
+        ${o.timeline.map((t, i) => `
+          <div class="flex items-center ${i < o.timeline.length - 1 ? 'flex-1' : ''}">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${t.done ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant'}">
+              <span class="material-symbols-outlined text-base">${t.done ? 'check' : 'circle'}</span>
+            </div>
+            ${i < o.timeline.length - 1 ? `<div class="flex-1 h-1 ${o.timeline[i+1].done ? 'bg-primary' : 'bg-surface-container-high'}"></div>` : ''}
+          </div>`).join('')}
+      </div>
+      <div class="flex text-xs text-on-surface-variant justify-between mb-6">
+        ${o.timeline.map(t => `<span class="w-20 text-center -ml-6 first:ml-0">${t.label}</span>`).join('')}
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <button class="px-5 py-2.5 border-2 border-outline-variant/30 rounded-full font-bold text-sm hover:border-primary hover:text-primary transition flex items-center gap-2"><span class="material-symbols-outlined text-lg">folder</span> Files</button>
+        <a href="../messages/index.html" class="px-5 py-2.5 border-2 border-outline-variant/30 rounded-full font-bold text-sm hover:border-primary hover:text-primary transition flex items-center gap-2"><span class="material-symbols-outlined text-lg">chat</span> Messages</a>
+        <button class="px-5 py-2.5 border-2 border-outline-variant/30 rounded-full font-bold text-sm hover:border-primary hover:text-primary transition flex items-center gap-2"><span class="material-symbols-outlined text-lg">receipt_long</span> Invoice</button>
+        ${o.status === 'active' ? `<button data-complete="${o.id}" class="ml-auto px-6 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim transition">Complete Order</button>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function render() {
+    const orders = BTData.orders.all().filter(o => o.status === activeTab);
+    document.getElementById('bt-empty').classList.toggle('hidden', orders.length > 0);
+    document.getElementById('bt-orders-list').innerHTML = orders.map(orderCard).join('');
+
+    document.querySelectorAll('.bt-tab').forEach(btn => {
+      const active = btn.dataset.tab === activeTab;
+      btn.className = `bt-tab px-6 py-2.5 rounded-full font-bold text-sm transition ${active ? 'bg-primary text-on-primary' : 'text-on-surface-variant'}`;
+    });
+
+    document.querySelectorAll('[data-complete]').forEach(btn => btn.addEventListener('click', () => {
+      BTData.orders.update(btn.dataset.complete, { status: 'completed', progress: 100,
+        timeline: [{label:'Order Placed',done:true},{label:'Provider Confirmed',done:true},{label:'In Progress',done:true},{label:'Completed',done:true}] });
+      render();
+    }));
+  }
+
+  document.querySelectorAll('.bt-tab').forEach(btn => btn.addEventListener('click', () => { activeTab = btn.dataset.tab; render(); }));
+  render();
+</script>
+</body>
+</html>

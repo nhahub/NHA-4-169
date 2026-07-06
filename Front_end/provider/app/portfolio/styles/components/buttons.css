@@ -1,0 +1,106 @@
+/* ============================================================
+   COMPONENT — Buttons
+   ============================================================ */
+
+/* ── Base ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: var(--text-base);
+  line-height: 1;
+  cursor: pointer;
+  border: none;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.96) !important;
+}
+
+/* ── Primary ── */
+.btn--primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-primary);
+}
+
+.btn--primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 80, 212, 0.35);
+}
+
+/* ── Ghost ── */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-on-surface);
+}
+
+.btn--ghost:hover {
+  background: var(--color-surface-container-low);
+}
+
+/* ── Outline ── */
+.btn--outline {
+  background: transparent;
+  border: 2px solid var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+}
+
+.btn--outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Sizes ── */
+.btn--sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.btn--lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+}
+
+/* ── Icon button ── */
+.btn-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-base), transform var(--transition-base);
+}
+
+.btn-icon:hover {
+  transform: scale(1.08);
+}
+
+.btn-icon--ghost {
+  background: transparent;
+  color: var(--color-on-surface-variant);
+}
+
+.btn-icon--ghost:hover {
+  background: var(--color-surface-container-high);
+}
+
+.btn-icon--danger {
+  background: transparent;
+  color: var(--color-error);
+}
+
+.btn-icon--danger:hover {
+  background: rgba(179, 27, 37, 0.08);
+}

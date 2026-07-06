@@ -1,0 +1,38 @@
+/* ============================================================
+   BAYTACK ADMIN — Main CSS Entry Point
+   Import order: tokens → reset → base → components → pages
+   ============================================================ */
+
+/* ── 1. Design Tokens ── */
+@import './variables.css';
+
+/* ── 2. Reset ── */
+@import './reset.css';
+
+/* ── 3. Typography ── */
+@import './typography.css';
+
+/* ── 4. Base Components ── */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/inputs.css';
+@import './components/modal.css';
+
+/* ── 5. Admin Layout Components ── */
+@import './components/admin-sidebar.css';
+@import './components/admin-header.css';
+@import './components/admin-footer.css';
+
+/* ── 6. Page-Specific Styles ── */
+@import './pages/analytics.css';
+@import './pages/providers.css';
+@import './pages/categories.css';
+@import './pages/loading.css';
+@import './pages/user-management.css';
+@import './pages/verification.css';
+@import './pages/verification-review.css';
+@import './pages/orders.css';
+
+/* ── 7. New Pages ── */
+@import './pages/roles.css';
+@import './pages/settings.css';

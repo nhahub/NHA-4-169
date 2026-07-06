@@ -1,0 +1,62 @@
+/* ============================================
+   EKHDEMNI — Main Layout
+   ============================================ */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout__main {
+  flex: 1;
+  padding-top: var(--nav-height);
+}
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-8);
+  }
+}
+
+/* ── Page Wrapper ── */
+.page-wrapper {
+  padding: var(--space-12) var(--space-4);
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding: var(--space-12) var(--space-8);
+  }
+}
+
+/* ── Two-Column Hero Grid ── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  width: 100%;
+  align-items: center;
+}
+
+@media (min-width: 1025px) {
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+
+  .hero-grid__content {
+    padding-right: var(--space-12);
+  }
+}

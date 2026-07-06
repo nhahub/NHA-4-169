@@ -1,0 +1,69 @@
+/* ============================================================
+   BayTack — Components: Badges & Chips
+   ============================================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge--secondary {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.badge--primary {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.badge--tertiary {
+  background: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+}
+
+.badge--error {
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+/* ── Star Rating ── */
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-tertiary);
+}
+
+.star-rating .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* ── Meta row (location, time) ── */
+.meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  color: var(--color-on-surface-variant);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.meta-item .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--color-primary);
+}

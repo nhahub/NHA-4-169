@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Radiant Pro — Portfolio Editor for home service professionals."
+    />
+    <title>BayTack Provider — portfolio</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css" />
+
+  </head>
+
+  <body
+    class="bg-surface font-body text-on-surface antialiased overflow-x-hidden"
+   data-page="portfolio">
+  <!-- ═══ EKHDEMNI: Under Review Banner ═══ -->
+  <div id="ek-review-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #fde68a;padding:0.7rem 1.5rem;align-items:center;gap:0.6rem;font-size:0.85rem;color:#78350f;font-weight:600;position:sticky;top:0;z-index:9999">
+    <span style="font-family:'Material Symbols Outlined';font-size:1.1rem;color:#f59e0b">&#xe8b5;</span>
+    &nbsp;<strong>Account Under Review</strong> — Your profile is being verified.
+    <a href="../../dashboard/index.html" style="margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap">View Status &rarr;</a>
+  </div>
+  <script>
+    (function(){
+      try {
+        var signup = JSON.parse(sessionStorage.getItem('ek_provider_signup')||'{}');
+        var accts  = JSON.parse(localStorage.getItem('ek_accounts')||'[]');
+        var sess   = JSON.parse(localStorage.getItem('ek_user_session')||'{}');
+        var phone  = signup.phone || sess.phone || '';
+        var acct   = accts.find(function(a){ return a.phone === phone; });
+        if (acct && (acct.status === 'pending_review' || acct.status === 'pending')) {
+          document.getElementById('ek-review-banner').style.display = 'flex';
+        }
+      } catch(e){}
+    })();
+  </script>
+     <header class="site-header" role="banner">
+    <nav class="top-nav w-100" role="navigation" aria-label="Main navigation">
+    <div class="top-nav__inner">
+      <a href="../../dashboard/index.html" class="top-nav__brand"><img src="assets/images/logo.jpeg" alt=""></a>
+
+      <ul class="top-nav__links" role="list">
+        <li><a href="../../dashboard/index.html" data-page="dashboard"   class="top-nav__link ">Home</a></li>
+        <li><a href="../bookings/index.html" data-page="bookings"  class="top-nav__link">My Bookings</a></li>
+        <li><a href="../portfolio/index.html" class="top-nav__link" data-page="portfolio">Portfolio</a></li>
+        <li><a href="../settings/index.html" data-page="settings"   class="top-nav__link">Account</a></li>
+      </ul>
+
+      <div class="top-nav__actions">
+        <div class="top-nav__search" role="search">
+          <span class="material-symbols-outlined top-nav__search-icon" aria-hidden="true">search</span>
+          <input class="top-nav__search-input" type="search" placeholder="Search services…" aria-label="Search services" />
+        </div>
+        <button class="top-nav__icon-btn" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="top-nav__icon-btn" aria-label="Messages">
+          <span class="material-symbols-outlined">chat</span>
+        </button>
+        <!-- <button class="top-nav__icon-btn" data-action="toggle-theme" aria-label="Toggle theme">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button> -->
+        <img class="top-nav__avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcwjkCs_EKVeStxWei1c0vqDC5YfNIk4ixJH6c-BHJdcdzOBAo4NntZs6jt5_DEZnC2qdV55b5i_trn-SxOezy3jUoqiP8oVxbTzIzc0UhQAU4v5kMf4ejZ6V8-rfPgQsbfV-3e7KKxNmXk4qID-KGVrS8WhxgE0BYAlioyM2qtyOvo-gsF04JWA-UqC8lFh1RRDqvohAB0bLMLg_xZqcD5Y9P6fpYANZVLN0Fo-yj1_ZAu4kTF74QEqmQuROqQbrx6xu115BqU20"
+          alt="User Profile" width="40" height="40" />
+        <button class="top-nav__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  </header>
+    <div class="app-shell">
+      <!-- ② Sidebar (rendered inline — data filled from the provider's own registration profile) -->
+      <aside class="app-sidebar" id="app-sidebar">
+        <div class="sidebar__profile">
+          <div class="sidebar__avatar">
+            <img id="sidebar-avatar" src="https://ui-avatars.com/api/?name=Provider&background=0050d4&color=fff" alt="Provider avatar" />
+          </div>
+          <p class="sidebar__name" id="sidebar-name">Provider</p>
+          <p class="sidebar__role" id="sidebar-role">Service Provider</p>
+        </div>
+
+        <nav class="sidebar__nav" aria-label="Provider navigation">
+          <a class="sidebar__nav-item" href="../../dashboard/index.html" data-page="dashboard">
+            <span class="material-symbols-outlined" aria-hidden="true">home</span> Home
+          </a>
+          <a class="sidebar__nav-item" href="../bookings/index.html" data-page="bookings">
+            <span class="material-symbols-outlined" aria-hidden="true">event_available</span> Bookings
+          </a>
+          <a class="sidebar__nav-item" href="../earnings/index.html" data-page="earnings">
+            <span class="material-symbols-outlined" aria-hidden="true">payments</span> Earnings
+          </a>
+          <a class="sidebar__nav-item sidebar__nav-item--active" href="../portfolio/index.html" data-page="portfolio">
+            <span class="material-symbols-outlined" aria-hidden="true">photo_library</span> Portfolio
+          </a>
+          <a class="sidebar__nav-item" href="../reviews/index.html" data-page="reviews">
+            <span class="material-symbols-outlined" aria-hidden="true">star_rate</span> Reviews
+          </a>
+          <a class="sidebar__nav-item" href="../settings/index.html" data-page="settings">
+            <span class="material-symbols-outlined" aria-hidden="true">tune</span> Settings
+          </a>
+        </nav>
+
+        <button class="sidebar__upgrade-btn" type="button" onclick="window.location.href='../bid/index.html'">
+          Find New Jobs
+        </button>
+      </aside>
+
+      <!-- ③ Main Content -->
+      <main class="main-content" id="main-content">
+        <!-- Page Header -->
+
+        <div class="page-header">
+          <div>
+            <h1 class="">Portfolio Showcase</h1>
+            <p class="page-header__subtitle" id="page-header-subtitle">
+              Manage how clients see your best work.
+            </p>
+          </div>
+          <button
+            class="btn btn--primary btn--lg"
+            id="btn-add-project"
+            type="button"
+            aria-label="Add a new project"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true"
+              >add_circle</span
+            >
+            Add New Project
+          </button>
+        </div>
+
+        <!-- ── Portfolio Grid ── -->
+        <section
+          class="portfolio-grid"
+          id="portfolio-grid"
+          aria-label="Portfolio items"
+        >
+          <!-- Add-placeholder card -->
+          <div
+            class="card card--add"
+            id="card-add-placeholder"
+            role="button"
+            tabindex="0"
+            aria-label="Add a new project"
+          >
+            <div class="card--add__icon-ring">
+              <span class="material-symbols-outlined" aria-hidden="true"
+                >add</span
+              >
+            </div>
+            <span class="card--add__label">Add Project</span>
+            <span class="card--add__sublabel"
+              >Photos, details &amp; pricing</span
+            >
+          </div>
+
+          <!-- Portfolio Item 1 -->
+          <article class="card js-portfolio-card" data-id="1">
+            <div class="card__image-wrapper">
+              <img
+                class="card__image"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyF0FzoA83_Pi-rhH_4r6PnR-R2iemTjS4OXDOg9yzb0HG1x5WxDWWRFFXS6L3_ZvbVxLBkt7KypDB3GOkvmU2LmYQQ7Ba3GPd8Ch1Je7LmtA2MqdzKiHqT-_QeJwYpS-82LUiia4TbB9tTWYnt87OJeUUDli_jU7sJnWsmsI5KRa_zvERM6wrPPmAs6mMVbQ_eIx-bTc7Lm3A_RTg6IpD-X2jmNoUpbhTK9D13zhS15rJYuxelTbTIhcPXSFMZhOy5zhk3x0pmGI"
+                alt="High-end modern bathroom with marble tiling and gold fixtures"
+                loading="lazy"
+              />
+              <span class="card__badge card__badge--public">
+                <span
+                  class="material-symbols-outlined"
+                  style="
+                    font-size: 0.875rem;
+                    font-variation-settings: &quot;FILL&quot; 1;
+                  "
+                  aria-hidden="true"
+                  >check_circle</span
+                >
+                Public
+              </span>
+            </div>
+            <div class="card__body">
+              <div class="card__header-row">
+                <h3 class="card__title">Master Bathroom Tiling</h3>
+                <div class="card__actions">
+                  <button
+                    class="btn-icon btn-icon--ghost js-edit-btn"
+                    data-id="1"
+                    aria-label="Edit Master Bathroom Tiling"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true"
+                      >edit</span
+                    >
+                  </button>
+                  <button
+                    class="btn-icon btn-icon--danger js-delete-btn"
+                    data-id="1"
+                    aria-label="Delete Master Bathroom Tiling"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="card__description">
+                Complete renovation including Italian marble placement and
+                plumbing alignment for a luxury apartment in Sheikh Zayed.
+              </p>
+              <div class="card__footer">
+                <div>
+                  <p class="card__price-label">Base Price</p>
+                  <p class="card__price-value">
+                    12,500 <span class="card__price-currency">EGP</span>
+                  </p>
+                </div>
+                <div class="avatar-stack">
+                  <div class="avatar-stack__item"></div>
+                  <div class="avatar-stack__item"></div>
+                  <div class="avatar-stack__item">+3</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Portfolio Item 2 -->
+          <article class="card js-portfolio-card" data-id="2">
+            <div class="card__image-wrapper">
+              <img
+                class="card__image"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_TQSyKqAY_V_CWwaSt9Y718lI17WwuSpBsaln8GA9mG0al8iSSBs1cTV9uWmEHeijjeWHZKbIGxNRA3djo5YX5clFjZPA-tZN0MmNOTbj-vEXDz0cWqRigD-MwbD89FM-Rx9pXuSz5lNt09bS_qYWx-Ky5tKFTrflLfjFVYksd-KsRcMoKLwRpVXkoXKqtX0eujWloBS-sT24-GE3LkRQSEBUtZ6NNM9JTq9WN1R5XgWiIn3HDEG1WDjt2ecfPzsJGh5iytm_6JY"
+                alt="Sleek home cinema setup with ambient blue lighting"
+                loading="lazy"
+              />
+              <span class="card__badge card__badge--draft">
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size: 0.875rem"
+                  aria-hidden="true"
+                  >edit_note</span
+                >
+                Draft
+              </span>
+            </div>
+            <div class="card__body">
+              <div class="card__header-row">
+                <h3 class="card__title">Smart Home Setup</h3>
+                <div class="card__actions">
+                  <button
+                    class="btn-icon btn-icon--ghost js-edit-btn"
+                    data-id="2"
+                    aria-label="Edit Smart Home Setup"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true"
+                      >edit</span
+                    >
+                  </button>
+                  <button
+                    class="btn-icon btn-icon--danger js-delete-btn"
+                    data-id="2"
+                    aria-label="Delete Smart Home Setup"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="card__description">
+                Integration of lighting, AC, and security systems via mobile
+                dashboard for a villa in New Cairo.
+              </p>
+              <div class="card__footer">
+                <div>
+                  <p class="card__price-label">Base Price</p>
+                  <p class="card__price-value">
+                    8,750 <span class="card__price-currency">EGP</span>
+                  </p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    style="
+                      font-size: 0.75rem;
+                      font-weight: 700;
+                      color: var(--color-on-surface-variant);
+                    "
+                    >2 Images</span
+                  >
+                  <span
+                    class="material-symbols-outlined"
+                    style="color: var(--color-on-surface-variant)"
+                    aria-hidden="true"
+                    >image</span
+                  >
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+        <!-- /portfolio-grid -->
+
+        <!-- ── Edit Panel ── -->
+        <section
+          class="edit-panel"
+          id="edit-panel"
+          aria-label="Edit Project Details"
+        >
+          <div class="edit-panel__header">
+            <div>
+              <h2 class="edit-panel__title">Edit Project Details</h2>
+              <p class="edit-panel__subtitle">
+                Complete the fields to make your project stand out to clients.
+              </p>
+            </div>
+            <div class="edit-panel__action-row">
+              <button class="btn btn--ghost" id="btn-discard" type="button">
+                Discard
+              </button>
+              <button
+                class="btn btn--primary"
+                id="btn-save-changes"
+                type="button"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+
+          <div class="edit-panel__body">
+            <!-- Left: Form Fields -->
+            <div class="edit-panel__col">
+              <!-- Title -->
+              <div class="form-field">
+                <label class="form-label" for="field-title"
+                  >Project Title</label
+                >
+                <input
+                  class="form-input"
+                  id="field-title"
+                  type="text"
+                  placeholder="e.g. Luxury Bathroom Renovation"
+                  autocomplete="off"
+                />
+              </div>
+
+              <!-- Description -->
+              <div class="form-field">
+                <label class="form-label" for="field-description">
+                  Project Description
+                  <span
+                    class="form-label__hint"
+                    id="description-counter"
+                    aria-live="polite"
+                    >0 / 500 chars</span
+                  >
+                </label>
+                <textarea
+                  class="form-textarea"
+                  id="field-description"
+                  rows="5"
+                  data-max="500"
+                  placeholder="Describe the task, materials used, and challenges you overcame…"
+                ></textarea>
+              </div>
+
+              <!-- Price + Category -->
+              <div class="form-row-2">
+                <div class="form-field">
+                  <label class="form-label" for="field-price"
+                    >Estimated Price</label
+                  >
+                  <div class="form-input-wrapper">
+                    <input
+                      class="form-input"
+                      id="field-price"
+                      type="number"
+                      min="0"
+                      placeholder="0.00"
+                    />
+                    <span class="form-input-wrapper__suffix">EGP</span>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label" for="field-category"
+                    >Category</label
+                  >
+                  <select class="form-select" id="field-category">
+                    <option value="">Select category…</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="hvac">HVAC / AC</option>
+                    <option value="carpentry">Carpentry</option>
+                    <option value="cleaning">Cleaning</option>
+                    <option value="painting">Painting</option>
+                    <option value="tiling">Tiling</option>
+                    <option value="smart-home">Smart Home</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- /left col -->
+
+            <!-- Right: Media & Visibility -->
+            <div class="edit-panel__col">
+              <!-- Image Upload -->
+              <div class="form-field">
+                <label class="form-label"
+                  >Project Photos
+                  <span class="form-label__hint">(up to 5)</span></label
+                >
+                <div
+                  class="upload-grid"
+                  id="upload-grid"
+                  role="group"
+                  aria-label="Project photos"
+                >
+                  <!-- Empty slot (upload trigger) -->
+                  <div
+                    class="upload-slot upload-slot--empty"
+                    id="upload-trigger"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Upload photo"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true"
+                      >cloud_upload</span
+                    >
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      hidden
+                      id="file-input"
+                    />
+                  </div>
+
+                  <!-- Filled slot 1 -->
+                  <div class="upload-slot upload-slot--filled">
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCQkZtaii7jkFdPV16ete05dRTBhO6xgTlj3WnDvMuP7foTvTOyJayDmUVVfik2LrGrwZ2H6vWTHNB3Md3rFWWa9O6qdeDI9iLWk1L4b2c17dEHllUdOTWQwKkPT4P5kOqQZysf-9zYLeTG36dnjCWode5ifsn1eV1Nzr5Igo_Dd7TxKnNa8FTbPQkeeyMi7_6eMAty-NBg0ZC5PaHroReZAzeLoi3RUD_rAVN8OzuW7u2B-Pyu-Q-wqyj3Y3HbNNEMTm3tp_u3oU"
+                      alt="Close up of copper pipe fittings"
+                      loading="lazy"
+                    />
+                    <button
+                      class="upload-slot__remove"
+                      aria-label="Remove this photo"
+                      type="button"
+                    >
+                      <span class="material-symbols-outlined" aria-hidden="true"
+                        >close</span
+                      >
+                    </button>
+                  </div>
+
+                  <!-- Filled slot 2 -->
+                  <div class="upload-slot upload-slot--filled">
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2mMzCU6JEAQAWDgGX91dPQ02wB8sOQx2yy5VYaEAxlAafyMnayEOoud22Y_EN137paNNRQ1Y8dC8zDj-FCKOlQ5BdfHcgSryor0PZVAL0S-kbjiw4781guHn_t1p_Ys2rOYW0t-AuTCVkpihv3LlxmxJ4SQ0fBGPku960NIZ4SXcivMSIflhK-_R9IMqfBmzziw_dswMfWcDQXeK9DO17OafPWnj_RbgTz2Ft9unAzixVBpTWQoOroWc3GGTBawlLerjxLNex4qU"
+                      alt="Worker measuring tiles with a laser level"
+                      loading="lazy"
+                    />
+                    <button
+                      class="upload-slot__remove"
+                      aria-label="Remove this photo"
+                      type="button"
+                    >
+                      <span class="material-symbols-outlined" aria-hidden="true"
+                        >close</span
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Visibility Settings -->
+              <div class="visibility-panel">
+                <h4 class="visibility-panel__title">
+                  <span class="material-symbols-outlined" aria-hidden="true"
+                    >visibility</span
+                  >
+                  Visibility Settings
+                </h4>
+
+                <div class="visibility-row">
+                  <div class="visibility-row__text">
+                    <p>Visible to everyone</p>
+                    <p>This project appears on your public profile</p>
+                  </div>
+                  <div
+                    class="toggle__track toggle__track--on"
+                    role="switch"
+                    aria-checked="true"
+                    data-toggle-key="project-visibility"
+                    tabindex="0"
+                    aria-label="Toggle project visibility"
+                  >
+                    <div class="toggle__thumb"></div>
+                  </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="tag-list" id="tag-list" aria-label="Project tags">
+                  <span class="tag">Tiling</span>
+                  <span class="tag">Renovation</span>
+                  <span class="tag">Sheikh Zayed</span>
+                  <button
+                    class="tag tag--add"
+                    id="btn-add-tag"
+                    type="button"
+                    aria-label="Add tag"
+                  >
+                    + Add Tag
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- /right col -->
+          </div>
+          <!-- /edit-panel__body -->
+        </section>
+        <!-- /edit-panel -->
+      </main>
+      <!-- /main-content -->
+    </div>
+    <!-- /app-shell -->
+
+    <!-- ④ Mobile bottom navigation -->
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a class="mobile-nav__item" href="../../dashboard/index.html" data-page="dashboard">
+        <span class="material-symbols-outlined" aria-hidden="true">home</span>
+        <span>Home</span>
+      </a>
+      <a class="mobile-nav__item" href="../bookings/index.html" data-page="bookings">
+        <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+        <span>Bookings</span>
+      </a>
+      <a class="mobile-nav__item mobile-nav__item--active" href="../portfolio/index.html" data-page="portfolio" aria-current="page">
+        <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">photo_library</span>
+        <span>Portfolio</span>
+      </a>
+      <a class="mobile-nav__item" href="../settings/index.html" data-page="settings">
+        <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <!-- Toast notification (global) -->
+    <div
+      id="toast"
+      role="status"
+      aria-live="polite"
+      style="
+        position: fixed;
+        bottom: 6rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(1rem);
+        background: #0f172a;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+        z-index: 9999;
+        white-space: nowrap;
+      "
+    ></div>
+    <style>
+      #toast.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    </style>
+
+    <!-- Scripts (ES modules) -->
+    <script type="module" src="scripts/main.js"></script>
+    <script src="../_shared/ekhdemni-provider-nav.js"></script>
+
+  <script>
+    /* BayTack: Sync provider data + status check */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || acct.username || "Provider";
+        var status = acct.status || "pending_review";
+
+        document.addEventListener("DOMContentLoaded", function() {
+          /* Fill names */
+          document.querySelectorAll(
+            ".provider-name,.user-name,.sidebar__user-name,.profile-name,[data-provider-name]"
+          ).forEach(function(el) { el.textContent = name; });
+
+          /* Status banner logic */
+          var banner = document.getElementById("ek-review-banner");
+          if (banner) {
+            if (status === "pending_review" || status === "pending") {
+              banner.style.display = "flex";
+              banner.style.background = "#fff8e1";
+              banner.style.borderBottom = "2px solid #fde68a";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#f59e0b;font-variation-settings:FILL 1'>schedule</span>&nbsp;<strong>Account Under Review</strong>&nbsp;&mdash; Your profile is being verified.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap'>View Status &rarr;</a>";
+            } else if (status === "suspended") {
+              banner.style.display = "flex";
+              banner.style.background = "#fde8e8";
+              banner.style.borderBottom = "2px solid #f87171";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#dc2626;font-variation-settings:FILL 1'>cancel</span>&nbsp;<strong>Application Rejected</strong>&nbsp;&mdash; Please re-apply.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#dc2626;font-weight:800;text-decoration:none;white-space:nowrap'>Re-apply &rarr;</a>";
+            }
+            /* verified: no banner */
+          }
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack | Step 4 — Documents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0050d4;
+      --primary-dark: #003fa3;
+      --surface: #f5f7f9;
+      --surface-card: #ffffff;
+      --on-surface: #1a1c20;
+      --on-surface-var: #44474e;
+      --outline: #74777f;
+      --outline-var: #c4c6d0;
+      --error: #ba1a1a;
+      --success: #1a7a4a;
+      --warning: #f59e0b;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-full: 9999px;
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface); color: var(--on-surface); min-height: 100vh; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; line-height: 1; display: inline-block; }
+
+    /* ── Header ── */
+    .header { background: white; border-bottom: 1px solid var(--outline-var); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__brand { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .header__step  { font-size: 0.85rem; color: var(--on-surface-var); font-weight: 600; }
+
+    /* ── Review Banner ── */
+    .review-banner { background: #fff8e1; border-bottom: 2px solid #fde68a; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: #78350f; font-weight: 600; }
+    .review-banner .material-symbols-outlined { color: var(--warning); font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── Layout ── */
+    .page { max-width: 700px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Progress Steps ── */
+    .steps { display: flex; align-items: center; gap: 0; margin-bottom: 2.5rem; }
+    .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: 1; position: relative; }
+    .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 60%; width: 80%; height: 2px; background: var(--outline-var); z-index: 0; }
+    .step-item.done::after { background: var(--success); }
+    .step-dot { width: 2rem; height: 2rem; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; z-index: 1; background: var(--outline-var); color: white; position: relative; }
+    .step-item.done   .step-dot { background: var(--success); }
+    .step-item.active .step-dot { background: var(--primary); box-shadow: 0 0 0 4px rgba(0,80,212,0.15); }
+    .step-label { font-size: 0.68rem; font-weight: 600; color: var(--outline); text-align: center; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-item.done   .step-label { color: var(--success); }
+
+    /* ── Card ── */
+    .card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.75rem; margin-bottom: 1.25rem; }
+    .card__header { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .card__icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card__icon--blue { background: rgba(0,80,212,0.1); }
+    .card__icon--blue .material-symbols-outlined { color: var(--primary); font-size: 1.3rem; }
+    .card__icon--amber { background: rgba(245,158,11,0.1); }
+    .card__icon--amber .material-symbols-outlined { color: var(--warning); font-size: 1.3rem; }
+    .card__title    { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 0.2rem; }
+    .card__subtitle { font-size: 0.82rem; color: var(--on-surface-var); line-height: 1.5; }
+
+    /* ── Upload Zone ── */
+    .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .upload-zone { border: 2px dashed var(--outline-var); border-radius: var(--radius-lg); padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; background: var(--surface); min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; }
+    .upload-zone:hover { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .upload-zone.has-file { border-color: var(--success); border-style: solid; background: rgba(26,122,74,0.05); }
+    .upload-zone .material-symbols-outlined { font-size: 2rem; color: var(--outline); transition: color 0.2s; }
+    .upload-zone:hover .material-symbols-outlined { color: var(--primary); }
+    .upload-zone.has-file .material-symbols-outlined { color: var(--success); }
+    .upload-zone__label { font-size: 0.82rem; font-weight: 700; color: var(--on-surface); }
+    .upload-zone__hint  { font-size: 0.73rem; color: var(--outline); }
+    .upload-zone input  { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .upload-zone.upload-zone--full { grid-column: 1 / -1; min-height: 110px; }
+    .file-name { font-size: 0.75rem; color: var(--success); font-weight: 600; margin-top: 0.25rem; word-break: break-all; }
+
+    /* ── Company doc note ── */
+    .company-doc-note { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; color: #78350f; margin-bottom: 1rem; }
+    .company-doc-note .material-symbols-outlined { color: var(--warning); font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── Trust box ── */
+    .trust-box { background: rgba(0,80,212,0.04); border: 1px solid rgba(0,80,212,0.15); border-radius: var(--radius-md); padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .trust-box .material-symbols-outlined { color: var(--primary); font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .trust-box p { font-size: 0.82rem; color: var(--on-surface-var); line-height: 1.55; }
+    .trust-box strong { color: var(--on-surface); }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .checklist li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--on-surface-var); }
+    .checklist li .material-symbols-outlined { font-size: 1rem; color: var(--success); font-variation-settings: 'FILL' 1, 'wght' 700; }
+
+    /* ── Consent ── */
+    .consent-wrap { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1.25rem; background: var(--surface); border-radius: var(--radius-md); border: 2px solid var(--outline-var); transition: border-color 0.2s; cursor: pointer; }
+    .consent-wrap:has(input:checked) { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .consent-wrap input { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin-top: 0.15rem; }
+    .consent-wrap p { font-size: 0.82rem; color: var(--on-surface-var); line-height: 1.6; }
+
+    /* ── Nav ── */
+    .nav-row { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+    .btn-primary { flex: 1; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: inherit; }
+    .btn-primary:hover    { background: var(--primary-dark); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-ghost { padding: 1rem 1.25rem; border: 2px solid var(--outline-var); background: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; color: var(--on-surface); font-family: inherit; display: flex; align-items: center; gap: 0.4rem; transition: border-color 0.2s; }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ── Progress bar ── */
+    .upload-progress { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 1rem; }
+    .upload-progress__row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; }
+    .upload-progress__row .material-symbols-outlined { font-size: 1rem; }
+    .upload-progress__row.done   { color: var(--success); }
+    .upload-progress__row.done   .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 700; }
+    .upload-progress__row.pending { color: var(--outline); }
+
+    @media (max-width: 480px) {
+      .page { padding: 1.5rem 1rem 3rem; }
+      .upload-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <img src="../../assets/images/baytack-logo.png" alt="BayTack" style="height:6rem;width:auto;object-fit:contain" />
+    <span class="header__step">Step 4 of 5 — Documents</span>
+  </header>
+
+  <!-- Under Review Banner -->
+  <div class="review-banner">
+    <span class="material-symbols-outlined">schedule</span>
+    Account Under Review — Upload your documents to complete verification.
+  </div>
+
+  <main class="page">
+
+    <!-- Progress -->
+    <div class="steps">
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Sign Up</span>
+      </div>
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Profile</span>
+      </div>
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Experience</span>
+      </div>
+      <div class="step-item active">
+        <div class="step-dot">4</div>
+        <span class="step-label">Documents</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">5</div>
+        <span class="step-label">Dashboard</span>
+      </div>
+    </div>
+
+    <!-- Trust Box -->
+    <div class="trust-box">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">verified_user</span>
+      <p><strong>Your documents are safe.</strong> All uploads are encrypted and used solely for identity verification. We never share your information with third parties.</p>
+    </div>
+
+    <!-- National ID -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--blue">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">badge</span>
+        </div>
+        <div>
+          <p class="card__title">National ID Card <span style="color:var(--error)">*</span></p>
+          <p class="card__subtitle">Upload both sides of your Egyptian National ID clearly. Ensure all corners are visible.</p>
+        </div>
+      </div>
+      <div class="upload-grid">
+        <div class="upload-zone" id="zone-id-front" onclick="triggerUpload('id-front')">
+          <input type="file" id="file-id-front" accept="image/*" onchange="handleFile('id-front', this)" />
+          <span class="material-symbols-outlined">add_a_photo</span>
+          <span class="upload-zone__label">Front Side</span>
+          <span class="upload-zone__hint">Tap to upload</span>
+          <span class="file-name" id="fname-id-front"></span>
+        </div>
+        <div class="upload-zone" id="zone-id-back" onclick="triggerUpload('id-back')">
+          <input type="file" id="file-id-back" accept="image/*" onchange="handleFile('id-back', this)" />
+          <span class="material-symbols-outlined">add_a_photo</span>
+          <span class="upload-zone__label">Back Side</span>
+          <span class="upload-zone__hint">Tap to upload</span>
+          <span class="file-name" id="fname-id-back"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Certificates -->
+    <div class="card">
+      <div class="card__header">
+        <div class="card__icon card__icon--blue">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">card_membership</span>
+        </div>
+        <div>
+          <p class="card__title">Professional Certificate</p>
+          <p class="card__subtitle">Any relevant diploma, trade license, or training certificate (optional but recommended).</p>
+        </div>
+      </div>
+      <div class="upload-grid">
+        <div class="upload-zone upload-zone--full" id="zone-cert" onclick="triggerUpload('cert')">
+          <input type="file" id="file-cert" accept="image/*,.pdf" multiple onchange="handleFile('cert', this)" />
+          <span class="material-symbols-outlined">upload_file</span>
+          <span class="upload-zone__label">Upload Certificate</span>
+          <span class="upload-zone__hint">PDF, JPG or PNG — up to 10 MB each</span>
+          <span class="file-name" id="fname-cert"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Documents (shown only for company type) -->
+    <div class="card" id="company-docs-card" style="display:none">
+      <div class="card__header">
+        <div class="card__icon card__icon--amber">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">business</span>
+        </div>
+        <div>
+          <p class="card__title">Company Documents <span style="color:var(--error)">*</span></p>
+          <p class="card__subtitle">Required for company accounts — commercial registration and proof of address.</p>
+        </div>
+      </div>
+      <div class="company-doc-note">
+        <span class="material-symbols-outlined">info</span>
+        Company accounts require additional verification. Documents must be valid and not expired.
+      </div>
+      <div class="upload-grid">
+        <div class="upload-zone" id="zone-comm-reg" onclick="triggerUpload('comm-reg')">
+          <input type="file" id="file-comm-reg" accept="image/*,.pdf" onchange="handleFile('comm-reg', this)" />
+          <span class="material-symbols-outlined">description</span>
+          <span class="upload-zone__label">Commercial Registration</span>
+          <span class="upload-zone__hint">PDF or image</span>
+          <span class="file-name" id="fname-comm-reg"></span>
+        </div>
+        <div class="upload-zone" id="zone-tax-card" onclick="triggerUpload('tax-card')">
+          <input type="file" id="file-tax-card" accept="image/*,.pdf" onchange="handleFile('tax-card', this)" />
+          <span class="material-symbols-outlined">receipt_long</span>
+          <span class="upload-zone__label">Tax Card</span>
+          <span class="upload-zone__hint">PDF or image</span>
+          <span class="file-name" id="fname-tax-card"></span>
+        </div>
+        <div class="upload-zone upload-zone--full" id="zone-address-proof" onclick="triggerUpload('address-proof')">
+          <input type="file" id="file-address-proof" accept="image/*,.pdf" onchange="handleFile('address-proof', this)" />
+          <span class="material-symbols-outlined">home</span>
+          <span class="upload-zone__label">Proof of Business Address</span>
+          <span class="upload-zone__hint">Utility bill or lease agreement — PDF or image</span>
+          <span class="file-name" id="fname-address-proof"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Progress Summary -->
+    <div class="card" style="padding:1.25rem 1.75rem">
+      <p style="font-size:0.82rem;font-weight:700;color:var(--on-surface-var);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Upload Checklist</p>
+      <div class="upload-progress" id="upload-checklist">
+        <div class="upload-progress__row pending" id="chk-id-front">
+          <span class="material-symbols-outlined">radio_button_unchecked</span> National ID — Front Side
+        </div>
+        <div class="upload-progress__row pending" id="chk-id-back">
+          <span class="material-symbols-outlined">radio_button_unchecked</span> National ID — Back Side
+        </div>
+        <div class="upload-progress__row pending" id="chk-cert" style="color:var(--outline-var)">
+          <span class="material-symbols-outlined">radio_button_unchecked</span> Professional Certificate (Optional)
+        </div>
+      </div>
+    </div>
+
+    <!-- Consent -->
+    <label class="consent-wrap" id="consent-label">
+      <input type="checkbox" id="consent-check" onchange="updateSubmitBtn()" />
+      <p>I certify that all uploaded documents are authentic and belong to me. I authorize BayTack to use this information for identity verification purposes only.</p>
+    </label>
+
+    <!-- Navigation -->
+    <div class="nav-row" style="margin-top:1.25rem">
+      <button class="btn-ghost" onclick="history.back()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back
+      </button>
+      <button class="btn-primary" id="submit-btn" disabled onclick="submitDocuments()">
+        Submit for Review
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
+
+  </main>
+
+  <script>
+    // Track uploaded files
+    const uploaded = { 'id-front': false, 'id-back': false, cert: false };
+
+    const signup = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
+
+    // Show company doc card if provider type is company
+    if (signup.providerType === 'company') {
+      document.getElementById('company-docs-card').style.display = 'block';
+      // Add company checklist items
+      const checklist = document.getElementById('upload-checklist');
+      ['comm-reg', 'tax-card', 'address-proof'].forEach((key, i) => {
+        const labels = ['Commercial Registration', 'Tax Card', 'Proof of Address'];
+        uploaded[key] = false;
+        const div = document.createElement('div');
+        div.className = 'upload-progress__row pending';
+        div.id = `chk-${key}`;
+        div.innerHTML = `<span class="material-symbols-outlined">radio_button_unchecked</span> ${labels[i]}`;
+        checklist.appendChild(div);
+      });
+    }
+
+    function triggerUpload(key) {
+      document.getElementById(`file-${key}`).click();
+    }
+
+    function handleFile(key, input) {
+      const files = Array.from(input.files);
+      if (!files.length) return;
+      const names = files.map(f => f.name).join(', ');
+      const zone  = document.getElementById(`zone-${key}`);
+      const fname = document.getElementById(`fname-${key}`);
+      const chk   = document.getElementById(`chk-${key}`);
+
+      // Update zone
+      zone.classList.add('has-file');
+      zone.querySelector('.material-symbols-outlined').textContent = 'check_circle';
+      zone.querySelector('.upload-zone__label').textContent = 'Uploaded ✓';
+      fname.textContent = names.length > 40 ? names.slice(0, 38) + '…' : names;
+
+      // Update checklist
+      if (chk) {
+        chk.className = 'upload-progress__row done';
+        chk.querySelector('.material-symbols-outlined').textContent = 'check_circle';
+      }
+
+      uploaded[key] = true;
+      updateSubmitBtn();
+    }
+
+    function updateSubmitBtn() {
+      const consent    = document.getElementById('consent-check').checked;
+      const hasIdFront = uploaded['id-front'];
+      const hasIdBack  = uploaded['id-back'];
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = !(consent && hasIdFront && hasIdBack);
+    }
+
+    function submitDocuments() {
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span> Submitting…';
+
+      // Save docs status to session
+      const step3Data = {
+        ...signup,
+        docsSubmitted: true,
+        docsSubmittedAt: new Date().toISOString(),
+        uploadedDocs: Object.entries(uploaded).filter(([,v]) => v).map(([k]) => k),
+        status: 'pending_review',
+      };
+
+      // Update localStorage account
+      try {
+        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
+        const idx = accounts.findIndex(a => a.phone === signup.phone);
+        if (idx !== -1) {
+          accounts[idx] = { ...accounts[idx], ...step3Data };
+          localStorage.setItem('ek_accounts', JSON.stringify(accounts));
+        }
+      } catch(e) {}
+
+      sessionStorage.setItem('ek_provider_signup', JSON.stringify(step3Data));
+
+      // Also push to admin-visible providers list
+      try {
+        const adminProviders = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
+        const existing = adminProviders.findIndex(p => p.phone === signup.phone);
+        const providerEntry = {
+          id:           `PRV-${Date.now().toString().slice(-5)}`,
+          name:         step3Data.name,
+          phone:        step3Data.phone,
+          email:        step3Data.email || '',
+          service:      step3Data.service,
+          providerType: step3Data.providerType || 'individual',
+          experience:   step3Data.experience ? `${step3Data.experience} yrs` : '—',
+          governorate:  step3Data.governorate || '',
+          bio:          step3Data.bio || '',
+          skills:       step3Data.skills || [],
+          status:       'pending',
+          submittedAt:  new Date().toISOString(),
+          companyName:  step3Data.companyName || null,
+          commercialReg: step3Data.commercialReg || null,
+          img: `https://ui-avatars.com/api/?name=${encodeURIComponent(step3Data.name || 'Provider')}&background=0050d4&color=fff`,
+        };
+        if (existing !== -1) adminProviders[existing] = providerEntry;
+        else adminProviders.unshift(providerEntry);
+        localStorage.setItem('ek_admin_providers', JSON.stringify(adminProviders));
+      } catch(e) {}
+
+      setTimeout(() => {
+        window.location.href = '../dashboard/index.html';
+      }, 1200);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+
+  <script>
+    /* BayTack: Sync provider data from session */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || "Provider";
+        document.querySelectorAll(".provider-name,.user-name,[data-provider-name]").forEach(function(el) {
+          el.textContent = name;
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

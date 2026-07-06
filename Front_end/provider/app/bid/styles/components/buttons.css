@@ -1,0 +1,77 @@
+/* ============================================================
+   BayTack — Components: Buttons
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: none;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* ── Primary ── */
+.btn--primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+}
+
+.btn--primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 80, 212, 0.28);
+}
+
+/* ── Secondary ── */
+.btn--secondary {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.btn--secondary:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* ── Ghost / Outline ── */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn--ghost:hover {
+  background: rgba(0, 80, 212, 0.06);
+  transform: scale(1.02);
+}
+
+/* ── Full width ── */
+.btn--full {
+  width: 100%;
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+/* ── Icon buttons ── */
+.btn--icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--radius-full);
+}

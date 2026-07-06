@@ -1,0 +1,79 @@
+/* ============================================================
+   _footer.css — Bottom Navigation Bar (Mobile)
+   ============================================================ */
+
+.bottom-nav {
+  display: none; /* Hidden on desktop */
+}
+
+@media (max-width: 767px) {
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: var(--z-fixed);
+    padding: var(--space-3) var(--space-4) var(--space-6);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0px -8px 24px rgba(44, 47, 49, 0.06);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  }
+}
+
+/* ── Nav Item ────────────────────────────────────────────────── */
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  color: var(--color-outline);
+  transition: color var(--transition-fast),
+              background var(--transition-fast),
+              transform var(--transition-fast);
+  border: none;
+  background: transparent;
+  text-decoration: none;
+}
+
+.bottom-nav__item:hover {
+  color: var(--color-primary);
+}
+
+.bottom-nav__item:active {
+  transform: scale(0.95);
+}
+
+/* ── Active State ────────────────────────────────────────────── */
+.bottom-nav__item.is-active {
+  background: rgba(0, 80, 212, 0.08);
+  color: var(--color-primary);
+}
+
+/* ── Label ───────────────────────────────────────────────────── */
+.bottom-nav__label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  line-height: 1;
+}
+
+/* ── Dark Mode ───────────────────────────────────────────────── */
+@media (max-width: 767px) and (prefers-color-scheme: dark) {
+  .bottom-nav {
+    background: rgba(15, 20, 24, 0.88);
+  }
+
+  .bottom-nav__item.is-active {
+    background: rgba(101, 142, 255, 0.12);
+    color: var(--color-primary-fixed-dim);
+  }
+}

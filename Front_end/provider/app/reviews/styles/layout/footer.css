@@ -1,0 +1,47 @@
+/* ============================================
+   PROVIDER HUB — Mobile Bottom Navigation
+   ============================================ */
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-surface-lowest);
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  z-index: var(--z-mobile-nav);
+  box-shadow: var(--shadow-mobile-nav);
+}
+
+.mobile-nav__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-on-surface-variant);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color var(--transition-fast);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.mobile-nav__link--active {
+  color: var(--color-primary);
+}
+
+.mobile-nav__link--active .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Show only on mobile */
+@media (max-width: 767px) {
+  .mobile-nav {
+    display: flex;
+  }
+}

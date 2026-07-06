@@ -1,0 +1,178 @@
+/* ============================================================
+   _sidebar.css — Trust / Welcome Sidebar
+   ============================================================ */
+
+.sidebar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Sticky only on tablet+ */
+@media (min-width: 768px) {
+  .sidebar {
+    width: 41.666%;   /* 5/12 */
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-4));
+  }
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    width: 33.333%;   /* 4/12 */
+  }
+}
+
+/* ── Sidebar Card ────────────────────────────────────────────── */
+.sidebar__card {
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative blobs */
+.sidebar__card::before,
+.sidebar__card::after {
+  content: "";
+  position: absolute;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
+
+.sidebar__card::before {
+  width: 192px;
+  height: 192px;
+  top: -48px;
+  right: -48px;
+  background: rgba(123, 156, 255, 0.18);
+  filter: blur(40px);
+}
+
+.sidebar__card::after {
+  width: 192px;
+  height: 192px;
+  bottom: -48px;
+  left: -48px;
+  background: rgba(254, 208, 27, 0.1);
+  filter: blur(40px);
+}
+
+/* ── Headline ────────────────────────────────────────────────── */
+.sidebar__headline {
+  font-family: var(--font-headline);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: var(--font-extrabold);
+  letter-spacing: -0.03em;
+  line-height: var(--leading-tight);
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+/* ── Subtext ─────────────────────────────────────────────────── */
+.sidebar__subtext {
+  color: var(--color-on-surface-variant);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-8);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+/* ── Trust Indicators List ───────────────────────────────────── */
+.trust-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.trust-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.trust-item:hover .trust-item__icon {
+  transform: scale(1.08);
+}
+
+.trust-item__icon--secondary {
+  background: var(--color-secondary-container);
+  color: var(--color-secondary);
+}
+
+.trust-item__icon--tertiary {
+  background: var(--color-tertiary-container);
+  color: var(--color-tertiary);
+}
+
+.trust-item__icon--primary {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.trust-item__title {
+  font-family: var(--font-headline);
+  font-weight: var(--font-bold);
+  font-size: var(--text-xl);
+  color: var(--color-on-surface);
+}
+
+.trust-item__desc {
+  font-size: var(--text-sm);
+  color: var(--color-on-surface-variant);
+  font-weight: var(--font-medium);
+}
+
+/* ── Testimonial Image ───────────────────────────────────────── */
+.sidebar__testimonial {
+  margin-top: var(--space-12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  height: 192px;
+}
+
+.sidebar__testimonial img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.sidebar__testimonial:hover img {
+  transform: scale(1.04);
+}
+
+.sidebar__testimonial-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 80, 212, 0.6), transparent);
+}
+
+.sidebar__testimonial-quote {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  color: #ffffff;
+  font-family: var(--font-headline);
+  font-weight: var(--font-bold);
+  font-size: var(--text-lg);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}

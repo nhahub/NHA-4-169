@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack | Step 1 — Personal Info</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0050d4;
+      --primary-dark: #003fa3;
+      --surface: #f5f7f9;
+      --surface-low: #eef0f4;
+      --surface-card: #ffffff;
+      --on-surface: #1a1c20;
+      --on-surface-var: #44474e;
+      --outline: #74777f;
+      --outline-var: #c4c6d0;
+      --error: #ba1a1a;
+      --success: #1a7a4a;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface); color: var(--on-surface); min-height: 100vh; }
+
+    /* ── Header ── */
+    .header { background: white; border-bottom: 1px solid var(--outline-var); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__brand { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .header__step  { font-size: 0.85rem; color: var(--on-surface-var); font-weight: 600; }
+
+    /* ── Review Banner ── */
+    .review-banner { background: #fff8e1; border-bottom: 2px solid #fde68a; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: #78350f; font-weight: 600; }
+    .review-banner .material-symbols-outlined { color: #f59e0b; font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── Layout ── */
+    .page { max-width: 600px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Progress Steps ── */
+    .steps { display: flex; align-items: center; gap: 0; margin-bottom: 2.5rem; }
+    .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: 1; position: relative; }
+    .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 60%; width: 80%; height: 2px; background: var(--outline-var); z-index: 0; }
+    .step-item.done::after { background: var(--success); }
+    .step-item.active::after { background: var(--primary); }
+    .step-dot { width: 2rem; height: 2rem; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; z-index: 1; background: var(--outline-var); color: white; position: relative; }
+    .step-item.done   .step-dot { background: var(--success); }
+    .step-item.active .step-dot { background: var(--primary); box-shadow: 0 0 0 4px rgba(0,80,212,0.15); }
+    .step-label { font-size: 0.68rem; font-weight: 600; color: var(--outline); text-align: center; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-item.done   .step-label { color: var(--success); }
+
+    /* ── Card ── */
+    .card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem; }
+    .card__title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .card__subtitle { color: var(--on-surface-var); font-size: 0.88rem; margin-bottom: 2rem; line-height: 1.5; }
+
+    /* ── Pre-fill note ── */
+    .prefill-note { background: rgba(0,80,212,0.06); border: 1px solid rgba(0,80,212,0.2); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; color: var(--primary); margin-bottom: 1.75rem; }
+    .prefill-note .material-symbols-outlined { font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--on-surface); margin-bottom: 0.5rem; }
+    .form-label .req { color: var(--error); }
+    .input-wrap { position: relative; }
+    .input-wrap .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--outline); font-size: 1.1rem; pointer-events: none; }
+    .input { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: white; transition: border-color 0.2s; }
+    .input:focus { outline: none; border-color: var(--primary); }
+    .input.has-error { border-color: var(--error); }
+    .form-error { color: var(--error); font-size: 0.78rem; margin-top: 0.35rem; display: none; }
+    .form-hint  { color: var(--outline); font-size: 0.78rem; margin-top: 0.35rem; }
+
+    /* ── Textarea ── */
+    .textarea { width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--outline-var); border-radius: var(--radius-md); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: white; transition: border-color 0.2s; resize: vertical; min-height: 100px; }
+    .textarea:focus { outline: none; border-color: var(--primary); }
+
+    /* ── Select ── */
+    .select { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: white; transition: border-color 0.2s; appearance: none; cursor: pointer; }
+    .select:focus { outline: none; border-color: var(--primary); }
+
+    /* ── Services grid ── */
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .service-card { border: 2px solid var(--outline-var); border-radius: var(--radius-md); padding: 0.75rem 0.5rem; cursor: pointer; text-align: center; transition: all 0.2s; background: none; width: 100%; }
+    .service-card:hover { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .service-card.selected { border-color: var(--primary); background: rgba(0,80,212,0.1); }
+    .service-card input { display: none; }
+    .service-card__icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; color: var(--on-surface-var); }
+    .service-card.selected .service-card__icon { color: var(--primary); }
+    .service-card__label { font-size: 0.72rem; font-weight: 600; color: var(--on-surface-var); }
+    .service-card.selected .service-card__label { color: var(--primary); }
+
+    /* ── City grid ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── Section divider ── */
+    .section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--outline); margin: 1.75rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--outline-var); }
+
+    /* ── Submit ── */
+    .btn-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .btn-primary { flex: 1; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: inherit; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-ghost { padding: 1rem 1.25rem; border: 2px solid var(--outline-var); background: none; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 700; cursor: pointer; color: var(--on-surface); transition: border-color 0.2s; display: flex; align-items: center; gap: 0.4rem; font-family: inherit; }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    @media (max-width: 480px) {
+      .page { padding: 1.5rem 1rem 3rem; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <img src="../../assets/images/baytack-logo.png" alt="BayTack" style="height:6rem;width:auto;object-fit:contain" />
+    <span class="header__step">Step 2 of 5 — Personal Info</span>
+  </header>
+
+  <!-- Under Review Banner -->
+  <div class="review-banner">
+    <span class="material-symbols-outlined">schedule</span>
+    Account Under Review — Complete your profile while we verify your registration.
+  </div>
+
+  <main class="page">
+
+    <!-- Progress -->
+    <div class="steps">
+      <div class="step-item done">
+        <div class="step-dot"><span class="material-symbols-outlined" style="font-size:0.9rem;font-variation-settings:'FILL' 1,'wght' 700">check</span></div>
+        <span class="step-label">Sign Up</span>
+      </div>
+      <div class="step-item active">
+        <div class="step-dot">2</div>
+        <span class="step-label">Profile</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">3</div>
+        <span class="step-label">Experience</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">4</div>
+        <span class="step-label">Documents</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">5</div>
+        <span class="step-label">Dashboard</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1 class="card__title">Personal Information</h1>
+      <p class="card__subtitle">This will appear on your public provider profile and help customers find you.</p>
+
+      <!-- Pre-fill note -->
+      <div class="prefill-note" id="prefill-note" style="display:none">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        Some fields were pre-filled from your sign-up information.
+      </div>
+
+      <form id="step1-form" novalidate>
+
+        <!-- Basic Info -->
+        <p class="section-title">Basic Information</p>
+
+        <div class="form-group">
+          <label class="form-label" for="full-name">Full Name <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">person</span>
+            <input class="input" id="full-name" type="text" placeholder="Your full legal name" required />
+          </div>
+          <p class="form-error" id="err-name">Please enter your full name (min. 3 characters).</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">phone_iphone</span>
+            <input class="input" id="phone" type="tel" placeholder="+20 1xx xxxx xxxx" required />
+          </div>
+          <p class="form-error" id="err-phone">Please enter a valid Egyptian phone number.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">mail</span>
+            <input class="input" id="email" type="email" placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <p class="form-hint">Optional — used for notifications and account recovery.</p>
+        </div>
+
+        <!-- Location -->
+        <p class="section-title">Service Location</p>
+
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label" for="governorate">Governorate <span class="req">*</span></label>
+            <div class="input-wrap">
+              <span class="material-symbols-outlined icon">location_on</span>
+              <select class="select" id="governorate" required>
+                <option value="">Select…</option>
+                <option>Cairo</option>
+                <option>Giza</option>
+                <option>Alexandria</option>
+                <option>Qalyubia</option>
+                <option>Sharqia</option>
+                <option>Dakahlia</option>
+                <option>Gharbia</option>
+                <option>Menoufia</option>
+                <option>Beheira</option>
+                <option>Kafr El-Sheikh</option>
+                <option>Damietta</option>
+                <option>Port Said</option>
+                <option>Ismailia</option>
+                <option>Suez</option>
+                <option>Fayoum</option>
+                <option>Beni Suef</option>
+                <option>Minya</option>
+                <option>Asyut</option>
+                <option>Sohag</option>
+                <option>Qena</option>
+                <option>Luxor</option>
+                <option>Aswan</option>
+                <option>Red Sea</option>
+                <option>South Sinai</option>
+                <option>North Sinai</option>
+                <option>Matrouh</option>
+                <option>New Valley</option>
+              </select>
+            </div>
+            <p class="form-error" id="err-gov">Please select your governorate.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="city">City / District</label>
+            <div class="input-wrap">
+              <span class="material-symbols-outlined icon">apartment</span>
+              <input class="input" id="city" type="text" placeholder="e.g. Nasr City" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category -->
+        <p class="section-title">Service Category <span class="req">*</span></p>
+
+        <div class="form-group">
+          <div class="services-grid" id="services-grid">
+            <label class="service-card" onclick="selectService(this,'carpentry')">
+              <input type="radio" name="service" value="carpentry" />
+              <span class="material-symbols-outlined service-card__icon">carpenter</span>
+              <span class="service-card__label">Carpentry</span>
+            </label>
+            <label class="service-card" onclick="selectService(this,'painting')">
+              <input type="radio" name="service" value="painting" />
+              <span class="material-symbols-outlined service-card__icon">format_paint</span>
+              <span class="service-card__label">Painting</span>
+            </label>
+            <label class="service-card" onclick="selectService(this,'ac_repair')">
+              <input type="radio" name="service" value="ac_repair" />
+              <span class="material-symbols-outlined service-card__icon">ac_unit</span>
+              <span class="service-card__label">AC Repair</span>
+            </label>
+            <label class="service-card" onclick="selectService(this,'electrical')">
+              <input type="radio" name="service" value="electrical" />
+              <span class="material-symbols-outlined service-card__icon">bolt</span>
+              <span class="service-card__label">Electrical</span>
+            </label>
+            <label class="service-card" onclick="selectService(this,'plumbing')">
+              <input type="radio" name="service" value="plumbing" />
+              <span class="material-symbols-outlined service-card__icon">plumbing</span>
+              <span class="service-card__label">Plumbing</span>
+            </label>
+            <label class="service-card" onclick="selectService(this,'cleaning')">
+              <input type="radio" name="service" value="cleaning" />
+              <span class="material-symbols-outlined service-card__icon">cleaning_services</span>
+              <span class="service-card__label">Cleaning</span>
+            </label>
+          </div>
+          <p class="form-error" id="err-service">Please select your service category.</p>
+        </div>
+
+        <!-- Bio -->
+        <p class="section-title">Short Bio</p>
+        <div class="form-group">
+          <label class="form-label" for="bio">About You</label>
+          <textarea class="textarea" id="bio" placeholder="Tell customers a little about yourself, your experience, and what makes you stand out…" maxlength="400"></textarea>
+          <p class="form-hint"><span id="bio-count">0</span>/400 characters</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="btn-row">
+          <button type="button" class="btn-ghost" onclick="history.back()">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Back
+          </button>
+          <button type="submit" class="btn-primary" id="submit-btn">
+            Continue to Experience
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <script>
+    let selectedService = '';
+
+    // Pre-fill from signup session
+    const signup = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
+    if (signup.name) {
+      document.getElementById('full-name').value = signup.name;
+      document.getElementById('phone').value      = signup.phone || '';
+      document.getElementById('prefill-note').style.display = 'flex';
+    }
+    if (signup.service) {
+      const match = document.querySelector(`.service-card input[value="${signup.service}"]`);
+      if (match) {
+        selectedService = signup.service;
+        match.closest('.service-card').classList.add('selected');
+      }
+    }
+
+    // Bio char counter
+    document.getElementById('bio').addEventListener('input', function() {
+      document.getElementById('bio-count').textContent = this.value.length;
+    });
+
+    function selectService(card, value) {
+      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedService = value;
+      document.getElementById('err-service').style.display = 'none';
+    }
+
+    function isValidPhone(v) {
+      return /^(\+20|0)?1[0125]\d{8}$/.test(v.replace(/\s/g, ''));
+    }
+
+    document.getElementById('step1-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+
+      const name = document.getElementById('full-name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const gov   = document.getElementById('governorate').value;
+
+      // Validate name
+      if (name.length < 3) {
+        document.getElementById('err-name').style.display = 'block';
+        document.getElementById('full-name').classList.add('has-error');
+        valid = false;
+      } else {
+        document.getElementById('err-name').style.display = 'none';
+        document.getElementById('full-name').classList.remove('has-error');
+      }
+
+      // Validate phone
+      if (!isValidPhone(phone)) {
+        document.getElementById('err-phone').style.display = 'block';
+        document.getElementById('phone').classList.add('has-error');
+        valid = false;
+      } else {
+        document.getElementById('err-phone').style.display = 'none';
+        document.getElementById('phone').classList.remove('has-error');
+      }
+
+      // Validate governorate
+      if (!gov) {
+        document.getElementById('err-gov').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('err-gov').style.display = 'none';
+      }
+
+      // Validate service
+      if (!selectedService) {
+        document.getElementById('err-service').style.display = 'block';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span> Saving…';
+
+      // Save step1 data into session
+      const step1Data = {
+        ...signup,
+        name,
+        phone: phone.replace(/\s/g, ''),
+        email:       document.getElementById('email').value.trim(),
+        governorate: gov,
+        city:        document.getElementById('city').value.trim(),
+        service:     selectedService,
+        bio:         document.getElementById('bio').value.trim(),
+      };
+      sessionStorage.setItem('ek_provider_signup', JSON.stringify(step1Data));
+
+      setTimeout(() => {
+        window.location.href = '../step2/index.html';
+      }, 600);
+    });
+
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+
+  <script>
+    /* BayTack: Sync provider data from session */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || "Provider";
+        document.querySelectorAll(".provider-name,.user-name,[data-provider-name]").forEach(function(el) {
+          el.textContent = name;
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

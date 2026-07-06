@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | Saved Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="saved">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-7xl mx-auto px-6 pb-24">
+  <div class="mb-8">
+    <h1 class="font-headline font-extrabold text-3xl md:text-4xl">Saved Services</h1>
+    <p class="text-on-surface-variant mt-2">Your favorite services, all in one place.</p>
+  </div>
+
+  <div id="bt-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <p id="bt-empty" class="hidden text-center text-on-surface-variant py-16">You haven't saved any services yet. <a href="../browse/index.html" class="text-primary font-bold">Browse services</a></p>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  function render() {
+    const savedIds = BTData.saved.all();
+    const services = BTData.services.all().filter(s => savedIds.includes(s.id));
+    document.getElementById('bt-empty').classList.toggle('hidden', services.length > 0);
+    document.getElementById('bt-grid').innerHTML = services.map(s => `
+      <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition">
+        <a href="../service/index.html?id=${s.id}" class="block relative">
+          <img src="${s.image}" class="h-48 w-full object-cover" alt="${s.title}" />
+          <span class="absolute top-3 left-3 bg-white/90 text-primary text-xs font-bold px-3 py-1 rounded-full">${s.category}</span>
+        </a>
+        <div class="p-6">
+          <div class="flex justify-between items-start gap-2">
+            <a href="../service/index.html?id=${s.id}"><h3 class="font-headline font-bold text-lg leading-snug hover:text-primary transition">${s.title}</h3></a>
+            <button data-remove="${s.id}" aria-label="Remove from favorites"><span class="material-symbols-outlined text-error" style="font-variation-settings:'FILL' 1">favorite</span></button>
+          </div>
+          <div class="flex items-center gap-2 mt-3"><img src="${s.avatar}" class="w-7 h-7 rounded-full object-cover" alt="${s.provider}" /><span class="text-sm text-on-surface-variant">${s.provider}</span></div>
+          <div class="flex items-center justify-between mt-5">
+            <span class="font-bold text-primary">From ${s.price} EGP</span>
+            <a href="../service/index.html?id=${s.id}" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dim transition">View</a>
+          </div>
+        </div>
+      </div>`).join('');
+
+    document.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => {
+      BTData.saved.toggle(btn.dataset.remove);
+      render();
+    }));
+  }
+  render();
+</script>
+</body>
+</html>

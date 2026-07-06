@@ -1,0 +1,178 @@
+/* ============================================================
+   EKHDEMNI ADMIN — Roles Page
+   ============================================================ */
+
+/* ── Stats Grid ── */
+.roles-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-8);
+}
+
+@media (max-width: 1024px) { .roles-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .roles-stats-grid { grid-template-columns: 1fr; } }
+
+/* ── Table Wrapper ── */
+.roles-table-wrap {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: var(--sp-8);
+}
+
+/* ── Table ── */
+.roles-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-base);
+}
+
+.roles-table thead {
+  background: var(--color-surface-container-low);
+}
+
+.roles-table th {
+  padding: var(--sp-4) var(--sp-6);
+  text-align: left;
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-on-surface-variant);
+}
+
+.roles-table td {
+  padding: var(--sp-5) var(--sp-6);
+  color: var(--color-on-surface);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-surface-container-low);
+}
+
+.roles-table tbody tr:last-child td { border-bottom: none; }
+
+.roles-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.roles-table tbody tr:hover {
+  background: rgba(0, 80, 212, 0.03);
+}
+
+/* ── Role Name Cell ── */
+.role-name-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.role-icon-wrap {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background: rgba(0, 80, 212, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.role-name {
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+/* ── Access Level Badge ── */
+.role-level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.role-level-badge--tier1 {
+  background: rgba(0, 80, 212, 0.1);
+  color: var(--color-primary);
+}
+.role-level-badge--tier2 {
+  background: rgba(105, 246, 184, 0.15);
+  color: var(--color-secondary);
+}
+.role-level-badge--tier3 {
+  background: rgba(254, 208, 27, 0.15);
+  color: var(--color-tertiary);
+}
+
+/* ── Permission Tags ── */
+.role-permissions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.role-perm-tag {
+  display: inline-block;
+  padding: 2px var(--sp-3);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-low);
+  color: var(--color-on-surface-variant);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.role-perm-tag--more {
+  background: var(--color-surface-container);
+  color: var(--color-primary);
+}
+
+/* ── Row Actions ── */
+.role-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+/* ── Permissions Grid (Modal) ── */
+.roles-permissions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+  max-height: 16rem;
+  overflow-y: auto;
+  padding-right: var(--sp-2);
+}
+
+.roles-permissions-grid label {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  color: var(--color-on-surface);
+  cursor: pointer;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.roles-permissions-grid label:hover {
+  background: var(--color-surface-container-low);
+}
+
+.roles-permissions-grid input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .roles-permissions-grid { grid-template-columns: 1fr; }
+}

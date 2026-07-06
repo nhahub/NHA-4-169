@@ -1,0 +1,176 @@
+/* ============================================================
+   LAYOUT: SIDEBAR — The Radiant Marketplace
+   ============================================================ */
+
+.site-sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  height: calc(100vh - var(--header-height));
+  width: var(--sidebar-width);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-surface-container);
+  box-shadow: 4px 0 24px rgba(44,47,49,0.06);
+  overflow: hidden;
+  overflow-y: auto;
+  transition: transform var(--transition-normal);
+}
+
+.sidebar__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100%;
+  padding-top: var(--space-4);
+}
+
+/* ── Hub Identity ── */
+.sidebar__hub {
+  padding: 0 var(--space-4);
+}
+
+.sidebar__hub-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: #2563eb;
+  display: block;
+}
+
+.sidebar__hub-subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+  margin-top: var(--space-1);
+}
+
+/* ── Navigation ── */
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--color-on-surface-variant);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    transform var(--transition-normal);
+}
+
+.nav-link:hover {
+  background-color: var(--color-surface-container);
+  transform: translateX(4px);
+}
+
+.nav-link.is-active {
+  background-color: #eff6ff; /* blue-50 */
+  color: #1d4ed8;            /* blue-700 */
+}
+
+.nav-link .material-symbols-outlined {
+  font-size: 1.375rem;
+}
+
+/* ── CTA Button ── */
+.sidebar__cta {
+  margin-top: auto;
+  padding-bottom: var(--space-4);
+}
+
+.cta-btn {
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-fixed));
+  color: #fff;
+  font-family: var(--font-headline);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-shadow: var(--shadow-primary);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cta-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0,80,212,0.30);
+}
+
+.cta-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Overlay (mobile) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.sidebar-overlay.is-visible {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .site-sidebar {
+    transform: translateX(-100%);
+    border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+  }
+
+  .site-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .site-sidebar {
+    width: 5rem;
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .sidebar__hub,
+  .nav-link span:not(.material-symbols-outlined),
+  .cta-btn span:not(.material-symbols-outlined),
+  .sidebar__hub-subtitle {
+    display: none;
+  }
+
+  .sidebar__inner {
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .nav-link {
+    padding: var(--space-3);
+    justify-content: center;
+    border-radius: var(--radius-md);
+  }
+
+  .cta-btn {
+    padding: var(--space-3);
+    justify-content: center;
+  }
+}
