@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BayTack.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bc4de0c4a6f60474e420becc6a84d4483dc7588")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0afdb0be76279c2d7dced32b51dde3791505d834")]
 [assembly: System.Reflection.AssemblyProductAttribute("BayTack.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BayTack.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
