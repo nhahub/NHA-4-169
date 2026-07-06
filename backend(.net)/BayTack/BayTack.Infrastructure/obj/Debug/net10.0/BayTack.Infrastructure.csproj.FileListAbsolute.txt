@@ -1,6 +1,0 @@
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.csproj.AssemblyReference.cache
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.AssemblyInfoInputs.cache
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.AssemblyInfo.cs
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.csproj.CoreCompileInputs.cache
-E:\Education\DEPI_project\backend(.net)\BayTack\BayTack.Infrastructure\obj\Debug\net10.0\BayTack.Infrastructure.sourcelink.json
