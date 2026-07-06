@@ -72,14 +72,6 @@
 /backend(.net)/BayTack/ChatApp.API/obj/project.nuget.cache
 
 
-
-# Visual Studio / .NET Build Outputs
+.vs/
 [Ob]j/
 [Bb]in/
-*.user
-*.suo
-
-
-
-# Visual Studio cache and settings
-.vs/
