@@ -70,3 +70,11 @@
 /backend(.net)/BayTack/ChatApp.API/obj/ChatApp.API.csproj.nuget.dgspec.json
 /backend(.net)/BayTack/ChatApp.API/obj/project.assets.json
 /backend(.net)/BayTack/ChatApp.API/obj/project.nuget.cache
+
+
+
+# Visual Studio / .NET Build Outputs
+[Ob]j/
+[Bb]in/
+*.user
+*.suo
