@@ -29,3 +29,11 @@
 /backend(.net)/BayTack/ChatApp.API/obj/Debug/net10.0/rpswa.dswa.cache.json
 /backend(.net)/BayTack/ChatApp.API/obj/project.assets.json
 /backend(.net)/BayTack/ChatApp.API/obj/project.nuget.cache
+/backend(.net)/BayTack/BayTack.Application/bin/Debug/net10.0/BayTack.Application.deps.json
+/backend(.net)/BayTack/BayTack.Application/bin/Debug/net10.0/BayTack.Application.pdb
+/backend(.net)/BayTack/BayTack.Application/bin/Debug/net10.0/BayTack.Domain.dll
+/backend(.net)/BayTack/BayTack.Application/bin/Debug/net10.0/BayTack.Application.dll
+/backend(.net)/BayTack/BayTack.Application/bin/Debug/net10.0/BayTack.Domain.pdb
+/backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.csproj.AssemblyReference.cache
+/backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.AssemblyInfoInputs.cache
+/backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.AssemblyInfo.cs
