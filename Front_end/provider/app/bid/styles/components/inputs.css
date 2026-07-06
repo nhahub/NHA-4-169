@@ -1,0 +1,124 @@
+/* ============================================================
+   BayTack — Components: Inputs & Forms
+   ============================================================ */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-label {
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Base Input ── */
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  background: var(--color-surface-container-high);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  padding: var(--space-4) var(--space-6);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(171, 173, 175, 0.7);
+  font-weight: 400;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 80, 212, 0.12);
+  background: var(--color-surface-container-lowest);
+}
+
+/* ── Input with trailing addon ── */
+.form-input-wrapper {
+  position: relative;
+}
+
+.form-input-wrapper .form-input {
+  padding-right: var(--space-16);
+}
+
+.form-input-addon {
+  position: absolute;
+  right: var(--space-6);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+.form-input-addon--icon {
+  color: rgba(89, 92, 94, 0.5);
+}
+
+/* ── Textarea ── */
+.form-textarea {
+  border-radius: var(--radius-md);
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.6;
+}
+
+/* ── Select ── */
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23595c5e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-6) center;
+  padding-right: var(--space-12);
+  cursor: pointer;
+}
+
+/* ── Price input (large) ── */
+.form-input--price {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+/* ── Grid row ── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Disclaimer ── */
+.form-disclaimer {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: rgba(89, 92, 94, 0.65);
+  text-align: center;
+  padding: 0 var(--space-4);
+  line-height: 1.5;
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BayTack | My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: {
+    colors: {
+      "primary": "#0050d4", "primary-dim": "#0046bb", "primary-fixed": "#7b9cff", "primary-container": "#7b9cff",
+      "on-primary": "#f1f2ff", "on-primary-container": "#001e5a", "secondary": "#006947", "secondary-container": "#69f6b8",
+      "on-secondary-container": "#005a3c", "tertiary": "#6f5900", "tertiary-fixed": "#fed01b", "tertiary-fixed-dim": "#eec200",
+      "tertiary-container": "#fed01b", "on-tertiary-container": "#594700", "error": "#b31b25", "surface": "#f5f7f9",
+      "surface-container-lowest": "#ffffff", "surface-container-low": "#eef1f3", "surface-container": "#e5e9eb",
+      "surface-container-high": "#dfe3e6", "surface-container-highest": "#d9dde0", "inverse-surface": "#0b0f10",
+      "on-surface": "#2c2f31", "on-surface-variant": "#595c5e", "outline": "#747779", "outline-variant": "#abadaf",
+      "background": "#f5f7f9",
+    },
+    fontFamily: { body: ['Inter', 'sans-serif'], headline: ['Manrope', 'sans-serif'] },
+  } } }
+</script>
+<link rel="stylesheet" href="../../../assets/css/landing.css" />
+<style>body{padding-top:0}</style>
+</head>
+<body class="bg-background text-on-surface font-body" data-page="profile">
+
+<div id="bt-header-mount"></div>
+
+<main class="max-w-5xl mx-auto px-6 pb-24">
+  <h1 class="font-headline font-extrabold text-3xl md:text-4xl mb-8">My Profile</h1>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <!-- Profile photo + summary -->
+    <div class="bg-white rounded-3xl shadow p-6 text-center h-fit">
+      <div class="relative w-28 h-28 mx-auto">
+        <img id="bt-profile-avatar" src="https://i.pravatar.cc/200?img=68" class="w-28 h-28 rounded-full object-cover" alt="Profile photo" />
+        <button class="absolute bottom-0 right-0 w-9 h-9 bg-primary text-on-primary rounded-full flex items-center justify-center border-4 border-white" aria-label="Change photo">
+          <span class="material-symbols-outlined text-base">photo_camera</span>
+        </button>
+      </div>
+      <p class="font-headline font-bold text-xl mt-4" id="bt-profile-name">—</p>
+      <p class="text-on-surface-variant text-sm">Customer since 2026</p>
+      <div class="grid grid-cols-2 gap-3 mt-6 text-sm">
+        <div class="bg-surface-container-low rounded-2xl p-3"><p class="font-bold text-lg" id="bt-profile-orders">0</p><p class="text-on-surface-variant text-xs">Orders</p></div>
+        <div class="bg-surface-container-low rounded-2xl p-3"><p class="font-bold text-lg" id="bt-profile-requests">0</p><p class="text-on-surface-variant text-xs">Requests</p></div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Personal info -->
+      <form id="bt-personal-form" class="bg-white rounded-3xl shadow p-6 space-y-4">
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">person</span> Personal Information</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="text-sm font-semibold ml-1 mb-1 block">Full Name</label><input id="p-name" type="text" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
+          <div><label class="text-sm font-semibold ml-1 mb-1 block">Phone Number</label><input id="p-phone" type="tel" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
+        </div>
+        <button type="submit" class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:bg-primary-dim transition">Save Changes</button>
+      </form>
+
+      <!-- Contact info -->
+      <div class="bg-white rounded-3xl shadow p-6 space-y-4">
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">contact_mail</span> Contact Information</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="text-sm font-semibold ml-1 mb-1 block">Email</label><input id="p-email" type="email" placeholder="you@example.com" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
+          <div><label class="text-sm font-semibold ml-1 mb-1 block">Alternate Phone</label><input type="tel" placeholder="Optional" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
+        </div>
+      </div>
+
+      <!-- Addresses -->
+      <div class="bg-white rounded-3xl shadow p-6 space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Saved Locations</h2>
+          <button class="text-primary font-bold text-sm hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">add</span> Add</button>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div class="bg-surface-container-low rounded-2xl p-4 flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary">home</span>
+            <div><p class="font-bold text-sm">Home</p><p class="text-xs text-on-surface-variant mt-1">Tanta University Dormitory, Tanta, Gharbia</p></div>
+          </div>
+          <div class="bg-surface-container-low rounded-2xl p-4 flex items-start gap-3 opacity-60">
+            <span class="material-symbols-outlined text-outline-variant">add_location</span>
+            <div><p class="font-bold text-sm text-on-surface-variant">Add another address</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment methods -->
+      <div class="bg-white rounded-3xl shadow p-6 space-y-4">
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">credit_card</span> Payment Methods</h2>
+        <div class="flex items-center justify-between bg-surface-container-low rounded-2xl p-4">
+          <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">payments</span><p class="font-bold text-sm">Cash on Delivery</p></div>
+          <span class="text-xs font-bold text-secondary bg-emerald-100 px-3 py-1 rounded-full">Default</span>
+        </div>
+        <button class="text-primary font-bold text-sm hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">add</span> Add Payment Method</button>
+      </div>
+
+      <!-- Security -->
+      <form id="bt-security-form" class="bg-white rounded-3xl shadow p-6 space-y-4">
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">lock</span> Security</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <input type="password" placeholder="Current password" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+          <input type="password" placeholder="New password" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+        </div>
+        <button type="submit" class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:bg-primary-dim transition">Change Password</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<div id="bt-footer-mount"></div>
+
+<script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-shell.js"></script>
+<script>
+  const user = BTData.currentUser();
+  document.getElementById('bt-profile-name').textContent = user.name;
+  document.getElementById('p-name').value = user.name;
+  document.getElementById('p-phone').value = user.phone;
+  document.getElementById('bt-profile-orders').textContent = BTData.orders.all().length;
+  document.getElementById('bt-profile-requests').textContent = BTData.requests.all().length;
+
+  document.getElementById('bt-personal-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const session = BTData.getSession() || {};
+    session.name = document.getElementById('p-name').value;
+    session.phone = document.getElementById('p-phone').value;
+    localStorage.setItem('ek_user_session', JSON.stringify(session));
+    alert('Profile updated successfully!');
+    location.reload();
+  });
+
+  document.getElementById('bt-security-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Password updated successfully!');
+  });
+</script>
+</body>
+</html>

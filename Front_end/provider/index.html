@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack | Join as a Provider</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0050d4;
+      --primary-dark: #003fa3;
+      --surface: #f5f7f9;
+      --surface-low: #eef0f4;
+      --surface-card: #ffffff;
+      --on-surface: #1a1c20;
+      --on-surface-var: #44474e;
+      --outline: #74777f;
+      --outline-var: #c4c6d0;
+      --error: #ba1a1a;
+      --success: #1a7a4a;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.16);
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface); color: var(--on-surface); min-height: 100vh; }
+    a { text-decoration: none; color: var(--primary); }
+
+    /* ── Header ── */
+    .header { background: white; border-bottom: 1px solid var(--outline-var); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__brand { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .header__login { font-size: 0.9rem; color: var(--on-surface-var); }
+    .header__login a { font-weight: 700; color: var(--primary); }
+
+    /* ── Page Layout ── */
+    .page { max-width: 560px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Progress Steps ── */
+    .steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 2.5rem; }
+    .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex: 1; position: relative; }
+    .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 60%; width: 80%; height: 2px; background: var(--outline-var); z-index: 0; }
+    .step-item.done::after { background: var(--primary); }
+    .step-dot { width: 2rem; height: 2rem; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; z-index: 1; background: var(--outline-var); color: white; position: relative; }
+    .step-item.active .step-dot { background: var(--primary); }
+    .step-item.done .step-dot { background: var(--success); }
+    .step-label { font-size: 0.7rem; font-weight: 600; color: var(--outline); text-align: center; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-item.done .step-label { color: var(--success); }
+
+    /* ── Card ── */
+    .card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 2rem; }
+    .card__title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .card__subtitle { color: var(--on-surface-var); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* ── Provider Type Toggle ── */
+    .type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 2rem; }
+    .type-card { border: 2px solid var(--outline-var); border-radius: var(--radius-md); padding: 1.2rem 1rem; cursor: pointer; transition: all 0.2s; text-align: center; background: none; width: 100%; }
+    .type-card:hover { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .type-card.selected { border-color: var(--primary); background: rgba(0,80,212,0.08); }
+    .type-card__icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+    .type-card__title { font-weight: 700; font-size: 0.95rem; color: var(--on-surface); }
+    .type-card__desc { font-size: 0.78rem; color: var(--on-surface-var); margin-top: 0.25rem; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--on-surface); margin-bottom: 0.5rem; }
+    .input-wrap { position: relative; }
+    .input-wrap .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--outline); font-size: 1.1rem; pointer-events: none; }
+    .input { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: var(--surface); transition: border-color 0.2s; }
+    .input:focus { outline: none; border-color: var(--primary); background: white; }
+    .input.error { border-color: var(--error); }
+    .form-error { color: var(--error); font-size: 0.78rem; margin-top: 0.35rem; display: none; }
+    .form-hint { color: var(--outline); font-size: 0.78rem; margin-top: 0.35rem; }
+
+    /* ── Services Grid ── */
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .service-card { border: 2px solid var(--outline-var); border-radius: var(--radius-md); padding: 0.75rem 0.5rem; cursor: pointer; text-align: center; transition: all 0.2s; background: none; width: 100%; }
+    .service-card:hover { border-color: var(--primary); background: rgba(0,80,212,0.04); }
+    .service-card.selected { border-color: var(--primary); background: rgba(0,80,212,0.1); }
+    .service-card input { display: none; }
+    .service-card__icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; color: var(--on-surface-var); }
+    .service-card.selected .service-card__icon { color: var(--primary); }
+    .service-card__label { font-size: 0.72rem; font-weight: 600; color: var(--on-surface-var); }
+    .service-card.selected .service-card__label { color: var(--primary); }
+
+    /* ── Company extra fields ── */
+    .company-fields { display: none; padding: 1.25rem; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--outline-var); margin-bottom: 1.25rem; }
+    .company-fields.visible { display: block; }
+    .company-fields__title { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+
+    /* ── Textarea ── */
+    .textarea { width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--outline-var); border-radius: var(--radius-md); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: var(--surface); transition: border-color 0.2s; resize: vertical; min-height: 90px; }
+    .textarea:focus { outline: none; border-color: var(--primary); background: white; }
+
+    /* ── Password strength ── */
+    .pw-strength { margin-top: 0.4rem; }
+    .pw-bar { height: 4px; border-radius: 2px; background: var(--outline-var); margin-bottom: 0.3rem; overflow: hidden; }
+    .pw-bar-fill { height: 100%; border-radius: 2px; width: 0%; transition: width 0.3s, background 0.3s; }
+    .pw-text { font-size: 0.75rem; color: var(--outline); }
+
+    /* ── Submit button ── */
+    .btn-primary { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-full); font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: inherit; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Toast notification ── */
+    .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--on-surface); color: white; padding: 0.85rem 1.5rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; z-index: 999; display: flex; align-items: center; gap: 0.75rem; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; max-width: 90vw; }
+    .toast--success { background: #1a7a4a; }
+    .toast--error   { background: var(--error); }
+    @keyframes slideDown { from { opacity:0; top:60px; } to { opacity:1; top:80px; } }
+
+    /* ── Pending review banner ── */
+    .review-banner { background: #fff8e1; border: 1px solid #ffc107; border-radius: var(--radius-md); padding: 1rem 1.25rem; display: none; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .review-banner.visible { display: flex; }
+    .review-banner__icon { color: #f59e0b; flex-shrink: 0; margin-top: 0.1rem; }
+    .review-banner__text { font-size: 0.88rem; color: #78350f; }
+    .review-banner__text strong { font-weight: 700; display: block; margin-bottom: 0.2rem; }
+
+    @media (max-width: 480px) {
+      .page { padding: 1.5rem 1rem 3rem; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .type-toggle { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <span class="header__brand">BayTack</span>
+    <span class="header__login">Already a provider? <a href="../index.html" onclick="EkhdemniOpen()">Sign In</a></span>
+  </header>
+
+  <!-- Pending Review Banner (shown after successful registration) -->
+  <div id="review-banner" class="review-banner" style="margin: 1rem 1.5rem 0; max-width: 560px; margin-left:auto; margin-right:auto;">
+    <span class="material-symbols-outlined review-banner__icon">schedule</span>
+    <div class="review-banner__text">
+      <strong>Account Under Review</strong>
+      Your account has been submitted and is currently under review by our team. You'll be notified once approved.
+    </div>
+  </div>
+
+  <main class="page">
+
+    <!-- Progress Steps -->
+    <div class="steps">
+      <div class="step-item active">
+        <div class="step-dot">1</div>
+        <span class="step-label">Sign Up</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">2</div>
+        <span class="step-label">Profile</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">3</div>
+        <span class="step-label">Experience</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">4</div>
+        <span class="step-label">Documents</span>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">5</div>
+        <span class="step-label">Dashboard</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1 class="card__title">Join as a Provider</h1>
+      <p class="card__subtitle">Create your account to start receiving bookings from customers</p>
+
+      <!-- Provider Type Selection -->
+      <div class="form-group">
+        <label class="form-label">Are you an individual or a company?</label>
+        <div class="type-toggle">
+          <button type="button" class="type-card selected" id="type-individual" onclick="selectType('individual')">
+            <span class="material-symbols-outlined type-card__icon" style="color:var(--primary)">person</span>
+            <div class="type-card__title">Individual</div>
+            <div class="type-card__desc">Freelancer or solo professional</div>
+          </button>
+          <button type="button" class="type-card" id="type-company" onclick="selectType('company')">
+            <span class="material-symbols-outlined type-card__icon" style="color:var(--on-surface-var)">business</span>
+            <div class="type-card__title">Company</div>
+            <div class="type-card__desc">Registered business or team</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Company Extra Fields -->
+      <div class="company-fields" id="company-fields">
+        <div class="company-fields__title">
+          <span class="material-symbols-outlined" style="font-size:1rem">business</span>
+          Company Information
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="company-name">Company Name</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">business</span>
+            <input class="input" id="company-name" type="text" placeholder="Official company name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="commercial-reg">Commercial Registration Number</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">badge</span>
+            <input class="input" id="commercial-reg" type="text" placeholder="e.g. 123456789" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="company-address">Company Address</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">location_on</span>
+            <input class="input" id="company-address" type="text" placeholder="Street, City, Governorate" />
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="company-desc">Brief Company Description</label>
+          <textarea class="textarea" id="company-desc" placeholder="What services does your company offer? How many years have you been in business?"></textarea>
+        </div>
+      </div>
+
+      <form id="signup-form" novalidate>
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="full-name">Full Name</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">person</span>
+            <input class="input" id="full-name" type="text" placeholder="Your full legal name" required />
+          </div>
+          <p class="form-error" id="err-name">Please enter your full name.</p>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">phone_iphone</span>
+            <input class="input" id="phone" type="tel" placeholder="+20 1xx xxxx xxxx" required />
+          </div>
+          <p class="form-error" id="err-phone">Please enter a valid Egyptian phone number.</p>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrap">
+            <span class="material-symbols-outlined icon">lock</span>
+            <input class="input" id="password" type="password" placeholder="At least 8 characters" required oninput="checkPwStrength(this.value)" />
+          </div>
+          <div class="pw-strength">
+            <div class="pw-bar"><div class="pw-bar-fill" id="pw-bar-fill"></div></div>
+            <p class="pw-text" id="pw-text">Enter a password</p>
+          </div>
+          <p class="form-error" id="err-password">Password must be at least 8 characters.</p>
+        </div>
+
+        <!-- Service Category -->
+        <div class="form-group">
+          <label class="form-label">Service Category <span style="color:var(--error)">*</span></label>
+          <div class="services-grid">
+            <label class="service-card" onclick="selectService(this, 'carpentry')">
+              <input type="radio" name="service" value="carpentry" />
+              <span class="material-symbols-outlined service-card__icon">carpenter</span>
+              <span class="service-card__label">Carpentry</span>
+            </label>
+            <label class="service-card" onclick="selectService(this, 'painting')">
+              <input type="radio" name="service" value="painting" />
+              <span class="material-symbols-outlined service-card__icon">format_paint</span>
+              <span class="service-card__label">Painting</span>
+            </label>
+            <label class="service-card" onclick="selectService(this, 'ac_repair')">
+              <input type="radio" name="service" value="ac_repair" />
+              <span class="material-symbols-outlined service-card__icon">ac_unit</span>
+              <span class="service-card__label">AC Repair</span>
+            </label>
+            <label class="service-card" onclick="selectService(this, 'electrical')">
+              <input type="radio" name="service" value="electrical" />
+              <span class="material-symbols-outlined service-card__icon">bolt</span>
+              <span class="service-card__label">Electrical</span>
+            </label>
+            <label class="service-card" onclick="selectService(this, 'plumbing')">
+              <input type="radio" name="service" value="plumbing" />
+              <span class="material-symbols-outlined service-card__icon">plumbing</span>
+              <span class="service-card__label">Plumbing</span>
+            </label>
+            <label class="service-card" onclick="selectService(this, 'cleaning')">
+              <input type="radio" name="service" value="cleaning" />
+              <span class="material-symbols-outlined service-card__icon">cleaning_services</span>
+              <span class="service-card__label">Cleaning</span>
+            </label>
+          </div>
+          <p class="form-error" id="err-service">Please select your service category.</p>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary" id="submit-btn" style="margin-top:0.75rem">
+          Continue to Step 2
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <p style="text-align:center; font-size:0.82rem; color:var(--on-surface-var); margin-top:1.25rem">
+          Already have an account? <a href="../index.html">Sign In</a>
+        </p>
+
+      </form>
+    </div>
+  </main>
+
+  <script>
+    let selectedType    = 'individual';
+    let selectedService = '';
+
+    function selectType(type) {
+      selectedType = type;
+      document.getElementById('type-individual').classList.toggle('selected', type === 'individual');
+      document.getElementById('type-company').classList.toggle('selected', type === 'company');
+      const compFields = document.getElementById('company-fields');
+      compFields.classList.toggle('visible', type === 'company');
+    }
+
+    function selectService(card, value) {
+      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedService = value;
+      document.getElementById('err-service').style.display = 'none';
+    }
+
+    function checkPwStrength(value) {
+      const fill = document.getElementById('pw-bar-fill');
+      const text = document.getElementById('pw-text');
+      let strength = 0;
+      if (value.length >= 8)  strength++;
+      if (value.length >= 12) strength++;
+      if (/[A-Z]/.test(value)) strength++;
+      if (/[0-9]/.test(value)) strength++;
+      if (/[^A-Za-z0-9]/.test(value)) strength++;
+      const levels = [
+        { w: '0%',   c: '#e0e0e0', t: 'Enter a password' },
+        { w: '25%',  c: '#e53935', t: 'Too weak' },
+        { w: '50%',  c: '#ff7043', t: 'Weak' },
+        { w: '70%',  c: '#ffa726', t: 'Fair' },
+        { w: '85%',  c: '#66bb6a', t: 'Good' },
+        { w: '100%', c: '#2e7d32', t: 'Strong' },
+      ];
+      const lvl = levels[Math.min(strength, 5)];
+      fill.style.width      = lvl.w;
+      fill.style.background = lvl.c;
+      text.textContent      = lvl.t;
+      text.style.color      = lvl.c;
+    }
+
+    function showToast(msg, type = 'success') {
+      const old = document.getElementById('toast-el');
+      if (old) old.remove();
+      const t = document.createElement('div');
+      t.id = 'toast-el';
+      t.className = `toast toast--${type}`;
+      t.innerHTML = `<span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 4500);
+    }
+
+    function isValidPhone(v) {
+      return /^(\+20|0)?1[0125]\d{8}$/.test(v.replace(/\s/g, ''));
+    }
+
+    function getAccounts() {
+      try { return JSON.parse(localStorage.getItem('ek_accounts') || '[]'); } catch { return []; }
+    }
+
+    function saveAccount(a) {
+      const list = getAccounts();
+      list.push(a);
+      localStorage.setItem('ek_accounts', JSON.stringify(list));
+    }
+
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+
+      const name     = document.getElementById('full-name').value.trim();
+      const phone    = document.getElementById('phone').value.trim().replace(/\s/g, '');
+      const password = document.getElementById('password').value;
+
+      // Validate name
+      if (!name) {
+        document.getElementById('err-name').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('err-name').style.display = 'none';
+      }
+
+      // Validate phone
+      if (!isValidPhone(phone)) {
+        document.getElementById('err-phone').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('err-phone').style.display = 'none';
+      }
+
+      // Validate password
+      if (password.length < 8) {
+        document.getElementById('err-password').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('err-password').style.display = 'none';
+      }
+
+      // Validate service
+      if (!selectedService) {
+        document.getElementById('err-service').style.display = 'block';
+        valid = false;
+      }
+
+      // Company validation
+      if (selectedType === 'company') {
+        const compName = document.getElementById('company-name').value.trim();
+        const compReg  = document.getElementById('commercial-reg').value.trim();
+        const compAddr = document.getElementById('company-address').value.trim();
+        if (!compName || !compReg || !compAddr) {
+          showToast('Please fill in all company information fields.', 'error');
+          valid = false;
+        }
+      }
+
+      if (!valid) return;
+
+      // Check duplicate phone
+      const existing = getAccounts().find(a => a.phone === phone);
+      if (existing) {
+        document.getElementById('err-phone').textContent = 'An account with this phone number already exists.';
+        document.getElementById('err-phone').style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span> Creating account…';
+
+      // Save account
+      const account = {
+        phone, password, name, role: 'provider',
+        providerType: selectedType,
+        service: selectedService,
+        status: 'pending_review',
+        createdAt: new Date().toISOString(),
+      };
+      if (selectedType === 'company') {
+        account.companyName    = document.getElementById('company-name').value.trim();
+        account.commercialReg  = document.getElementById('commercial-reg').value.trim();
+        account.companyAddress = document.getElementById('company-address').value.trim();
+        account.companyDesc    = document.getElementById('company-desc').value.trim();
+      }
+      saveAccount(account);
+
+      // Save to session for next steps
+      sessionStorage.setItem('ek_provider_signup', JSON.stringify(account));
+
+      setTimeout(() => {
+        // Show review banner
+        document.getElementById('review-banner').classList.add('visible');
+        document.getElementById('review-banner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('Account created! Proceeding to next step…', 'success');
+
+        setTimeout(() => {
+          window.location.href = './step1/index.html';
+        }, 1800);
+      }, 900);
+    });
+
+    // Spin animation for loading
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

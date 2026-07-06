@@ -1,0 +1,154 @@
+/* ============================================================
+   LAYOUT: MAIN CONTENT — The Radiant Marketplace
+   ============================================================ */
+
+.site-main {
+  margin-top: var(--header-height);
+  margin-left: var(--sidebar-width);
+  padding-top: var(--space-8);
+  padding-right: var(--space-8);
+  padding-left: var(--space-8);
+  padding-bottom: var(--space-12);
+  min-height: calc(100vh - var(--header-height));
+  transition: margin-left var(--transition-normal);
+}
+
+.content-wrapper {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* ── Page Header ── */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-10);
+}
+
+.page-header__meta h1 {
+  margin-bottom: var(--space-2);
+}
+
+.page-header__meta p {
+  font-weight: 500;
+}
+
+/* ── View Toggle ── */
+.view-toggle {
+  display: flex;
+  background-color: var(--color-surface-container-low);
+  padding: 6px;
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+.view-toggle__btn {
+  padding: var(--space-2) var(--space-8);
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  transition: background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.view-toggle__btn.is-active {
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.view-toggle__btn:hover:not(.is-active) {
+  background-color: var(--color-surface-container-high);
+}
+
+/* ── Bento Grid ── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+.bento-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.bento-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Section ── */
+.section-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  padding: 0 var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+/* ── Completed Section ── */
+.completed-section {
+  margin-top: var(--space-16);
+}
+
+.completed-section h2 {
+  margin-bottom: var(--space-8);
+  padding: 0 var(--space-2);
+}
+
+.completed-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+/* ── Responsive ── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .site-main {
+    margin-left: 5rem;
+    padding-right: var(--space-6);
+    padding-left: var(--space-6);
+  }
+
+  .page-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .page-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .completed-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .site-main {
+    margin-left: 0;
+    padding: calc(var(--header-height) + var(--space-4)) var(--space-4) calc(var(--mobile-nav-height) + var(--space-4));
+  }
+
+  .completed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .completed-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

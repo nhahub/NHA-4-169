@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Provider Hub — Reviews & Ratings dashboard for Egyptian home service providers" />
+  <title>BayTack Provider — reviews</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+    rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body data-page="reviews">
+  <!-- ═══ EKHDEMNI: Under Review Banner ═══ -->
+  <div id="ek-review-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #fde68a;padding:0.7rem 1.5rem;align-items:center;gap:0.6rem;font-size:0.85rem;color:#78350f;font-weight:600;position:sticky;top:0;z-index:9999">
+    <span style="font-family:'Material Symbols Outlined';font-size:1.1rem;color:#f59e0b">&#xe8b5;</span>
+    &nbsp;<strong>Account Under Review</strong> — Your profile is being verified.
+    <a href="../../dashboard/index.html" style="margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap">View Status &rarr;</a>
+  </div>
+  <script>
+    (function(){
+      try {
+        var signup = JSON.parse(sessionStorage.getItem('ek_provider_signup')||'{}');
+        var accts  = JSON.parse(localStorage.getItem('ek_accounts')||'[]');
+        var sess   = JSON.parse(localStorage.getItem('ek_user_session')||'{}');
+        var phone  = signup.phone || sess.phone || '';
+        var acct   = accts.find(function(a){ return a.phone === phone; });
+        if (acct && (acct.status === 'pending_review' || acct.status === 'pending')) {
+          document.getElementById('ek-review-banner').style.display = 'flex';
+        }
+      } catch(e){}
+    })();
+  </script>
+
+  <header class="site-header" role="banner">
+    <nav class="top-nav w-100" role="navigation" aria-label="Main navigation">
+      <div class="top-nav__inner">
+        <a href="../../dashboard/index.html" class="top-nav__brand"><img src="assets/images/logo.jpeg" alt="" width="180" height="120"></a>
+
+        <ul class="top-nav__links" role="list">
+          <li><a href="../../dashboard/index.html" data-page="dashboard" class="top-nav__link ">Home</a></li>
+          <li><a href="../bookings/index.html" data-page="bookings" class="top-nav__link">My Bookings</a></li>
+          <li><a href="../portfolio/index.html" data-page="portfolio" class="top-nav__link">Portfolio</a></li>
+          <li><a href="../settings/index.html" data-page="settings" class="top-nav__link">Account</a></li>
+        </ul>
+
+        <div class="top-nav__actions">
+          <div class="top-nav__search" role="search">
+            <span class="material-symbols-outlined top-nav__search-icon" aria-hidden="true">search</span>
+            <input id="reviewSearchInput" class="top-nav__search-input" type="search" placeholder="Search reviews…"
+              aria-label="Search services" />
+          </div>
+          <button class="top-nav__icon-btn" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          <button class="top-nav__icon-btn" aria-label="Messages">
+            <span class="material-symbols-outlined">chat</span>
+          </button>
+          <!-- <button class="top-nav__icon-btn" data-action="toggle-theme" aria-label="Toggle theme">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button> -->
+          <img class="top-nav__avatar"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcwjkCs_EKVeStxWei1c0vqDC5YfNIk4ixJH6c-BHJdcdzOBAo4NntZs6jt5_DEZnC2qdV55b5i_trn-SxOezy3jUoqiP8oVxbTzIzc0UhQAU4v5kMf4ejZ6V8-rfPgQsbfV-3e7KKxNmXk4qID-KGVrS8WhxgE0BYAlioyM2qtyOvo-gsF04JWA-UqC8lFh1RRDqvohAB0bLMLg_xZqcD5Y9P6fpYANZVLN0Fo-yj1_ZAu4kTF74QEqmQuROqQbrx6xu115BqU20"
+            alt="User Profile" width="40" height="40" />
+          <button class="top-nav__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="page-canvas">
+
+  <aside class="site-sidebar" id="site-sidebar" role="navigation" aria-label="Provider Hub navigation">
+    <div class="sidebar__inner">
+      <div class="sidebar__hub">
+        <span class="sidebar__hub-title">Provider Hub</span>
+        <span class="sidebar__hub-subtitle">Managing Egyptian Homes</span>
+      </div>
+
+      <nav class="sidebar__nav" aria-label="Main navigation">
+        <a class="nav-link" href="../../dashboard/index.html" aria-current="page">
+          <span class="material-symbols-outlined icon-filled" aria-hidden="true">event_available</span>
+          <span>Bookings</span>
+        </a>
+        <a class="nav-link" href="../earnings/index.html" data-page="earnings">
+          <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+          <span>Earnings</span>
+        </a>
+        <a class="nav-link" href="../reviews/index.html" data-page="reviews">
+          <span class="material-symbols-outlined" aria-hidden="true">star_rate</span>
+          <span>Reviews</span>
+        </a>
+        <a class="nav-link" href="../settings/index.html" data-page="settings">
+          <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__cta">
+        <button class="cta-btn" type="button">
+          <span>Serve Me</span>
+          <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ── PAGE CONTENT ── -->
+  <main class="page-content" id="mainContent">
+
+    <!-- ── Summary Bento ── -->
+    <section class="summary-grid" aria-label="Performance summary">
+
+      <!-- Average Rating Card -->
+      <div class="stat-card">
+        <p class="stat-card__label">Average Rating</p>
+        <div class="rating-display">
+          <span class="rating-display__score" data-stat="average">4.9</span>
+          <div>
+            <div class="rating-display__stars" aria-label="5 out of 5 stars">
+              <span class="material-symbols-outlined"
+                style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" aria-hidden="true">star</span>
+              <span class="material-symbols-outlined"
+                style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" aria-hidden="true">star</span>
+              <span class="material-symbols-outlined"
+                style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" aria-hidden="true">star</span>
+              <span class="material-symbols-outlined"
+                style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" aria-hidden="true">star</span>
+              <span class="material-symbols-outlined"
+                style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24" aria-hidden="true">star</span>
+            </div>
+            <p class="rating-display__badge">Top 1% Provider</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Bento -->
+      <div class="bento-card">
+        <div class="bento-card__glow" aria-hidden="true"></div>
+        <div class="bento-card__content">
+          <div class="stats-grid">
+            <div>
+              <p class="stat-item__value" data-stat="total">1,248</p>
+              <p class="stat-item__label">Total Reviews</p>
+            </div>
+            <div>
+              <p class="stat-item__value stat-item__value--green" data-stat="satisfaction">98%</p>
+              <p class="stat-item__label">Satisfaction</p>
+            </div>
+            <div>
+              <p class="stat-item__value" data-stat="five-star">842</p>
+              <p class="stat-item__label">5-Star Ratings</p>
+            </div>
+            <div>
+              <p class="stat-item__value stat-item__value--blue" data-stat="weekly">45</p>
+              <p class="stat-item__label">Reviews this week</p>
+            </div>
+          </div>
+
+          <!-- Satisfaction progress bar -->
+          <div class="satisfaction-bar" role="img" aria-label="85% positive, 10% neutral, 5% negative reviews">
+            <div class="satisfaction-bar__segment satisfaction-bar__segment--positive" data-bar="positive"
+              style="width:85%"></div>
+            <div class="satisfaction-bar__segment satisfaction-bar__segment--neutral" data-bar="neutral"
+              style="width:10%"></div>
+            <div class="satisfaction-bar__segment satisfaction-bar__segment--negative" data-bar="negative"
+              style="width:5%"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ── Filter Bar ── -->
+    <div class="filter-bar" role="toolbar" aria-label="Filter reviews">
+      <button class="btn btn--gold btn--sm" data-filter="all" type="button">All Reviews</button>
+      <button class="btn btn--surface btn--sm" data-filter="latest" type="button">Latest</button>
+      <button class="btn btn--surface btn--sm" data-filter="5stars" type="button">5 Stars</button>
+      <button class="btn btn--surface btn--sm" data-filter="critical" type="button">Critical</button>
+
+      <button class="filter-bar__export btn--ghost btn" type="button" id="exportBtn" aria-label="Export reviews report">
+        <span class="material-symbols-outlined" aria-hidden="true">download</span>
+        <span>Export Report</span>
+      </button>
+    </div>
+
+
+    <!-- ── Reviews Feed ── -->
+    <section aria-label="Reviews feed">
+      <div class="reviews-feed" id="reviewsFeed" aria-live="polite" aria-busy="true">
+        <!-- Reviews are injected here by reviewsController.js -->
+
+        <!-- Static fallback / SSR-ready pre-render: -->
+        <article class="review-card review-card--highlighted">
+          <img class="review-avatar"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgESi7WdIKf-9yt6c85Ibw5fgbXMZFL1WF8YhxwnHzSpM4cs0nYIFz2OY3akrUKbTTZEFVDYpeI5kTa6XerUoVwtBWiidkxIzNJNrp8_YQeONjpJkE6HEakxDHJ0D4avxbnGXqWKE-LatTCYr_KlOiozCQYXNWx9O1Ci70boZByuLdRGReGvddQH55-J199fD6dTFSzzm0031XDgUAmVmyAbabVcKr370axVu-DbIkRC8WGCi8BKnSDe2vcl4cWcpr5ZEQNlR710w"
+            alt="Amira Mansour avatar" loading="lazy" />
+          <div style="flex:1; min-width:0;">
+            <div class="review-header">
+              <div>
+                <h3 class="review-author">Amira Mansour</h3>
+                <div class="review-meta">
+                  <div class="review-stars" aria-label="5 out of 5 stars">
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                  </div>
+                  <span class="review-badge">Verified Order</span>
+                </div>
+              </div>
+              <time class="review-timestamp">2 hours ago</time>
+            </div>
+            <p class="review-text">"The deep cleaning service was absolutely phenomenal. Everything from the tile grout
+              to the balcony windows was spotless. The provider was extremely polite and punctual. Highly recommended
+              for busy Cairo apartments!"</p>
+            <div class="review-service-strip">
+              <div class="review-service-info">
+                <span class="material-symbols-outlined" aria-hidden="true">cleaning_services</span>
+                <div>
+                  <p class="review-service-info__label">Service</p>
+                  <p class="review-service-info__value">Full Deep Clean</p>
+                </div>
+              </div>
+              <div class="review-divider" aria-hidden="true"></div>
+              <div>
+                <p class="review-service-info__label">Order ID</p>
+                <p class="review-service-info__value">#RD-9821</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <img class="review-avatar"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxzwF7jcLtMAhhSXdotAmFMpbL_10PyeSbTBOrsGFEMH6jjEH1sRo_gqV5NzI5ZGnd2cETCybYYV3tRyof78Rgprhrl9iPV_PxQtDQuQOLw3D3LQ9aJOpps_e9B3Avzhnl2BvKf6yF8WArVBw7KsGa7WCG1ZvrhOPshRsnc2mLywGVC1LvVbDKndRndV80L-1zLuG4V81aNplVDMesMw2FhADmomDo6RzmU0xuu68DcGn-0ohDcNK_4x4z3ZAOsvhVuA9DWYDznKM"
+            alt="Khaled El-Sayed avatar" loading="lazy" />
+          <div style="flex:1; min-width:0;">
+            <div class="review-header">
+              <div>
+                <h3 class="review-author">Khaled El-Sayed</h3>
+                <div class="review-meta">
+                  <div class="review-stars" aria-label="4 out of 5 stars">
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">star</span>
+                  </div>
+                  <span class="review-badge">Verified Order</span>
+                </div>
+              </div>
+              <time class="review-timestamp">Yesterday</time>
+            </div>
+            <p class="review-text">"Great plumbing repair. They were able to fix the leak in my kitchen within 30
+              minutes. Only giving 4 stars because they were 15 minutes late, but the work itself is 5-star quality."
+            </p>
+            <div class="review-service-strip">
+              <div class="review-service-info">
+                <span class="material-symbols-outlined" aria-hidden="true">plumbing</span>
+                <div>
+                  <p class="review-service-info__label">Service</p>
+                  <p class="review-service-info__value">Kitchen Plumbing Repair</p>
+                </div>
+              </div>
+              <div class="review-divider" aria-hidden="true"></div>
+              <div>
+                <p class="review-service-info__label">Order ID</p>
+                <p class="review-service-info__value">#RD-9755</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <img class="review-avatar"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVZbG5Wd9VGcV-Tg96Yo_2bIOfWf9Uc3E6g3Y6RgCZ1hnkKtBYApsobyY3592yhSLgNfg9xY3-ig7vU4TEV8LZMI_WCJe92j3VKjS22CU2ZP7crmDb3mim4Tk58On-mEPc83MHJQtsRBxX60IfSm6FJVG788kmTKE9tbXhVZxq71aGensHq50_8CWhZ2Q3UGFWBN4ToeBh9jJnRG_-JHI3RjYlA0e8Hyef_kbbnPJ8OVuMX7tcgTWdm4eHNmyqpt3QFPhJVwVCZr8"
+            alt="Nadia Hassan avatar" loading="lazy" />
+          <div style="flex:1; min-width:0;">
+            <div class="review-header">
+              <div>
+                <h3 class="review-author">Nadia Hassan</h3>
+                <div class="review-meta">
+                  <div class="review-stars" aria-label="5 out of 5 stars">
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24"
+                      aria-hidden="true">star</span>
+                  </div>
+                  <span class="review-badge">Verified Order</span>
+                </div>
+              </div>
+              <time class="review-timestamp">3 days ago</time>
+            </div>
+            <p class="review-text">"Bless their hearts! They helped me move some heavy furniture during the maintenance
+              visit without even charging extra. So helpful and kind."</p>
+            <div class="review-service-strip">
+              <div class="review-service-info">
+                <span class="material-symbols-outlined" aria-hidden="true">home_repair_service</span>
+                <div>
+                  <p class="review-service-info__label">Service</p>
+                  <p class="review-service-info__value">General Home Maintenance</p>
+                </div>
+              </div>
+              <div class="review-divider" aria-hidden="true"></div>
+              <div>
+                <p class="review-service-info__label">Order ID</p>
+                <p class="review-service-info__value">#RD-9610</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /#reviewsFeed -->
+
+      <!-- Load More -->
+      <div class="load-more-wrap">
+        <button class="btn btn--surface btn--lg" type="button" id="loadMoreBtn">
+          Load 50 More Reviews
+        </button>
+      </div>
+
+    </section>
+
+  </main><!-- /#mainContent -->
+
+  </div><!-- /.page-canvas -->
+
+
+  <!-- ═══════════════════════════════════════
+       MOBILE BOTTOM NAV
+       ═══════════════════════════════════════ -->
+  <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+    <a class="mobile-nav__link" href="../bookings/index.html" data-page="bookings">
+      <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+      <span>Bookings</span>
+    </a>
+    <a class="mobile-nav__link" href="../earnings/index.html" data-page="earnings">
+      <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+      <span>Earnings</span>
+    </a>
+    <a class="mobile-nav__link mobile-nav__link--active" href="../reviews/index.html" data-page="reviews" aria-current="page">
+      <span class="material-symbols-outlined" aria-hidden="true">star_rate</span>
+      <span>Reviews</span>
+    </a>
+    <a class="mobile-nav__link" href="../settings/index.html" data-page="settings">
+      <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════════ -->
+  <script type="module" src="scripts/main.js"></script>
+
+  <script src="../_shared/ekhdemni-provider-nav.js"></script>
+
+  <script>
+    /* BayTack: Sync provider data + status check */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || acct.username || "Provider";
+        var status = acct.status || "pending_review";
+
+        document.addEventListener("DOMContentLoaded", function() {
+          /* Fill names */
+          document.querySelectorAll(
+            ".provider-name,.user-name,.sidebar__user-name,.profile-name,[data-provider-name]"
+          ).forEach(function(el) { el.textContent = name; });
+
+          /* Status banner logic */
+          var banner = document.getElementById("ek-review-banner");
+          if (banner) {
+            if (status === "pending_review" || status === "pending") {
+              banner.style.display = "flex";
+              banner.style.background = "#fff8e1";
+              banner.style.borderBottom = "2px solid #fde68a";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#f59e0b;font-variation-settings:FILL 1'>schedule</span>&nbsp;<strong>Account Under Review</strong>&nbsp;&mdash; Your profile is being verified.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap'>View Status &rarr;</a>";
+            } else if (status === "suspended") {
+              banner.style.display = "flex";
+              banner.style.background = "#fde8e8";
+              banner.style.borderBottom = "2px solid #f87171";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#dc2626;font-variation-settings:FILL 1'>cancel</span>&nbsp;<strong>Application Rejected</strong>&nbsp;&mdash; Please re-apply.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#dc2626;font-weight:800;text-decoration:none;white-space:nowrap'>Re-apply &rarr;</a>";
+            }
+            /* verified: no banner */
+          }
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+
+</html>

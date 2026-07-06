@@ -1,0 +1,81 @@
+/* =========================================
+   COMPONENTS: Cards
+   ========================================= */
+
+/* === Base Card === */
+.card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* === Card Header === */
+.card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.card__icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card__icon--primary {
+  background-color: rgba(0, 80, 212, 0.1);
+  color: var(--color-primary);
+}
+
+.card__icon--secondary {
+  background-color: rgba(0, 105, 71, 0.1);
+  color: var(--color-secondary);
+}
+
+.card__icon--tertiary {
+  background-color: rgba(254, 208, 27, 0.2);
+  color: var(--color-tertiary);
+}
+
+.card__icon--error {
+  background-color: rgba(251, 81, 81, 0.1);
+  color: var(--color-error);
+}
+
+.card__title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+/* === Card Variants === */
+.card--bordered-top {
+  border-top: 4px solid var(--color-primary);
+}
+
+.card--danger {
+  background-color: rgba(251, 81, 81, 0.06);
+  border: 1px solid rgba(251, 81, 81, 0.2);
+}
+
+/* === Section label inside card header === */
+.card__badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  background-color: var(--color-surface-container-high);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}

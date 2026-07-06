@@ -1,0 +1,127 @@
+/* ============================================================
+   BayTack Design System — CSS Variables
+   ============================================================ */
+
+:root {
+  /* === Brand Colors === */
+  --color-primary:            #0050d4;
+  --color-primary-dim:        #0046bb;
+  --color-primary-fixed:      #7b9cff;
+  --color-primary-fixed-dim:  #658eff;
+  --color-primary-container:  #7b9cff;
+  --color-on-primary:         #f1f2ff;
+  --color-on-primary-fixed:   #000000;
+
+  --color-secondary:          #006947;
+  --color-secondary-dim:      #005c3d;
+  --color-secondary-container:#69f6b8;
+  --color-secondary-fixed:    #69f6b8;
+  --color-secondary-fixed-dim:#58e7ab;
+  --color-on-secondary:       #c8ffe0;
+  --color-on-secondary-container: #005a3c;
+
+  --color-tertiary:           #6f5900;
+  --color-tertiary-dim:       #614d00;
+  --color-tertiary-container: #fed01b;
+  --color-tertiary-fixed:     #fed01b;
+  --color-tertiary-fixed-dim: #eec200;
+  --color-on-tertiary:        #fff2d3;
+  --color-on-tertiary-container: #594700;
+
+  --color-error:              #b31b25;
+  --color-error-dim:          #9f0519;
+  --color-error-container:    #fb5151;
+  --color-on-error:           #ffefee;
+  --color-on-error-container: #570008;
+
+  /* === Surface & Background === */
+  --color-background:               #f5f7f9;
+  --color-surface:                  #f5f7f9;
+  --color-surface-bright:           #f5f7f9;
+  --color-surface-dim:              #d0d5d8;
+  --color-surface-variant:          #d9dde0;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low:    #eef1f3;
+  --color-surface-container:        #e5e9eb;
+  --color-surface-container-high:   #dfe3e6;
+  --color-surface-container-highest:#d9dde0;
+
+  /* === Text / On-Surface === */
+  --color-on-surface:         #2c2f31;
+  --color-on-surface-variant: #595c5e;
+  --color-on-background:      #2c2f31;
+
+  /* === Outline === */
+  --color-outline:            #747779;
+  --color-outline-variant:    #abadaf;
+
+  /* === Inverse === */
+  --color-inverse-surface:    #0b0f10;
+  --color-inverse-on-surface: #9a9d9f;
+  --color-inverse-primary:    #618bff;
+  --color-surface-tint:       #0050d4;
+
+  /* === Typography === */
+  --font-headline: 'Plus Jakarta Sans', sans-serif;
+  --font-body:     'Be Vietnam Pro', sans-serif;
+
+  --fs-xs:   0.75rem;    /* 12px */
+  --fs-sm:   0.875rem;   /* 14px */
+  --fs-base: 1rem;       /* 16px */
+  --fs-lg:   1.125rem;   /* 18px */
+  --fs-xl:   1.25rem;    /* 20px */
+  --fs-2xl:  1.5rem;     /* 24px */
+  --fs-3xl:  1.875rem;   /* 30px */
+  --fs-4xl:  2.25rem;    /* 36px */
+
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+  --fw-extrabold: 800;
+  --fw-black:     900;
+
+  /* === Spacing Scale === */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+
+  /* === Border Radius === */
+  --radius-sm:   0.5rem;
+  --radius-md:   1rem;
+  --radius-lg:   1.5rem;
+  --radius-xl:   2rem;
+  --radius-2xl:  3rem;
+  --radius-full: 9999px;
+
+  /* === Shadows === */
+  --shadow-sm:  0 2px 8px rgba(44, 47, 49, 0.06);
+  --shadow-md:  0 8px 24px rgba(44, 47, 49, 0.08);
+  --shadow-lg:  0 12px 32px rgba(44, 47, 49, 0.10);
+  --shadow-xl:  0 24px 48px rgba(44, 47, 49, 0.14);
+
+  /* === Layout === */
+  --sidebar-width:    18rem;   /* 288px */
+  --header-height:    4.5rem;  /* 72px  */
+  --content-max-width: 1280px;
+
+  /* === Transitions === */
+  --transition-fast:   0.15s ease;
+  --transition-base:   0.3s ease;
+  --transition-slow:   0.5s ease;
+  --transition-bounce: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === Z-Index Scale === */
+  --z-sidebar: 40;
+  --z-header:  50;
+  --z-modal:   100;
+  --z-toast:   200;
+}

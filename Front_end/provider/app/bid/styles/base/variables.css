@@ -1,0 +1,129 @@
+/* ============================================================
+   BayTack Design System — Variables
+   ============================================================ */
+
+:root {
+  /* ── Brand Colors ── */
+  --color-primary:               #0050d4;
+  --color-primary-dim:           #0046bb;
+  --color-primary-fixed:         #7b9cff;
+  --color-primary-fixed-dim:     #658eff;
+  --color-primary-container:     #7b9cff;
+  --color-inverse-primary:       #618bff;
+  --color-on-primary:            #f1f2ff;
+  --color-on-primary-fixed:      #000000;
+  --color-on-primary-fixed-var:  #00266e;
+  --color-on-primary-container:  #001e5a;
+
+  /* ── Secondary ── */
+  --color-secondary:             #006947;
+  --color-secondary-dim:         #005c3d;
+  --color-secondary-fixed:       #69f6b8;
+  --color-secondary-fixed-dim:   #58e7ab;
+  --color-secondary-container:   #69f6b8;
+  --color-on-secondary:          #c8ffe0;
+  --color-on-secondary-fixed:    #00452d;
+  --color-on-secondary-fixed-var:#006544;
+  --color-on-secondary-container:#005a3c;
+
+  /* ── Tertiary ── */
+  --color-tertiary:              #6f5900;
+  --color-tertiary-dim:          #614d00;
+  --color-tertiary-fixed:        #fed01b;
+  --color-tertiary-fixed-dim:    #eec200;
+  --color-tertiary-container:    #fed01b;
+  --color-on-tertiary:           #fff2d3;
+  --color-on-tertiary-fixed:     #433500;
+  --color-on-tertiary-fixed-var: #645000;
+  --color-on-tertiary-container: #594700;
+
+  /* ── Error ── */
+  --color-error:                 #b31b25;
+  --color-error-dim:             #9f0519;
+  --color-error-container:       #fb5151;
+  --color-on-error:              #ffefee;
+  --color-on-error-container:    #570008;
+
+  /* ── Surface ── */
+  --color-surface:                    #f5f7f9;
+  --color-surface-bright:             #f5f7f9;
+  --color-surface-dim:                #d0d5d8;
+  --color-surface-variant:            #d9dde0;
+  --color-surface-tint:               #0050d4;
+  --color-surface-container-lowest:   #ffffff;
+  --color-surface-container-low:      #eef1f3;
+  --color-surface-container:          #e5e9eb;
+  --color-surface-container-high:     #dfe3e6;
+  --color-surface-container-highest:  #d9dde0;
+
+  /* ── On-Surface ── */
+  --color-on-surface:            #2c2f31;
+  --color-on-surface-variant:    #595c5e;
+  --color-on-background:         #2c2f31;
+  --color-inverse-surface:       #0b0f10;
+  --color-inverse-on-surface:    #9a9d9f;
+
+  /* ── Outline ── */
+  --color-outline:               #747779;
+  --color-outline-variant:       #abadaf;
+
+  /* ── Background ── */
+  --color-background:            #f5f7f9;
+
+  /* ── Spacing Scale ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Border Radius ── */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-2xl:  48px;
+  --radius-full: 9999px;
+
+  /* ── Typography ── */
+  --font-headline: 'Plus Jakarta Sans', sans-serif;
+  --font-body:     'Be Vietnam Pro', sans-serif;
+  --font-label:    'Be Vietnam Pro', sans-serif;
+
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   19px;
+  --text-xl:   22px;
+  --text-2xl:  28px;
+  --text-3xl:  34px;
+
+  /* ── Shadows ── */
+  --shadow-sm:   0 2px 8px rgba(44, 47, 49, 0.06);
+  --shadow-md:   0 4px 16px rgba(44, 47, 49, 0.08);
+  --shadow-lg:   0 12px 32px rgba(44, 47, 49, 0.10);
+  --shadow-xl:   0 20px 48px rgba(44, 47, 49, 0.12);
+  --shadow-primary: 0 8px 24px rgba(0, 80, 212, 0.18);
+
+  /* ── Transitions ── */
+  --transition-fast:   0.15s ease;
+  --transition-base:   0.3s ease;
+  --transition-slow:   0.5s ease;
+
+  /* ── Z-Index ── */
+  --z-base:    1;
+  --z-sticky:  50;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-nav:     300;
+
+  /* ── Layout ── */
+  --max-width: 1280px;
+  --header-height: 72px;
+}

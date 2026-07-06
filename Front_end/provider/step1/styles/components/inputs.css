@@ -1,0 +1,168 @@
+/* ============================================================
+   _inputs.css — Form Input Components
+   ============================================================ */
+
+/* ── Form Group ──────────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ── Label ───────────────────────────────────────────────────── */
+.form-label {
+  font-family: var(--font-headline);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  color: var(--color-on-surface-variant);
+  margin-left: var(--space-2);
+}
+
+/* ── Input Wrapper (for icon positioning) ────────────────────── */
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: var(--space-5);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+  font-size: 20px;
+}
+
+/* ── Base Input / Textarea / Select ──────────────────────────── */
+.form-input {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-surface-container-high);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color var(--transition-base),
+              background var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+/* With leading icon */
+.input-wrapper .form-input {
+  padding-left: calc(var(--space-5) + 20px + var(--space-3));
+}
+
+/* Placeholder */
+.form-input::placeholder {
+  color: rgba(89, 92, 94, 0.5);
+}
+
+/* Focus */
+.form-input:focus {
+  background: var(--color-surface-container-lowest);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.form-input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: var(--color-primary);
+}
+
+/* Error */
+.form-input.is-error {
+  border-color: var(--color-error);
+  background: rgba(179, 27, 37, 0.04);
+}
+
+.form-input.is-error:focus {
+  box-shadow: 0 0 0 4px rgba(179, 27, 37, 0.2);
+}
+
+/* ── Error Message ───────────────────────────────────────────── */
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  margin-left: var(--space-2);
+  font-weight: var(--font-medium);
+}
+
+/* ── Helper Text ─────────────────────────────────────────────── */
+.form-helper {
+  font-size: var(--text-sm);
+  color: var(--color-on-surface-variant);
+  margin-left: var(--space-2);
+}
+
+/* ── Select (dropdown) ───────────────────────────────────────── */
+.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23595c5e' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-5) center;
+  padding-right: var(--space-12);
+  cursor: pointer;
+}
+
+/* ── Textarea ────────────────────────────────────────────────── */
+.form-textarea {
+  border-radius: var(--radius-lg);
+  resize: vertical;
+  min-height: 120px;
+  line-height: var(--leading-relaxed);
+}
+
+/* ── Category Grid ───────────────────────────────────────────── */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Hidden radio input (for category cards) ──────────────────  */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Form Divider ────────────────────────────────────────────── */
+.form-divider {
+  border: none;
+  border-top: 1.5px solid var(--color-surface-container-high);
+  margin: var(--space-8) 0;
+}
+
+/* ── Security Badge ──────────────────────────────────────────── */
+.form-security {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-on-surface-variant);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+
+.form-security .material-symbols-outlined {
+  color: var(--color-secondary);
+  font-size: 20px;
+}

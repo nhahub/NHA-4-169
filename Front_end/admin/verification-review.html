@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Provider Verification Review — BayTack Admin"/>
+  <title>Review Application — BayTack Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="../styles/main.css"/>
+  <link rel="stylesheet" href="../styles/pages/verification-review.css"/>
+</head>
+
+<body data-page="verification">
+
+<div class="admin-layout">
+
+  <!-- BayTack ADMIN — Sidebar Partial -->
+<aside class="admin-sidebar" id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+
+  <!-- Brand -->
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">handyman</span>
+    </div>
+    <div>
+      <img src="../assets/images/baytack-logo.png" alt="BayTack" style="height:1.8rem;width:auto;object-fit:contain;filter:brightness(0) invert(1)" />
+      <p class="admin-sidebar__brand-subtitle">Admin Panel</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="admin-sidebar__nav">
+
+    <a href="analytics.html" class="admin-sidebar__nav-link" data-page="analytics">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Analytics
+    </a>
+
+    <a href="user-management.html" class="admin-sidebar__nav-link" data-page="user-management">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      User Management
+    </a>
+
+
+
+    <a href="categories.html" class="admin-sidebar__nav-link" data-page="categories">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a href="orders.html" class="admin-sidebar__nav-link" data-page="orders">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Orders &amp; Payments
+    </a>
+
+    <a href="verification.html" class="admin-sidebar__nav-link" data-page="verification">
+      <span class="material-symbols-outlined">verified</span>
+      Verification
+    </a>
+
+    <a href="roles.html" class="admin-sidebar__nav-link" data-page="roles">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Roles
+    </a>
+
+    <a href="settings.html" class="admin-sidebar__nav-link" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="admin-sidebar__footer" style="display:flex;flex-direction:column;gap:var(--sp-1)">
+    <a href="../index.html" class="admin-sidebar__nav-link" style="color:var(--color-on-surface-variant)">
+      <span class="material-symbols-outlined">home</span>
+      Back to Site
+    </a>
+    <button class="admin-sidebar__nav-link btn" id="admin-logout-btn" style="width:100%;justify-content:flex-start;color:var(--color-error)">
+      <span class="material-symbols-outlined">logout</span>
+      Logout
+    </button>
+  </div>
+
+</aside>
+
+<!-- Mobile overlay -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>
+
+  <main class="admin-main">
+
+    <!-- BayTack ADMIN — Header Partial -->
+<header class="admin-header" id="admin-header" role="banner">
+
+  <!-- Left: Hamburger + Search -->
+  <div class="admin-header__left">
+    <button class="admin-header__hamburger" id="admin-sidebar-toggle" aria-label="Open navigation menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="admin-header__search">
+      <span class="admin-header__search-icon material-symbols-outlined">search</span>
+      <input
+        class="admin-header__search-input"
+        type="search"
+        placeholder="Search anything…"
+        autocomplete="off"
+        aria-label="Global search"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Notifications + User -->
+  <div class="admin-header__right">
+    <div class="admin-header__actions">
+      <button class="admin-header__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="admin-header__badge" aria-hidden="true"></span>
+      </button>
+      <button class="admin-header__icon-btn" aria-label="Help">
+        <span class="material-symbols-outlined">help</span>
+      </button>
+    </div>
+
+    <div class="admin-header__user">
+      <div class="admin-header__user-info">
+        <p class="admin-header__user-name" id="admin-header-username">Admin User</p>
+        <p class="admin-header__user-role">Super Admin</p>
+      </div>
+      <img
+        class="admin-header__avatar"
+        id="admin-header-avatar"
+        src="https://ui-avatars.com/api/?name=Admin&background=0050d4&color=fff&size=80"
+        alt="Admin avatar"
+        width="40"
+        height="40"
+      />
+    </div>
+  </div>
+
+</header>
+
+    <div class="admin-page-canvas">
+
+      <!-- Breadcrumb & Header -->
+      <section class="vr-page-header">
+        <div>
+          <nav class="vr-breadcrumb" aria-label="Breadcrumb">
+            <a href="verification.html" class="vr-breadcrumb__link">
+              <span class="material-symbols-outlined">verified</span>
+              Verification
+            </a>
+            <span class="material-symbols-outlined vr-breadcrumb__sep">chevron_right</span>
+            <span class="vr-breadcrumb__current">Review #VR-7742</span>
+          </nav>
+          <h1 class="admin-page-hero__title" style="margin-top:var(--sp-2)">Provider Review</h1>
+        </div>
+        <div class="admin-page-hero__actions">
+          <div class="vr-status-chip">
+            <span class="vr-status-chip__dot"></span>
+            Pending Review
+          </div>
+          <a href="verification.html" class="btn btn--surface" style="border-radius:var(--radius-full)">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Back to Queue
+          </a>
+        </div>
+      </section>
+
+      <!-- Main Content Grid -->
+      <div class="vr-grid">
+
+        <!-- Left: Provider Info (8/12) -->
+        <div class="vr-left">
+
+          <!-- Provider Identity Card -->
+          <section class="vr-identity-card">
+            <div class="vr-identity-bg-blob"></div>
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9eQoN2AtQU0zF85Dxaym3o0SoErzt7A5TgS6-977GloZ_z1rOnelxysmNc_yP9M1w6frtsZc7Wmttm9odDs62uR1UmH2IDOqRgw7dE8fY2oBOUjQnllGHnRI1NtrYCk30m2-5eU7UdjUQkpSMbpYtkkMR-55FuL8918gu3A-nXA6WGJf4WnLcoBC0ZnO6UMignJXHEOI8M2FkdwseSg36w2mDpZasHLiGRy_N9Q2IvMFHvzdQfq-TYbdzU8793uam01jWNkZAdZc"
+              alt="Ahmed Hassan El-Sayed"
+              class="vr-identity-avatar"
+            />
+            <div class="vr-identity-info">
+              <div class="vr-identity-name-row">
+                <h2 class="vr-identity-name">Ahmed Hassan El-Sayed</h2>
+                <span class="material-symbols-outlined vr-identity-verified" style="font-variation-settings:'FILL' 1">verified</span>
+              </div>
+              <p class="vr-identity-role">Master Carpenter &amp; Woodwork Specialist</p>
+
+              <div class="vr-identity-meta-grid">
+                <div class="vr-meta-item">
+                  <span class="vr-meta-label">Experience</span>
+                  <span class="vr-meta-value">12 Years</span>
+                </div>
+                <div class="vr-meta-item">
+                  <span class="vr-meta-label">Location</span>
+                  <span class="vr-meta-value">Maadi, Cairo</span>
+                </div>
+                <div class="vr-meta-item">
+                  <span class="vr-meta-label">Completed Jobs</span>
+                  <span class="vr-meta-value">482 Projects</span>
+                </div>
+              </div>
+
+              <div class="vr-identity-bio">
+                <p>"Specializing in custom furniture restoration and modern kitchen installations. Operated a family workshop in Maadi for over a decade, serving both residential and commercial clients with high-end craftsmanship."</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Documents Gallery -->
+          <section class="vr-docs-section">
+            <div class="vr-docs-header">
+              <h3 class="vr-section-title">
+                <span class="material-symbols-outlined">attachment</span>
+                Verification Documents
+              </h3>
+              <button class="btn btn--surface" style="border-radius:var(--radius-full);font-size:var(--text-sm)">
+                <span class="material-symbols-outlined">download</span>
+                Download All (4.2 MB)
+              </button>
+            </div>
+
+            <div class="vr-docs-grid">
+              <!-- National ID -->
+              <div class="vr-doc-card">
+                <div class="vr-doc-img-wrap">
+                  <img
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVvANjp2RYejgQ406aR3pgy8knkR8KQgRwot1UlgQWddyfI9vIdCzUpuybWNyzW_6sLjAS7ZuysPFmN_r41HHkd58Hq5togbOSDwCU3tBwH4EMA9gWIQBm3X55sAaHQ2i1iKnLNj-MBSVAYezxYtJPAjRk2K07Cc6cLF_NlnLrGI3A7LndiEIHlytX2gcGaNeyvwg8dbct3x_7Oj_QJY6mKwUzSqpflYmHpFMOVTn2MIk8n1sMVZ-FV35hTCOwMvSP5fLeoN5zOa4"
+                    alt="National ID Front"
+                    class="vr-doc-img"
+                  />
+                  <div class="vr-doc-overlay">
+                    <span class="material-symbols-outlined">zoom_in</span>
+                  </div>
+                </div>
+                <div class="vr-doc-meta">
+                  <span class="vr-doc-name">National ID — Front</span>
+                  <span class="vr-doc-badge vr-doc-badge--ok">Legible</span>
+                </div>
+              </div>
+
+              <!-- Certificate -->
+              <div class="vr-doc-card">
+                <div class="vr-doc-img-wrap">
+                  <img
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiuqWWBD6quYy-DaVvVuwzWFnfERK_Ip3AypuYYYkwQHGrJPwPwcj5cN0wImr1vDLMP8YY69Nz6g6Ig11kQSHbdejhMNKF4umB9dAM_hJ_rjyh7cF9B8TmK8xksXzOKvnP7wB9zxz_zD7AFlyuQMiSozkW0tSzDrLhKbLd4CCExqwCM3y1lqwneI5DQ-hzXw6FcPgjFH7d2h5iy3OLPCJ8RNtmO4Tu7N7RnRhqjQ0Lc9OU7FkCowZEmmK-FX_DqFDpRkn2AxBJQNY"
+                    alt="Trade Certificate"
+                    class="vr-doc-img"
+                  />
+                  <div class="vr-doc-overlay">
+                    <span class="material-symbols-outlined">zoom_in</span>
+                  </div>
+                </div>
+                <div class="vr-doc-meta">
+                  <span class="vr-doc-name">Trade Accreditation</span>
+                  <span class="vr-doc-badge vr-doc-badge--ok">Verified</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Workshop Address -->
+          <section class="vr-address-card">
+            <div class="vr-address-icon-wrap">
+              <span class="material-symbols-outlined">location_on</span>
+            </div>
+            <div>
+              <h3 class="vr-section-title" style="margin-bottom:var(--sp-1)">Workshop Address</h3>
+              <p class="vr-address-text">Block 12, Industrial Area, Maadi, Cairo, Egypt</p>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right: Action Panel (4/12) -->
+        <div class="vr-right">
+
+          <!-- Sticky Review Panel -->
+          <div class="vr-action-panel">
+            <h3 class="vr-action-title">Reviewer Action</h3>
+
+            <!-- History -->
+            <div class="vr-history-card">
+              <div class="vr-history-label">
+                <span class="material-symbols-outlined">history</span>
+                Previous History
+              </div>
+              <p class="vr-history-text">No prior rejection found.</p>
+              <p class="vr-history-sub">Provider joined Ekhdemni: Jan 2024</p>
+            </div>
+
+            <!-- Decision Buttons -->
+            <div class="vr-decisions">
+              <label class="vr-label">Decision Status</label>
+              <button class="vr-decision-btn vr-decision-btn--approve" id="vr-approve-btn">
+                <div class="vr-decision-left">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  Approve Provider
+                </div>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+              <button class="vr-decision-btn vr-decision-btn--clarify" id="vr-clarify-btn">
+                <div class="vr-decision-left">
+                  <span class="material-symbols-outlined">warning</span>
+                  Request Clarification
+                </div>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+              <button class="vr-decision-btn vr-decision-btn--reject" id="vr-reject-btn">
+                <div class="vr-decision-left">
+                  <span class="material-symbols-outlined">cancel</span>
+                  Reject Application
+                </div>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- Notes -->
+            <div class="vr-notes-wrap">
+              <label class="vr-label" for="vr-notes">Rejection Reason / Notes</label>
+              <textarea
+                id="vr-notes"
+                class="vr-textarea"
+                rows="4"
+                placeholder="Explain the reason for rejection or details needed for approval…"
+              ></textarea>
+            </div>
+
+            <button class="btn btn--primary vr-submit-btn" id="vr-submit-btn">
+              <span>Submit Review</span>
+              <span class="material-symbols-outlined">send</span>
+            </button>
+          </div>
+
+          <!-- Stats Sidebar -->
+          <div class="vr-insights-card">
+            <h4 class="vr-insights-title">
+              <span class="material-symbols-outlined">query_stats</span>
+              Submission Insights
+            </h4>
+            <ul class="vr-insights-list">
+              <li class="vr-insight-row">
+                <span class="vr-insight-label">Queue Duration</span>
+                <span class="vr-insight-value">14 Hours</span>
+              </li>
+              <li class="vr-insight-row">
+                <span class="vr-insight-label">Profile Score</span>
+                <span class="vr-insight-value" style="color:var(--color-secondary)">92/100</span>
+              </li>
+              <li class="vr-insight-row">
+                <span class="vr-insight-label">Reviewed By</span>
+                <span class="vr-insight-value">Admin</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="admin-bottom-nav-spacer"></div>
+
+    </div>
+  </main>
+</div>
+
+<!-- BayTack ADMIN — Mobile Bottom Navigation -->
+<nav class="admin-bottom-nav" id="admin-bottom-nav" role="navigation" aria-label="Mobile navigation">
+
+  <button class="admin-bottom-nav__item" data-page="analytics" aria-label="Analytics">
+    <span class="material-symbols-outlined">bar_chart</span>
+    Analytics
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="orders" aria-label="Orders">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Orders
+  </button>
+
+  <!-- FAB -->
+  <div class="admin-bottom-nav__fab">
+    <button class="admin-bottom-nav__fab-btn" aria-label="Quick actions">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  </div>
+
+  <button class="admin-bottom-nav__item" data-page="user-management" aria-label="Users">
+    <span class="material-symbols-outlined">manage_accounts</span>
+    Users
+  </button>
+
+  <button class="admin-bottom-nav__item" data-page="settings" aria-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+    Settings
+  </button>
+
+</nav>
+
+<!-- Success Modal -->
+<div class="vr-modal" id="vr-success-modal" hidden aria-modal="true" role="dialog">
+  <div class="vr-modal-card">
+    <div class="vr-modal-icon vr-modal-icon--approve">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">check_circle</span>
+    </div>
+    <h3 class="vr-modal-title" id="vr-modal-title">Application Approved</h3>
+    <p class="vr-modal-sub" id="vr-modal-sub">The provider has been approved and notified.</p>
+    <div class="vr-modal-actions">
+      <a href="verification.html" class="btn btn--primary" style="width:100%;justify-content:center">
+        Back to Queue
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../scripts/main.js"></script>
+<script type="module" src="../scripts/controllers/verificationReviewController.js"></script>
+
+<script>
+/* BayTack: Fill review page with real provider data from sessionStorage */
+(function() {
+  try {
+    var p = JSON.parse(sessionStorage.getItem('bt_review_provider') || 'null');
+    if (!p) return;
+
+    var SERVICE_LABELS = {
+      plumbing:'Plumbing', electrical:'Electrical', cleaning:'Cleaning',
+      carpentry:'Carpentry', painting:'Painting', ac_repair:'AC Repair',
+    };
+
+    var name    = p.name || '—';
+    var service = SERVICE_LABELS[p.category] || p.category || '—';
+    var type    = p.providerType === 'company' ? '🏢 Company' : '👤 Individual';
+
+    // Name
+    var nameEl = document.querySelector('.vr-identity-name');
+    if (nameEl) nameEl.textContent = name;
+
+    // Role / service
+    var roleEl = document.querySelector('.vr-identity-role');
+    if (roleEl) roleEl.textContent = service + ' — ' + type;
+
+    // Avatar
+    var avatarEl = document.querySelector('.vr-identity-avatar');
+    if (avatarEl) {
+      avatarEl.src = p.img || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=0050d4&color=fff&size=120');
+      avatarEl.alt = name;
+    }
+
+    // Meta grid values
+    var metaVals = document.querySelectorAll('.vr-meta-value');
+    if (metaVals[0]) metaVals[0].textContent = p.experience ? p.experience + ' yrs' : '—';
+    if (metaVals[1]) metaVals[1].textContent = p.governorate || '—';
+    if (metaVals[2]) metaVals[2].textContent = p.phone || '—';
+
+    // Bio
+    var bioEl = document.querySelector('.vr-identity-bio p');
+    if (bioEl) bioEl.textContent = p.bio || p.companyName
+      ? (p.bio || ('Company: ' + p.companyName + (p.commercialReg ? ' | Reg: ' + p.commercialReg : '')))
+      : 'No bio provided.';
+
+    // Status chip
+    var chipDot = document.querySelector('.vr-status-chip__dot');
+    var chipTxt = document.querySelector('.vr-status-chip');
+    if (chipDot && chipTxt) {
+      var statusMap = {
+        pending:'Pending Review', pending_review:'Pending Review',
+        review:'Under Review', verified:'Verified', suspended:'Suspended',
+      };
+      chipTxt.dataset.status = p.status;
+      // inject status text node after the dot
+      var existing = chipTxt.querySelector('.vr-chip-label');
+      if (!existing) {
+        var span = document.createElement('span');
+        span.className = 'vr-chip-label';
+        chipTxt.appendChild(span);
+      }
+      chipTxt.querySelector('.vr-chip-label').textContent = statusMap[p.status] || 'Pending';
+    }
+
+    // Approve / Reject buttons - wire up
+    var approveBtn = document.querySelector('.vr-approve-btn, [data-action="approve"]');
+    var rejectBtn  = document.querySelector('.vr-reject-btn,  [data-action="reject"]');
+
+    // Keep the provider-facing account (ek_accounts) in sync with the
+    // admin-side decision — without this, the provider's own dashboard
+    // (which reads status from ek_accounts, not ek_admin_providers) never
+    // learns that they were approved/rejected.
+    function syncProviderAccountStatus(phone, status) {
+      if (!phone) return;
+      try {
+        var accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
+        var idx = accounts.findIndex(function(a) { return a.phone === phone; });
+        if (idx !== -1) {
+          accounts[idx].status = status;
+          localStorage.setItem('ek_accounts', JSON.stringify(accounts));
+        }
+      } catch (e) {}
+    }
+
+    if (approveBtn) {
+      approveBtn.addEventListener('click', function() {
+        if (!confirm('Approve ' + name + '?')) return;
+        try {
+          var list = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
+          var idx  = list.findIndex(function(x) { return x.id === p.id; });
+          if (idx !== -1) { list[idx].status = 'verified'; localStorage.setItem('ek_admin_providers', JSON.stringify(list)); }
+        } catch(e) {}
+        syncProviderAccountStatus(p.phone, 'verified');
+        sessionStorage.removeItem('bt_review_provider');
+        window.location.href = 'verification.html';
+      });
+    }
+
+    if (rejectBtn) {
+      rejectBtn.addEventListener('click', function() {
+        if (!confirm('Reject ' + name + '?')) return;
+        try {
+          var list = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
+          var idx  = list.findIndex(function(x) { return x.id === p.id; });
+          if (idx !== -1) { list[idx].status = 'suspended'; localStorage.setItem('ek_admin_providers', JSON.stringify(list)); }
+        } catch(e) {}
+        syncProviderAccountStatus(p.phone, 'suspended');
+        sessionStorage.removeItem('bt_review_provider');
+        window.location.href = 'verification.html';
+      });
+    }
+  } catch(e) { console.warn('bt_review fill error:', e); }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+/* ============================================================
+   BayTack — main.css
+   Single entry point — import order matters.
+   ============================================================ */
+
+/* 1. Base Layer */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/typography.css';
+
+/* 2. Layout Layer */
+@import './layout/header.css';
+@import './layout/sidebar.css';
+@import './layout/main.css';
+
+/* 3. Components Layer */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/badges.css';
+
+/* 4. Pages Layer */
+@import './pages/earnings.css';

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack Provider — bid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body data-page="bid" data-job-id="42">
+  <!-- ═══ EKHDEMNI: Under Review Banner ═══ -->
+  <div id="ek-review-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #fde68a;padding:0.7rem 1.5rem;align-items:center;gap:0.6rem;font-size:0.85rem;color:#78350f;font-weight:600;position:sticky;top:0;z-index:9999">
+    <span style="font-family:'Material Symbols Outlined';font-size:1.1rem;color:#f59e0b">&#xe8b5;</span>
+    &nbsp;<strong>Account Under Review</strong> — Your profile is being verified.
+    <a href="../../dashboard/index.html" style="margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap">View Status &rarr;</a>
+  </div>
+  <script>
+    (function(){
+      try {
+        var signup = JSON.parse(sessionStorage.getItem('ek_provider_signup')||'{}');
+        var accts  = JSON.parse(localStorage.getItem('ek_accounts')||'[]');
+        var sess   = JSON.parse(localStorage.getItem('ek_user_session')||'{}');
+        var phone  = signup.phone || sess.phone || '';
+        var acct   = accts.find(function(a){ return a.phone === phone; });
+        if (acct && (acct.status === 'pending_review' || acct.status === 'pending')) {
+          document.getElementById('ek-review-banner').style.display = 'flex';
+        }
+      } catch(e){}
+    })();
+  </script>
+
+  <nav class="top-nav w-100" role="navigation" aria-label="Main navigation">
+    <div class="top-nav__inner">
+      <a href="../../dashboard/index.html" class="top-nav__brand"><img src="assets/images/logo.jpeg" alt="" width="150" height="80"></a>
+
+      <ul class="top-nav__links" role="list">
+        <li><a href="../../dashboard/index.html" data-page="dashboard"   class="top-nav__link">Home</a></li>
+        <li><a href="../bookings/index.html" data-page="bookings"  class="top-nav__link">My Bookings</a></li>
+        <li><a href="../portfolio/index.html" data-page="portfolio" class="top-nav__link">Portfolio</a></li>
+        <li><a href="../settings/index.html" data-page="settings"   class="top-nav__link">Account</a></li>
+      </ul>
+
+      <div class="top-nav__actions">
+        <div class="top-nav__search" role="search">
+          <span class="material-symbols-outlined top-nav__search-icon" aria-hidden="true">search</span>
+          <input class="top-nav__search-input" type="search" placeholder="Search services…" aria-label="Search services" />
+        </div>
+        <button class="top-nav__icon-btn" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="top-nav__icon-btn" aria-label="Messages">
+          <span class="material-symbols-outlined">chat</span>
+        </button>
+        <!-- <button class="top-nav__icon-btn" data-action="toggle-theme" aria-label="Toggle theme">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button> -->
+        <img class="top-nav__avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcwjkCs_EKVeStxWei1c0vqDC5YfNIk4ixJH6c-BHJdcdzOBAo4NntZs6jt5_DEZnC2qdV55b5i_trn-SxOezy3jUoqiP8oVxbTzIzc0UhQAU4v5kMf4ejZ6V8-rfPgQsbfV-3e7KKxNmXk4qID-KGVrS8WhxgE0BYAlioyM2qtyOvo-gsF04JWA-UqC8lFh1RRDqvohAB0bLMLg_xZqcD5Y9P6fpYANZVLN0Fo-yj1_ZAu4kTF74QEqmQuROqQbrx6xu115BqU20"
+          alt="User Profile" width="40" height="40" />
+        <button class="top-nav__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container section " id="main-content">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="#">Dashboard</a>
+      <span class="material-symbols-outlined breadcrumb__sep">chevron_right</span>
+      <a href="#">Opportunities</a>
+      <span class="material-symbols-outlined breadcrumb__sep">chevron_right</span>
+      <span class="breadcrumb__current">Job Details</span>
+    </nav>
+
+    <div class="job-layout">
+      <!-- LEFT -->
+      <div class="job-details-col">
+        <section class="card">
+          <header class="job-header">
+            <span class="badge badge--secondary">Plumbing &amp; HVAC</span>
+            <h1 class="job-title">Modern Kitchen Faucet Installation &amp; Filtration System</h1>
+            <div class="meta-row">
+              <div class="meta-item">
+                <span class="material-symbols-outlined">location_on</span>
+                <span>Maadi, Cairo</span>
+              </div>
+              <div class="meta-item">
+                <span class="material-symbols-outlined">schedule</span>
+                <span>Posted 2 hours ago</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="job-description" style="margin-bottom:var(--space-6)">
+            <h3>Description</h3>
+            <p>I am looking for a professional plumber to install a premium matte black pull-down kitchen faucet and a 5-stage under-sink water filtration system. The granite countertop already has the necessary holes. The job requires precise connection to existing copper pipes and testing for any leaks. Prefer someone with experience in high-end kitchen fixtures.</p>
+          </div>
+
+          <div class="photo-grid" id="photo-gallery">
+            <div class="card card--image" role="button" tabindex="0" aria-label="View faucet photo">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXm6sGt0-83_v8yyPGzeR6SIEpqfVTZuJvEA-Tu3jreyy97g9xkh0OndCecKRClJ26qtE8fyRVFMjEJaZSNgOo7rJQyIoOLhYwDL0LBRkHk7G2hdkJbn-I7amZbsEDArgI8jp2IMU7-7kHiYXdI5BHbdhbc_UwbzUhOKAkTEYyQ1uhKatMdt46YqhsTmVEQZXoto7IpxAogMk5ZzUrtdr-NMZIiF5-LJBWazLgzI52QFtHeMwhW9bO-lU4GIVCZ92kji6lE-el0ek" alt="Modern matte black kitchen faucet"/>
+            </div>
+            <div class="card card--image" role="button" tabindex="0" aria-label="View under-sink photo">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbegZsA1IqQqZesMgovm-Y2EEe1e6QQ6euYz6acyt1I6UDmwxx2hYnnG37fPdk4NeaZp-3T-cvlHwqDQ-_k-zKZPrUMPCjpSiu-2r55tJGBKv0W3NiZ3RxkuovBqDcut8roaAvg5l0VgpalVKH3-073IPPhpvSGhff2ldbeOzthsP39T69gNY8-j1iHXH2Sa5pWN13V_pYk0BQofFIERzEDO9jRxArwOHf2Jv3jCe8Ktb1IG4r-1uy4IEC3LM14abUdaj65xH4gPo" alt="Under-sink plumbing area"/>
+            </div>
+            <div class="card card--image card--image-placeholder" aria-label="+2 more photos">
+              <span style="font-size:var(--text-sm);font-weight:700;color:var(--color-on-surface-variant)">+2 More Photos</span>
+            </div>
+          </div>
+
+          <div class="card--info-row" style="margin-top:var(--space-6)">
+            <div class="client-info">
+              <div class="client-avatar-wrap"><span class="material-symbols-outlined">person</span></div>
+              <div>
+                <p class="client-name">Ahmed M.</p>
+                <p class="client-meta">Verified Homeowner · 12 Jobs Posted</p>
+              </div>
+            </div>
+            <div class="star-rating" aria-label="4.5 stars">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star_half</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3 class="map-header">
+            <span class="material-symbols-outlined" style="color:var(--color-primary)">map</span>
+            Job Location
+          </h3>
+          <div class="map-container">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfNlLi-_s5Fk68ef76mV4VuoWzQ1XYXU14_waU-SS7nexLjbMwzDNjEj4rytrQMeI4ZQVuQUukzIEPzXxH5xfqotyOVZXuR7lhvMYxbQvVSC0SaOadClLLWyjkT_9sF2qDlgMH1xSg5OFUCM3Y2iwuhevXtTCSoR-EsVJ7VZBdAIjZLTw_mGAD8RGePBFK7YOeJZ7fMLT7YNtYaKSPZl4OluWnTg-Cf5v-r0NazpY-31OOQDScwrzCjmLsOtDyoeZ--K4alGhWEAA" alt="Map of Maadi, Cairo" loading="lazy"/>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT -->
+      <aside class="bid-col">
+        <div class="card card--elevated">
+          <h2 class="bid-form-title">Submit Your Bid</h2>
+          <div id="form-errors" role="alert" aria-live="polite"></div>
+          <form id="bid-form" novalidate>
+            <div style="display:flex;flex-direction:column;gap:var(--space-6)">
+              <div class="form-group">
+                <label class="form-label" for="bid-price">Proposed Price</label>
+                <div class="form-input-wrapper">
+                  <input class="form-input form-input--price" id="bid-price" type="number" min="1" placeholder="0.00"/>
+                  <span class="form-input-addon">ج.م</span>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="bid-duration">Estimated Duration</label>
+                  <div class="form-input-wrapper">
+                    <input class="form-input" id="bid-duration" type="number" min="1" placeholder="Days"/>
+                    <span class="form-input-addon form-input-addon--icon material-symbols-outlined">calendar_today</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="bid-availability">Availability</label>
+                  <select class="form-select" id="bid-availability">
+                    <option value="immediate">Immediate</option>
+                    <option value="tomorrow">Tomorrow</option>
+                    <option value="weekend">This Weekend</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bid-notes">Proposal Notes</label>
+                <textarea class="form-textarea" id="bid-notes" rows="5" placeholder="Describe your experience with this type of job, what tools you'll bring, and any questions for Ahmed…"></textarea>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+                <button class="btn btn--primary btn--full" type="submit" id="bid-submit-btn">
+                  <span class="material-symbols-outlined">send</span>
+                  Submit Bid
+                </button>
+                <p class="form-disclaimer">By submitting, you agree to our terms of service. The customer will be notified immediately of your offer.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="bento-grid">
+          <div class="card card--bento card--bento-secondary">
+            <span class="material-symbols-outlined" style="font-size:24px;color:var(--color-secondary)">verified_user</span>
+            <span class="bento-card__label" style="color:var(--color-on-secondary-container)">Safe Payment</span>
+          </div>
+          <div class="card card--bento card--bento-tertiary">
+            <span class="material-symbols-outlined" style="font-size:24px;color:var(--color-tertiary)">bolt</span>
+            <span class="bento-card__label" style="color:var(--color-on-tertiary-container)">Pro Highlight</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav" role="navigation" aria-label="Mobile navigation">
+    <a class="bottom-nav__item" href="#" aria-label="Home">
+      <span class="material-symbols-outlined">home</span>
+      <span class="bottom-nav__label">Home</span>
+    </a>
+    <a class="bottom-nav__item" href="#" aria-label="My Jobs">
+      <span class="material-symbols-outlined">handyman</span>
+      <span class="bottom-nav__label">My Jobs</span>
+    </a>
+    <a class="bottom-nav__item bottom-nav__item--active" href="#" aria-current="page">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">gavel</span>
+      <span class="bottom-nav__label">Bids</span>
+    </a>
+    <a class="bottom-nav__item" href="#" aria-label="Profile">
+      <span class="material-symbols-outlined">person</span>
+      <span class="bottom-nav__label">Profile</span>
+    </a>
+  </nav>
+  <script type="module" src="scripts/main.js"></script>
+
+  <script src="../_shared/ekhdemni-provider-nav.js"></script>
+
+  <script>
+    /* BayTack: Sync provider data + status check */
+    (function() {
+      try {
+        var signup = JSON.parse(sessionStorage.getItem("ek_provider_signup") || "{}");
+        var sess   = JSON.parse(localStorage.getItem("ek_user_session") || "{}");
+        var accts  = JSON.parse(localStorage.getItem("ek_accounts") || "[]");
+        var phone  = signup.phone || sess.phone || "";
+        var acct   = accts.find(function(a) { return a.phone === phone; }) || signup || sess || {};
+        var name   = acct.name || acct.username || "Provider";
+        var status = acct.status || "pending_review";
+
+        document.addEventListener("DOMContentLoaded", function() {
+          /* Fill names */
+          document.querySelectorAll(
+            ".provider-name,.user-name,.sidebar__user-name,.profile-name,[data-provider-name]"
+          ).forEach(function(el) { el.textContent = name; });
+
+          /* Status banner logic */
+          var banner = document.getElementById("ek-review-banner");
+          if (banner) {
+            if (status === "pending_review" || status === "pending") {
+              banner.style.display = "flex";
+              banner.style.background = "#fff8e1";
+              banner.style.borderBottom = "2px solid #fde68a";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#f59e0b;font-variation-settings:FILL 1'>schedule</span>&nbsp;<strong>Account Under Review</strong>&nbsp;&mdash; Your profile is being verified.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#0050d4;font-weight:800;text-decoration:none;white-space:nowrap'>View Status &rarr;</a>";
+            } else if (status === "suspended") {
+              banner.style.display = "flex";
+              banner.style.background = "#fde8e8";
+              banner.style.borderBottom = "2px solid #f87171";
+              banner.innerHTML = "<span style='font-family:Material Symbols Outlined;font-size:1.1rem;color:#dc2626;font-variation-settings:FILL 1'>cancel</span>&nbsp;<strong>Application Rejected</strong>&nbsp;&mdash; Please re-apply.&nbsp;<a href='../../dashboard/index.html' style='margin-left:auto;color:#dc2626;font-weight:800;text-decoration:none;white-space:nowrap'>Re-apply &rarr;</a>";
+            }
+            /* verified: no banner */
+          }
+        });
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

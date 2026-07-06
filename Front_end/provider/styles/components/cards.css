@@ -1,0 +1,158 @@
+/* ============================================
+   EKHDEMNI — Card Components
+   ============================================ */
+
+/* ── Base Card ── */
+.card {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-base);
+  border: 1px solid rgba(171, 173, 175, 0.10);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ── Stat Card ── */
+.stat-card {
+  padding: var(--space-6);
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-base);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.stat-card__value {
+  font-family: var(--font-headline);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  line-height: 1;
+}
+
+.stat-card__value--primary  { color: var(--color-primary); }
+.stat-card__value--secondary { color: var(--color-secondary); }
+
+.stat-card__label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* ── Form Card ── */
+.form-card {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-base);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(171, 173, 175, 0.10);
+}
+
+@media (min-width: 1025px) {
+  .form-card {
+    padding: var(--space-12);
+  }
+}
+
+/* ── Image Card (media) ── */
+.media-card {
+  position: relative;
+  border-radius: var(--radius-base);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  box-shadow: var(--shadow-lg);
+}
+
+.media-card__glow {
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: calc(var(--radius-base) + 4px);
+  opacity: 0.25;
+  filter: blur(12px);
+  z-index: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.media-card:hover .media-card__glow {
+  opacity: 0.40;
+}
+
+.media-card__img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-base);
+  transition: transform var(--transition-slow);
+}
+
+.media-card:hover .media-card__img {
+  transform: scale(1.02);
+}
+
+/* ── Category Radio Card ── */
+.category-card {
+  cursor: pointer;
+  display: block;
+}
+
+.category-card__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.category-card__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-base);
+  background: var(--color-surface-container-low);
+  border: 2px solid transparent;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.category-card__input:checked + .category-card__inner {
+  border-color: var(--color-primary);
+  background: rgba(123, 156, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(0, 80, 212, 0.06);
+}
+
+.category-card:hover .category-card__inner {
+  border-color: rgba(0, 80, 212, 0.30);
+  transform: translateY(-1px);
+}
+
+.category-card__icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.category-card__label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-on-surface);
+}

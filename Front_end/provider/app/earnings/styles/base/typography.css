@@ -1,0 +1,64 @@
+/* ============================================================
+   BayTack — Typography
+   ============================================================ */
+
+.text-display {
+  font-family: var(--font-headline);
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.text-headline {
+  font-family: var(--font-headline);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.2;
+}
+
+.text-title-lg {
+  font-family: var(--font-headline);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.3;
+}
+
+.text-title {
+  font-family: var(--font-headline);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  line-height: 1.3;
+}
+
+.text-body-lg {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-regular);
+  line-height: 1.6;
+}
+
+.text-body {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  line-height: 1.6;
+}
+
+.text-label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.02em;
+}
+
+.text-caption {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Color Utilities */
+.text-primary         { color: var(--color-primary); }
+.text-secondary       { color: var(--color-secondary); }
+.text-tertiary        { color: var(--color-tertiary); }
+.text-muted           { color: var(--color-on-surface-variant); }
+.text-on-primary      { color: var(--color-on-primary); }

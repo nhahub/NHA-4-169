@@ -1,0 +1,132 @@
+/* ============================================
+   EKHDEMNI — Input Components
+   ============================================ */
+
+/* ── Form Group ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ── Label ── */
+.form-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-on-surface);
+  padding-left: var(--space-4);
+}
+
+/* ── Input Wrapper (for icon + input combo) ── */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper__icon {
+  position: absolute;
+  left: var(--space-5);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-outline);
+  pointer-events: none;
+  z-index: 1;
+  transition: color var(--transition-fast);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.input-wrapper:focus-within .input-wrapper__icon {
+  color: var(--color-primary);
+}
+
+/* ── Text / Tel Input ── */
+.input {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  padding-left: 3.5rem; /* space for icon */
+  background: var(--color-surface-container-high);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: var(--font-regular);
+  color: var(--color-on-surface);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-outline-variant);
+}
+
+.input:focus {
+  border-color: rgba(0, 80, 212, 0.4);
+  background: var(--color-surface-container-lowest);
+  box-shadow: 0 0 0 4px rgba(0, 80, 212, 0.08);
+}
+
+.input:hover:not(:focus) {
+  background: var(--color-surface-container);
+}
+
+/* ── Input without icon ── */
+.input--plain {
+  padding-left: var(--space-6);
+}
+
+/* ── Error State ── */
+.input.is-error {
+  border-color: var(--color-error);
+}
+
+.form-error {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  padding-left: var(--space-4);
+  margin-top: var(--space-1);
+}
+
+/* ── Range Slider Group ── */
+.range-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.range-group__track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) 0;
+}
+
+.range-badge {
+  flex-shrink: 0;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  min-width: 3rem;
+  text-align: center;
+  transition: transform var(--transition-fast);
+}
+
+/* ── Category Grid ── */
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 480px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

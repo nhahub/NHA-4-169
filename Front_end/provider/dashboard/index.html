@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BayTack | Provider Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0050d4;
+      --surface: #f5f7f9;
+      --surface-card: #ffffff;
+      --on-surface: #1a1c20;
+      --on-surface-var: #44474e;
+      --outline: #74777f;
+      --outline-var: #c4c6d0;
+      --warning: #f59e0b;
+      --warning-bg: #fff8e1;
+      --warning-border: #fde68a;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-full: 9999px;
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+    }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface); color: var(--on-surface); min-height: 100vh; }
+
+    /* ── Header ── */
+    .header { background: white; border-bottom: 1px solid var(--outline-var); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__brand { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .header__user { display: flex; align-items: center; gap: 0.75rem; }
+    .header__avatar { width: 2.2rem; height: 2.2rem; border-radius: var(--radius-full); background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .header__name { font-size: 0.88rem; font-weight: 700; color: var(--on-surface); }
+
+    /* ── Review Banner ── */
+    .review-banner { background: var(--warning-bg); border-bottom: 2px solid var(--warning-border); padding: 0.9rem 2rem; display: flex; align-items: center; gap: 0.75rem; }
+    .review-banner__icon { color: var(--warning); flex-shrink: 0; }
+    .review-banner__text { font-size: 0.88rem; color: #78350f; font-weight: 600; }
+    .review-banner__text span { font-weight: 400; }
+
+    /* ── Page ── */
+    .page { max-width: 640px; margin: 0 auto; padding: 3rem 1.5rem; }
+
+    /* ── Pending Card ── */
+    .pending-card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 3rem 2rem; text-align: center; }
+    .pending-icon-wrap { width: 6rem; height: 6rem; border-radius: var(--radius-full); background: var(--warning-bg); border: 3px solid var(--warning-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .pending-icon-wrap .material-symbols-outlined { font-size: 3rem; color: var(--warning); font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .pending-card h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .pending-card p { color: var(--on-surface-var); font-size: 0.92rem; line-height: 1.65; margin-bottom: 2rem; }
+
+    /* ── Steps ── */
+    .steps-list { text-align: left; background: var(--surface); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 2rem; }
+    .steps-list__title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--outline); margin-bottom: 1rem; }
+    .steps-list li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--outline-var); list-style: none; }
+    .steps-list li:last-child { border-bottom: none; }
+    .step-status { width: 1.5rem; height: 1.5rem; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.05rem; }
+    .step-status--done    { background: #d1fae5; }
+    .step-status--done .material-symbols-outlined    { color: #059669; font-size: 1rem; font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 20; }
+    .step-status--pending { background: var(--warning-bg); }
+    .step-status--pending .material-symbols-outlined { color: var(--warning); font-size: 1rem; font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 20; }
+    .step-text { font-size: 0.88rem; }
+    .step-text strong { font-weight: 700; display: block; color: var(--on-surface); }
+    .step-text span { color: var(--on-surface-var); }
+
+    /* ── Action buttons ── */
+    .btn-outline { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.5rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 700; color: var(--on-surface); background: none; cursor: pointer; font-family: inherit; transition: border-color 0.2s, background 0.2s; text-decoration: none; }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: rgba(0,80,212,0.04); }
+
+    /* Provider info summary */
+    .info-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+    .pill { background: rgba(0,80,212,0.08); color: var(--primary); padding: 0.35rem 0.85rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; }
+    .pill .material-symbols-outlined { font-size: 0.95rem; }
+
+    /* Verified badge next to name */
+    .verified-badge { display:inline-flex; align-items:center; gap:2px; margin-left:6px; color:#059669; font-size:0.85em; font-weight:700; vertical-align:middle; }
+    .verified-badge .material-symbols-outlined { font-size: 1.05em; }
+
+    /* ── Home feed (returning verified provider) ── */
+    .home-page { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem; }
+    .home-greeting { margin-bottom: 1.75rem; }
+    .home-greeting h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.6rem; font-weight: 800; }
+    .home-greeting p { color: var(--on-surface-var); margin-top: 0.3rem; font-size: 0.95rem; }
+    .home-quicklinks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 2.5rem; }
+    .home-quicklink { background: var(--surface-card); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 1.1rem 0.75rem; text-align: center; text-decoration: none; color: var(--on-surface); transition: transform 0.15s; }
+    .home-quicklink:hover { transform: translateY(-2px); }
+    .home-quicklink .material-symbols-outlined { color: var(--primary); font-size: 1.6rem; }
+    .home-quicklink span.label { display: block; margin-top: 0.4rem; font-size: 0.78rem; font-weight: 700; }
+    .home-section-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .home-section-title .material-symbols-outlined { color: var(--primary); }
+    .job-feed { display: flex; flex-direction: column; gap: 1rem; }
+    .job-card { background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 1.5rem; }
+    .job-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.6rem; }
+    .job-card__title { font-weight: 800; font-size: 1.05rem; }
+    .job-card__budget { color: var(--primary); font-weight: 800; white-space: nowrap; }
+    .job-card__desc { color: var(--on-surface-var); font-size: 0.9rem; margin-bottom: 0.9rem; line-height: 1.5; }
+    .job-card__meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .job-card__meta span { background: var(--surface); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; color: var(--on-surface-var); display: inline-flex; align-items: center; gap: 0.3rem; }
+    .job-card__meta .material-symbols-outlined { font-size: 1rem; }
+    .job-card a.btn-outline { width: 100%; justify-content: center; }
+    .empty-feed { text-align: center; padding: 3rem 1.5rem; background: var(--surface-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); color: var(--on-surface-var); }
+    .empty-feed .material-symbols-outlined { font-size: 2.5rem; opacity: 0.5; margin-bottom: 0.75rem; }
+    @media (max-width: 640px) { .home-quicklinks { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <img src="../../assets/images/baytack-logo.png" alt="BayTack" style="height:6rem;width:auto;object-fit:contain" />
+    <div class="header__user">
+      <div class="header__avatar" id="avatar-initials">P</div>
+      <span class="header__name" id="provider-name">Provider</span>
+    </div>
+  </header>
+
+  <!-- Pending Review Banner -->
+  <div class="review-banner">
+    <span class="material-symbols-outlined review-banner__icon">schedule</span>
+    <div class="review-banner__text">
+      Account Under Review — <span>Our team is verifying your information. This usually takes 1–2 business days.</span>
+    </div>
+  </div>
+
+  <main class="page">
+    <div class="pending-card">
+      <div class="pending-icon-wrap">
+        <span class="material-symbols-outlined">schedule</span>
+      </div>
+
+      <h1>Your Account is Under Review</h1>
+      <p>Thank you for registering with BayTack! Our team is reviewing your application to ensure everything is in order. You'll receive a notification once your account is approved and you can start accepting bookings.</p>
+
+      <!-- Info pills -->
+      <div class="info-pills" id="info-pills">
+        <div class="pill"><span class="material-symbols-outlined">person</span><span id="pill-name">—</span></div>
+        <div class="pill"><span class="material-symbols-outlined">phone_iphone</span><span id="pill-phone">—</span></div>
+        <div class="pill"><span class="material-symbols-outlined">handyman</span><span id="pill-service">—</span></div>
+        <div class="pill" id="pill-type-wrap"><span class="material-symbols-outlined">business</span><span id="pill-type">Individual</span></div>
+      </div>
+
+      <!-- Process Steps -->
+      <div class="steps-list">
+        <p class="steps-list__title">Application Progress</p>
+        <ul>
+          <li>
+            <div class="step-status step-status--done">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+            <div class="step-text">
+              <strong>Account Created</strong>
+              <span>Your account has been successfully registered</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-status step-status--pending">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div class="step-text">
+              <strong>Document Verification</strong>
+              <span>Our team is reviewing your submitted documents</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-status step-status--pending">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div class="step-text">
+              <strong>Admin Approval</strong>
+              <span>Final approval by the BayTack admin team</span>
+            </div>
+          </li>
+          <li>
+            <div class="step-status step-status--pending">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div class="step-text">
+              <strong>Profile Goes Live</strong>
+              <span>Start receiving bookings from customers</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <a href="../../index.html" class="btn-outline">
+        <span class="material-symbols-outlined">home</span>
+        Back to Homepage
+      </a>
+
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--outline-var)">
+        <p style="font-size:0.8rem;font-weight:700;color:var(--on-surface-var);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.9rem">
+          You can still explore your dashboard:
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+          <a href="../app/bookings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1rem;border:2px solid var(--outline-var);border-radius:0.75rem;font-size:0.85rem;font-weight:700;color:var(--on-surface);text-decoration:none;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--outline-var)';this.style.color='var(--on-surface)'">
+            <span class="material-symbols-outlined" style="font-size:1.1rem">event_available</span> Bookings
+          </a>
+          <a href="../app/earnings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1rem;border:2px solid var(--outline-var);border-radius:0.75rem;font-size:0.85rem;font-weight:700;color:var(--on-surface);text-decoration:none;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--outline-var)';this.style.color='var(--on-surface)'">
+            <span class="material-symbols-outlined" style="font-size:1.1rem">payments</span> Earnings
+          </a>
+          <a href="../app/portfolio/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1rem;border:2px solid var(--outline-var);border-radius:0.75rem;font-size:0.85rem;font-weight:700;color:var(--on-surface);text-decoration:none;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--outline-var)';this.style.color='var(--on-surface)'">
+            <span class="material-symbols-outlined" style="font-size:1.1rem">photo_library</span> Portfolio
+          </a>
+          <a href="../app/reviews/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1rem;border:2px solid var(--outline-var);border-radius:0.75rem;font-size:0.85rem;font-weight:700;color:var(--on-surface);text-decoration:none;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--outline-var)';this.style.color='var(--on-surface)'">
+            <span class="material-symbols-outlined" style="font-size:1.1rem">star_rate</span> Reviews
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SERVICE_MAP = { carpentry:'Carpentry', painting:'Painting', ac_repair:'AC Repair', electrical:'Electrical', plumbing:'Plumbing', cleaning:'Cleaning' };
+
+    function getProviderData() {
+      try {
+        const signup   = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
+        const sess     = JSON.parse(localStorage.getItem('ek_user_session') || '{}');
+        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
+        const phone    = signup.phone || sess.phone || '';
+        const acct     = accounts.find(a => a.phone === phone) || signup || sess || {};
+        return acct;
+      } catch(e) { return {}; }
+    }
+
+    /* ── "Have they already seen the approval celebration?" flag ──
+       Stored per-phone so the congratulatory screen only ever shows
+       once; on every later visit we go straight to the normal Home feed. */
+    function hasSeenApproval(phone) {
+      try { return localStorage.getItem('ek_approval_seen_' + phone) === '1'; }
+      catch(e) { return false; }
+    }
+    function markApprovalSeen(phone) {
+      try { localStorage.setItem('ek_approval_seen_' + phone, '1'); } catch(e) {}
+    }
+
+    /* ── Matching job requests for this provider's category ──
+       Reads the customer-side "Post a Request" data (bt_c_requests) and
+       keeps only open requests in the provider's own service category. */
+    function getMatchingRequests(categoryLabel) {
+      try {
+        const all = JSON.parse(localStorage.getItem('bt_c_requests') || '[]');
+        return all.filter(r => r.status === 'open' && r.category === categoryLabel);
+      } catch(e) { return []; }
+    }
+
+    function formatDate(iso) {
+      try { return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
+      catch(e) { return ''; }
+    }
+
+    function renderHomeFeed(name, categoryLabel) {
+      const requests = getMatchingRequests(categoryLabel);
+      const feedHtml = requests.length
+        ? requests.map(r => `
+            <article class="job-card">
+              <div class="job-card__top">
+                <span class="job-card__title">${r.title}</span>
+                <span class="job-card__budget">${r.budget} ج.م</span>
+              </div>
+              <p class="job-card__desc">${r.description || ''}</p>
+              <div class="job-card__meta">
+                <span><span class="material-symbols-outlined">location_on</span>${r.location || '—'}</span>
+                <span><span class="material-symbols-outlined">event</span>Due ${formatDate(r.deadline)}</span>
+                <span><span class="material-symbols-outlined">category</span>${r.category}</span>
+              </div>
+              <a href="../app/bid/index.html?request=${encodeURIComponent(r.id)}" class="btn-outline" style="background:#0050d4;color:white;border-color:#0050d4">
+                <span class="material-symbols-outlined">gavel</span> View &amp; Submit Bid
+              </a>
+            </article>`).join('')
+        : `<div class="empty-feed">
+             <span class="material-symbols-outlined">search_off</span>
+             <p>No new ${categoryLabel} requests right now. Check back soon — you'll see customer requests matching your service here.</p>
+           </div>`;
+
+      return `
+        <div class="home-page">
+          <div class="home-greeting">
+            <h1>Welcome back, ${name} 👋</h1>
+            <p>Here are the latest ${categoryLabel} requests posted by customers near you.</p>
+          </div>
+          <div class="home-quicklinks">
+            <a class="home-quicklink" href="../app/bookings/index.html"><span class="material-symbols-outlined">event_available</span><span class="label">Bookings</span></a>
+            <a class="home-quicklink" href="../app/earnings/index.html"><span class="material-symbols-outlined">payments</span><span class="label">Earnings</span></a>
+            <a class="home-quicklink" href="../app/portfolio/index.html"><span class="material-symbols-outlined">photo_library</span><span class="label">Portfolio</span></a>
+            <a class="home-quicklink" href="../app/reviews/index.html"><span class="material-symbols-outlined">star_rate</span><span class="label">Reviews</span></a>
+          </div>
+          <h2 class="home-section-title"><span class="material-symbols-outlined">handyman</span>Requests in ${categoryLabel}</h2>
+          <div class="job-feed">${feedHtml}</div>
+        </div>`;
+    }
+
+    function renderDashboard() {
+      const p = getProviderData();
+      const name    = p.name || 'Provider';
+      const service = SERVICE_MAP[p.service || p.category] || p.service || p.category || '—';
+      const status  = p.status || 'pending_review';
+
+      // Fill name / avatar
+      const nameEl = document.getElementById('provider-name');
+      const avatarEl = document.getElementById('avatar-initials');
+      if (nameEl) {
+        nameEl.textContent = name;
+        if (status === 'verified') {
+          const badge = document.createElement('span');
+          badge.className = 'verified-badge';
+          badge.title = 'Verified provider';
+          badge.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1">verified</span>';
+          nameEl.appendChild(badge);
+        }
+      }
+      if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+
+      const pillName = document.getElementById('pill-name');
+      const pillPhone = document.getElementById('pill-phone');
+      const pillService = document.getElementById('pill-service');
+      const pillType = document.getElementById('pill-type');
+      if (pillName) pillName.textContent = name;
+      if (pillPhone) pillPhone.textContent = p.phone || '—';
+      if (pillService) pillService.textContent = service;
+      if (pillType) pillType.textContent = p.providerType === 'company' ? 'Company' : 'Individual';
+
+      // Status-based UI
+      const card       = document.querySelector('.pending-card');
+      const reviewBanner = document.querySelector('.review-banner');
+
+      if (status === 'verified') {
+        // APPROVED
+        if (reviewBanner) reviewBanner.style.display = 'none';
+
+        if (!hasSeenApproval(p.phone)) {
+          // FIRST TIME ONLY: show the one-off "Account Approved!" celebration
+          if (card) {
+            card.innerHTML = `
+              <div class="pending-icon-wrap" style="background:#d1fae5;border-color:#6ee7b7">
+                <span class="material-symbols-outlined" style="color:#059669;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24">verified</span>
+              </div>
+              <h1 style="color:#059669">Account Approved! 🎉</h1>
+              <p>Welcome to BayTack, <strong>${name}</strong>! Your account is verified and your profile is now live. Start accepting bookings from customers.</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:2rem">
+                <a href="../app/bookings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">event_available</span> Bookings
+                </a>
+                <a href="../app/earnings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">payments</span> Earnings
+                </a>
+                <a href="../app/portfolio/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">photo_library</span> Portfolio
+                </a>
+                <a href="../app/reviews/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">star_rate</span> Reviews
+                </a>
+              </div>
+              <a href="../app/bookings/index.html" class="btn-outline" style="background:#0050d4;color:white;border-color:#0050d4">
+                <span class="material-symbols-outlined">event_available</span> View My Bookings
+              </a>`;
+          }
+          markApprovalSeen(p.phone);
+        } else {
+          // RETURNING VISIT: replace the whole page with the normal Home
+          // feed — the celebration screen never shows again.
+          const mainEl = document.querySelector('main.page');
+          const categoryLabel = SERVICE_MAP[p.service || p.category] || service;
+          if (mainEl) {
+            mainEl.outerHTML = renderHomeFeed(name, categoryLabel);
+          }
+        }
+      } else if (status === 'suspended') {
+        // REJECTED: show rejection message + option to re-register
+        if (reviewBanner) {
+          reviewBanner.style.background = '#fde8e8';
+          reviewBanner.style.borderColor = '#f87171';
+          reviewBanner.querySelector('.review-banner__icon').style.color = '#dc2626';
+          reviewBanner.querySelector('.review-banner__icon').textContent = 'cancel';
+          reviewBanner.querySelector('.review-banner__text strong').textContent = 'Application Rejected';
+          const span = reviewBanner.querySelector('.review-banner__text span');
+          if (span) span.textContent = 'Your application was not approved. You can re-submit after correcting your information.';
+        }
+        if (card) {
+          card.innerHTML = `
+            <div class="pending-icon-wrap" style="background:#fde8e8;border-color:#f87171">
+              <span class="material-symbols-outlined" style="color:#dc2626;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24">cancel</span>
+            </div>
+            <h1 style="color:#dc2626">Application Not Approved</h1>
+            <p>Unfortunately, your application was rejected by our team. This may be due to incomplete or incorrect information. Please review your details and re-apply.</p>
+            <button onclick="startOver()" class="btn-outline" style="background:#dc2626;color:white;border-color:#dc2626;margin-bottom:1rem;width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem">
+              <span class="material-symbols-outlined">refresh</span> Re-apply Now
+            </button>
+            <a href="../../index.html" class="btn-outline">
+              <span class="material-symbols-outlined">home</span> Back to Homepage
+            </a>`;
+        }
+      } else {
+        // PENDING: show waiting state + allow access to pages with banner
+        // Update dashboard links to work
+        const exploreSection = document.getElementById('dashboard-explore');
+        if (exploreSection) exploreSection.style.display = 'block';
+      }
+    }
+
+    function startOver() {
+      // Clear provider data so they can re-register
+      try {
+        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
+        const p = getProviderData();
+        const filtered = accounts.filter(a => a.phone !== p.phone);
+        localStorage.setItem('ek_accounts', JSON.stringify(filtered));
+        const providers = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
+        const filteredP = providers.filter(x => x.phone !== p.phone);
+        localStorage.setItem('ek_admin_providers', JSON.stringify(filteredP));
+        sessionStorage.removeItem('ek_provider_signup');
+      } catch(e) {}
+      window.location.href = '../../index.html';
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>

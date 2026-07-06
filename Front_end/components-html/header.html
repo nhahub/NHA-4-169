@@ -1,0 +1,50 @@
+<!-- EKHDEMNI ADMIN — Header Partial -->
+<header class="admin-header" id="admin-header" role="banner">
+
+  <!-- Left: Hamburger + Search -->
+  <div class="admin-header__left">
+    <button class="admin-header__hamburger" id="admin-sidebar-toggle" aria-label="Open navigation menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="admin-header__search">
+      <span class="admin-header__search-icon material-symbols-outlined">search</span>
+      <input
+        class="admin-header__search-input"
+        type="search"
+        placeholder="Search anything…"
+        autocomplete="off"
+        aria-label="Global search"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Notifications + User -->
+  <div class="admin-header__right">
+    <div class="admin-header__actions">
+      <button class="admin-header__icon-btn" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="admin-header__badge" aria-hidden="true"></span>
+      </button>
+      <button class="admin-header__icon-btn" aria-label="Help">
+        <span class="material-symbols-outlined">help</span>
+      </button>
+    </div>
+
+    <div class="admin-header__user">
+      <div class="admin-header__user-info">
+        <p class="admin-header__user-name" id="admin-header-username">Admin User</p>
+        <p class="admin-header__user-role">Super Admin</p>
+      </div>
+      <img
+        class="admin-header__avatar"
+        id="admin-header-avatar"
+        src="https://ui-avatars.com/api/?name=Admin&background=0050d4&color=fff&size=80"
+        alt="Admin avatar"
+        width="40"
+        height="40"
+      />
+    </div>
+  </div>
+
+</header>

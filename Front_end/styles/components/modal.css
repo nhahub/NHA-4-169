@@ -1,0 +1,236 @@
+/* ============================================================
+   EKHDEMNI ADMIN — Modal Component
+   ============================================================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 15, 16, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-6);
+  animation: backdrop-in var(--transition-fast) ease;
+}
+
+.modal-backdrop[hidden] { display: none; }
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  width: 100%;
+  max-width: 36rem;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modal-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal--sm { max-width: 24rem; }
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.93) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);     }
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-6) var(--sp-8);
+  border-bottom: 1px solid var(--color-surface-container-low);
+}
+
+.modal__title {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: var(--text-xl);
+  color: var(--color-on-surface);
+}
+
+.modal__close {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.modal__close:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-on-surface);
+}
+
+.modal__body {
+  padding: var(--sp-8);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-8);
+  border-top: 1px solid var(--color-surface-container-low);
+}
+
+/* ── Form inside Modal ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.form-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.form-input {
+  width: 100%;
+  background: var(--color-surface-container-low);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-5);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  outline: none;
+  transition: box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.form-input:focus {
+  background: var(--color-surface-container-lowest);
+  box-shadow: 0 0 0 2px rgba(0, 80, 212, 0.35);
+}
+
+.form-input::placeholder {
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+}
+
+textarea.form-input { resize: vertical; }
+
+select.form-input { cursor: pointer; }
+
+/* ── ek-modal (JS-generated modal) ── */
+.ek-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-6);
+}
+
+.ek-modal[hidden] { display: none; }
+
+.ek-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 15, 16, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.ek-modal__box {
+  position: relative;
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  width: 100%;
+  max-width: 36rem;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  animation: modal-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.ek-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-6) var(--sp-8);
+  border-bottom: 1px solid var(--color-surface-container);
+}
+
+.ek-modal__title {
+  font-family: var(--font-headline);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-on-surface);
+}
+
+.ek-modal__close {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+.ek-modal__close:hover { background: var(--color-surface-container-low); }
+
+.ek-modal__body {
+  padding: var(--sp-8);
+  overflow-y: auto;
+  flex: 1;
+  line-height: 1.8;
+  color: var(--color-on-surface-variant);
+  font-size: var(--text-sm);
+}
+
+.ek-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-8);
+  border-top: 1px solid var(--color-surface-container);
+}
+
+/* input-field + select-field used inside modal */
+.input-field, .select-field {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 2px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-on-surface);
+  background: var(--color-surface-container-low);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  margin-bottom: var(--sp-3);
+}
+.input-field:focus, .select-field:focus {
+  border-color: var(--color-primary);
+}

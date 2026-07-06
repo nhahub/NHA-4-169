@@ -1,0 +1,215 @@
+/* ============================================================
+   COMPONENTS: WIDGETS — Calendar & Timeline
+   ============================================================ */
+
+/* ── Panel / Widget Wrapper ── */
+.panel {
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  overflow: hidden;
+}
+
+.panel--surface {
+  background-color: var(--color-surface-container-low);
+}
+
+.panel--card {
+  background-color: var(--color-surface-container-lowest);
+}
+
+.panel__title {
+  font-weight: 700;
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.panel__title .material-symbols-outlined {
+  color: var(--color-primary);
+}
+
+/* ── Mini Calendar ── */
+.mini-calendar {}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-4);
+}
+
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+}
+
+.cal-day {
+  height: 2rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-base);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.cal-day:hover:not(.cal-day--disabled):not(.cal-day--primary):not(.cal-day--secondary) {
+  background-color: var(--color-surface-container-high);
+}
+
+.cal-day--disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.cal-day--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.cal-day--secondary {
+  background-color: var(--color-secondary-container);
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+
+/* ── Availability Toggle ── */
+.availability-row {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(171,173,175,0.2);
+}
+
+.availability-label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-4);
+}
+
+.availability-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.availability-control span {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.toggle-switch {
+  position: relative;
+  width: 3rem;
+  height: 1.5rem;
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.toggle-switch__knob {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 1rem;
+  height: 1rem;
+  background: #fff;
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-fast);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.20);
+}
+
+.toggle-switch.is-off {
+  background-color: var(--color-outline-variant);
+}
+
+.toggle-switch.is-off .toggle-switch__knob {
+  transform: translateX(-1.5rem);
+}
+
+/* ── Status Timeline ── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  position: relative;
+}
+
+/* Vertical connector line */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background-color: var(--color-surface-container-high);
+}
+
+.timeline__item {
+  display: flex;
+  gap: var(--space-4);
+  position: relative;
+}
+
+.timeline__item--muted {
+  opacity: 0.5;
+}
+
+.timeline__dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.timeline__dot--secondary { background-color: var(--color-secondary); }
+.timeline__dot--primary   { background-color: var(--color-primary); }
+.timeline__dot--neutral   {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.timeline__dot .material-symbols-outlined {
+  font-size: 0.875rem;
+  color: #fff;
+}
+
+.timeline__dot--neutral .material-symbols-outlined {
+  color: var(--color-on-surface-variant);
+}
+
+.timeline__content {}
+
+.timeline__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.timeline__subtitle {
+  font-size: 0.6875rem;
+  color: var(--color-on-surface-variant);
+  margin-top: 2px;
+}

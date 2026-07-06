@@ -1,0 +1,93 @@
+/* ============================================
+   PROVIDER HUB — Button Components
+   ============================================ */
+
+/* Base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* Variants */
+.btn--primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-btn);
+}
+
+.btn--primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(0, 80, 212, 0.3);
+}
+
+.btn--secondary {
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.btn--secondary:hover {
+  background-color: var(--color-secondary-fixed-dim);
+}
+
+.btn--surface {
+  background-color: var(--color-surface-high);
+  color: var(--color-on-surface);
+}
+
+.btn--surface:hover {
+  background-color: var(--color-surface-highest);
+  transform: scale(1.03);
+}
+
+.btn--gold {
+  background-color: var(--color-tertiary-fixed);
+  color: var(--color-on-tertiary-fixed);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(111, 89, 0, 0.15);
+}
+
+.btn--gold:hover {
+  background-color: var(--color-tertiary-fixed-dim);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  padding: var(--space-2) var(--space-3);
+}
+
+.btn--ghost:hover {
+  background-color: #eff3ff;
+}
+
+/* Sizes */
+.btn--sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+}
+
+.btn--lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+/* With icon */
+.btn .material-symbols-outlined {
+  font-size: 1.1rem;
+}

@@ -1,0 +1,127 @@
+/* ============================================================
+   BayTack — Components: Cards
+   ============================================================ */
+
+.card {
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base),
+              transform var(--transition-base),
+              border-color var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* === Stat Card === */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 13rem;
+}
+
+.stat-card__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-4);
+  display: block;
+}
+
+.stat-card__amount {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.stat-card__value {
+  font-family: var(--font-headline);
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-black);
+  color: var(--color-on-surface);
+  line-height: 1;
+}
+
+.stat-card__currency {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-on-surface-variant);
+}
+
+.stat-card__description {
+  font-size: var(--fs-sm);
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+  margin-top: var(--space-4);
+}
+
+/* === Card Decorator (background blob) === */
+.card__decorator {
+  position: absolute;
+  top: -4rem;
+  right: -4rem;
+  width: 8rem;
+  height: 8rem;
+  border-radius: var(--radius-full);
+  opacity: 0.06;
+  transition: transform var(--transition-slow);
+  pointer-events: none;
+}
+
+.card:hover .card__decorator {
+  transform: scale(1.5);
+}
+
+/* === Card Variants === */
+.card--outlined {
+  border: 2px solid transparent;
+  background: var(--color-surface-container-low);
+  box-shadow: none;
+}
+
+.card--outlined:hover {
+  border-color: var(--color-tertiary-fixed);
+  box-shadow: none;
+}
+
+.card--flat {
+  background: var(--color-surface-container-low);
+  box-shadow: none;
+}
+
+/* === Progress Bar (commission card) === */
+.stat-card__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 0.5rem;
+  background: var(--color-surface-container-high);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-secondary);
+  transition: width var(--transition-slow);
+}
+
+.progress-bar__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--color-on-surface-variant);
+}

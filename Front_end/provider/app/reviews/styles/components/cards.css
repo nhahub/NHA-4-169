@@ -1,0 +1,110 @@
+/* ============================================
+   PROVIDER HUB — Card Components
+   ============================================ */
+
+/* Base card */
+.card {
+  background-color: var(--color-surface-lowest);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 20px 48px rgba(44, 47, 49, 0.08);
+}
+
+.card--flat {
+  box-shadow: none;
+  border: 1px solid var(--color-surface-variant);
+}
+
+/* Stat card */
+.stat-card {
+  background-color: var(--color-surface-lowest);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-card__value {
+  font-family: var(--font-headline);
+  font-size: var(--text-6xl);
+  font-weight: 900;
+  color: var(--color-on-surface);
+  line-height: 1;
+}
+
+.stat-card__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-2);
+}
+
+/* Bento stats card */
+.bento-card {
+  background-color: var(--color-surface-low);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+
+.bento-card__glow {
+  position: absolute;
+  right: -4rem;
+  top: -4rem;
+  width: 16rem;
+  height: 16rem;
+  background: rgba(0, 80, 212, 0.05);
+  border-radius: var(--radius-full);
+  filter: blur(3rem);
+  pointer-events: none;
+  transition: background-color var(--transition-base);
+}
+
+.bento-card:hover .bento-card__glow {
+  background: rgba(0, 80, 212, 0.1);
+}
+
+.bento-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Review card */
+.review-card {
+  background-color: var(--color-surface-lowest);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 20px 48px rgba(44, 47, 49, 0.07);
+}
+
+.review-card--highlighted {
+  border-left: 8px solid var(--color-secondary);
+}
+
+@media (min-width: 768px) {
+  .review-card {
+    flex-direction: row;
+  }
+}

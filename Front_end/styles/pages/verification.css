@@ -1,0 +1,206 @@
+/* ============================================================
+   BAYTACK ADMIN — Verification Page Styles
+   ============================================================ */
+
+/* ── Bento Grid ── */
+.vd-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-10);
+}
+@media (min-width: 768px) {
+  .vd-bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.vd-bento-card {
+  border-radius: var(--radius-xl);
+  padding: var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  transition: transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.vd-bento-card:hover { transform: scale(1.02); }
+
+.vd-bento-card--primary {
+  background: rgba(123, 156, 255, 0.15);
+}
+.vd-bento-card--surface {
+  background: var(--color-surface-container-low);
+}
+.vd-bento-card--secondary {
+  background: rgba(105, 246, 184, 0.18);
+}
+.vd-bento-card--wide {
+  grid-column: span 2;
+}
+
+.vd-bento-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-primary);
+}
+
+.vd-bento-number {
+  font-family: var(--font-headline);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.vd-bento-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+}
+
+/* Wide card layout */
+.vd-bento-wide-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  position: relative;
+  z-index: 1;
+}
+.vd-bento-wide-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-on-secondary-container, #005a3c);
+}
+.vd-bento-wide-sub {
+  font-size: var(--text-sm);
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.vd-mini-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 4rem;
+  margin-top: var(--sp-4);
+}
+.vd-mini-bar {
+  flex: 1;
+  background: rgba(0,105,71,0.2);
+  border-radius: 4px 4px 0 0;
+}
+.vd-mini-bar--strong { background: rgba(0,105,71,0.4); }
+.vd-mini-bar--full   { background: var(--color-secondary); }
+
+.vd-bento-bg-icon {
+  position: absolute;
+  right: -1.5rem;
+  bottom: -1.5rem;
+  font-size: 6rem;
+  color: rgba(0,105,71,0.08);
+  pointer-events: none;
+}
+
+/* ── Table Header ── */
+.vd-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-6) var(--sp-8);
+  border-bottom: 1px solid var(--color-surface-container-low);
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.vd-table-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+/* ── Avatar in table ── */
+.vd-avatar-wrap {
+  background: var(--color-surface-container-low) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  padding: 0 !important;
+}
+.vd-avatar-img {
+  width: 40%;
+  height: 40%;
+  object-fit: cover;
+}
+
+/* ── Type Chip ── */
+.vd-type-chip {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-4);
+  background: var(--color-surface-container-high);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Status ── */
+.vd-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.vd-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.vd-status--pending {
+  color: var(--color-primary);
+}
+.vd-status--pending .vd-status-dot {
+  background: var(--color-primary);
+  animation: pulse-vd 2s infinite;
+}
+.vd-status--review {
+  color: var(--color-tertiary);
+}
+.vd-status--review .vd-status-dot {
+  background: var(--color-tertiary-fixed-dim);
+}
+
+@keyframes pulse-vd {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Review Button ── */
+.vd-review-btn {
+  background: var(--gradient-primary) !important;
+  white-space: nowrap;
+}
+
+/* ── Tertiary Button ── */
+.btn--tertiary {
+  background: var(--color-tertiary-fixed);
+  color: var(--color-on-tertiary-container, #594700);
+  border: none;
+}
+.btn--tertiary:hover {
+  background: var(--color-tertiary-fixed-dim);
+  transform: scale(1.02);
+}
+
+/* ── Small button ── */
+.btn--sm {
+  padding: var(--sp-2) var(--sp-5) !important;
+  font-size: var(--text-xs) !important;
+}

@@ -1,0 +1,237 @@
+/* =========================================
+   PAGE: Provider Settings
+   ========================================= */
+
+/* === Page Layout === */
+.page-canvas {
+  margin-left: 0;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+  padding-bottom: 5rem; /* Space for floating save bar */
+}
+
+@media (min-width: 768px) {
+  .page-canvas {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* === Page Inner Wrapper === */
+.page-inner {
+  padding: var(--space-10) var(--space-8);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .page-inner {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* === Page Header === */
+.page-header {
+  margin-bottom: 3rem;
+}
+
+.page-header__title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.page-header__subtitle {
+  color: var(--color-on-surface-variant);
+  max-width: 42rem;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+/* === Two-Column Grid === */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .settings-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+/* === Left Column === */
+.settings-col-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* === Right Column === */
+.settings-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* === Form Grids inside Cards === */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* === Workshop Address Grid === */
+.workshop-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .workshop-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* === Map Placeholder === */
+.map-placeholder {
+  height: 12rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-container-high);
+  overflow: hidden;
+  position: relative;
+}
+
+.map-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+  transition: opacity var(--transition-base);
+}
+
+.map-placeholder:hover img {
+  opacity: 0.8;
+}
+
+.map-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-badge__pill {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* === Weekly Schedule === */
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background-color: var(--color-surface-container-low);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.schedule-row:hover {
+  background-color: rgba(0, 80, 212, 0.05);
+}
+
+.schedule-row--unavailable {
+  opacity: 0.5;
+}
+
+.schedule-row__day {
+  width: 3rem;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.schedule-row__times {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.schedule-row__sep {
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+}
+
+.schedule-row__unavail-text {
+  font-size: var(--text-xs);
+  font-style: italic;
+  color: var(--color-on-surface-variant);
+}
+
+.schedule-row__check {
+  width: 2.5rem;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* === Preferences / Notification Rows === */
+.pref-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pref-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.pref-row__title {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--color-on-surface);
+}
+
+.pref-row__subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+}
+
+/* === Danger Zone === */
+.danger-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-error);
+  margin-bottom: var(--space-2);
+}

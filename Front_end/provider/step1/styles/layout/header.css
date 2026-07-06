@@ -1,0 +1,94 @@
+/* ============================================================
+   _header.css — Top Navigation Bar
+   ============================================================ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z-fixed);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--shadow-xs);
+  height: var(--header-height);
+  transition: background var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+/* Scrolled state: added via JS */
+.header.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Brand Logo ──────────────────────────────────────────────── */
+.header__logo {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-extrabold);
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  line-height: 1;
+  transition: opacity var(--transition-fast);
+}
+
+.header__logo:hover {
+  opacity: 0.85;
+}
+
+/* ── Nav Actions ─────────────────────────────────────────────── */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ── Icon Button ─────────────────────────────────────────────── */
+.header__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast),
+              color var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.header__icon-btn:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+.header__icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .header {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* ── Dark Mode ───────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: rgba(11, 15, 16, 0.72);
+  }
+  .header.is-scrolled {
+    background: rgba(11, 15, 16, 0.92);
+  }
+}

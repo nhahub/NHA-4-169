@@ -1,0 +1,157 @@
+/* ============================================================
+   _variables.css — Design Tokens & CSS Custom Properties
+   ============================================================ */
+
+:root {
+  /* ── Brand Colors ─────────────────────────────────────────── */
+  --color-primary:               #0050d4;
+  --color-primary-dim:           #0046bb;
+  --color-primary-fixed:         #7b9cff;
+  --color-primary-fixed-dim:     #658eff;
+  --color-primary-container:     #7b9cff;
+  --color-on-primary:            #f1f2ff;
+  --color-on-primary-container:  #001e5a;
+  --color-on-primary-fixed:      #000000;
+  --color-on-primary-fixed-var:  #00266e;
+  --color-inverse-primary:       #618bff;
+
+  --color-secondary:             #006947;
+  --color-secondary-dim:         #005c3d;
+  --color-secondary-container:   #69f6b8;
+  --color-secondary-fixed:       #69f6b8;
+  --color-secondary-fixed-dim:   #58e7ab;
+  --color-on-secondary:          #c8ffe0;
+  --color-on-secondary-container:#005a3c;
+  --color-on-secondary-fixed:    #00452d;
+  --color-on-secondary-fixed-var:#006544;
+
+  --color-tertiary:              #6f5900;
+  --color-tertiary-dim:          #614d00;
+  --color-tertiary-container:    #fed01b;
+  --color-tertiary-fixed:        #fed01b;
+  --color-tertiary-fixed-dim:    #eec200;
+  --color-on-tertiary:           #fff2d3;
+  --color-on-tertiary-container: #594700;
+  --color-on-tertiary-fixed:     #433500;
+  --color-on-tertiary-fixed-var: #645000;
+
+  --color-error:                 #b31b25;
+  --color-error-dim:             #9f0519;
+  --color-error-container:       #fb5151;
+  --color-on-error:              #ffefee;
+  --color-on-error-container:    #570008;
+
+  /* ── Surface / Background ─────────────────────────────────── */
+  --color-background:            #f5f7f9;
+  --color-surface:               #f5f7f9;
+  --color-surface-bright:        #f5f7f9;
+  --color-surface-dim:           #d0d5d8;
+  --color-surface-tint:          #0050d4;
+  --color-surface-variant:       #d9dde0;
+  --color-surface-container:     #e5e9eb;
+  --color-surface-container-low: #eef1f3;
+  --color-surface-container-high:#dfe3e6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #d9dde0;
+
+  --color-on-background:         #2c2f31;
+  --color-on-surface:            #2c2f31;
+  --color-on-surface-variant:    #595c5e;
+
+  --color-outline:               #747779;
+  --color-outline-variant:       #abadaf;
+
+  --color-inverse-surface:       #0b0f10;
+  --color-inverse-on-surface:    #9a9d9f;
+
+  /* ── Semantic Aliases ─────────────────────────────────────── */
+  --color-text-primary:   var(--color-on-surface);
+  --color-text-secondary: var(--color-on-surface-variant);
+  --color-border:         var(--color-outline-variant);
+  --color-focus-ring:     rgba(0, 80, 212, 0.4);
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body:     "Be Vietnam Pro", sans-serif;
+
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+
+  --font-normal:    400;
+  --font-medium:    500;
+  --font-semibold:  600;
+  --font-bold:      700;
+  --font-extrabold: 800;
+
+  --leading-tight:  1.25;
+  --leading-snug:   1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.625;
+
+  /* ── Spacing ──────────────────────────────────────────────── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ── Border Radius ────────────────────────────────────────── */
+  --radius-sm:   0.5rem;
+  --radius-md:   1rem;
+  --radius-lg:   1.5rem;
+  --radius-xl:   2rem;
+  --radius-2xl:  3rem;
+  --radius-full: 9999px;
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --shadow-xs:  0px 4px 12px rgba(44, 47, 49, 0.04);
+  --shadow-sm:  0px 8px 24px rgba(44, 47, 49, 0.06);
+  --shadow-md:  0px 12px 32px rgba(44, 47, 49, 0.08);
+  --shadow-lg:  0px 16px 48px rgba(44, 47, 49, 0.12);
+
+  /* ── Transitions ──────────────────────────────────────────── */
+  --transition-fast:   0.15s ease;
+  --transition-base:   0.3s ease;
+  --transition-slow:   0.5s ease;
+
+  /* ── Z-Index ──────────────────────────────────────────────── */
+  --z-base:      1;
+  --z-dropdown:  10;
+  --z-sticky:    20;
+  --z-fixed:     50;
+  --z-modal:     100;
+  --z-toast:     200;
+
+  /* ── Layout ───────────────────────────────────────────────── */
+  --header-height:    72px;
+  --bottom-nav-height: 80px;
+  --max-width:        88rem;   /* 1408px */
+  --content-padding:  var(--space-4);
+}
+
+/* ── Dark Mode Overrides ────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background:            #0b0f10;
+    --color-surface:               #0b0f10;
+    --color-surface-container-lowest: #111518;
+    --color-surface-container-low: #161a1d;
+    --color-surface-container:     #1c2023;
+    --color-surface-container-high:#22272a;
+    --color-on-background:         #e0e3e5;
+    --color-on-surface:            #e0e3e5;
+    --color-on-surface-variant:    #a8abad;
+  }
+}

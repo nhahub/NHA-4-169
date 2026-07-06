@@ -1,0 +1,78 @@
+/* ============================================
+   PROVIDER HUB — Input Components
+   ============================================ */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.input-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-low);
+  border: 1.5px solid transparent;
+  font-size: var(--text-sm);
+  color: var(--color-on-surface);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 80, 212, 0.12);
+  background-color: var(--color-surface-lowest);
+}
+
+.input--error {
+  border-color: var(--color-error);
+}
+
+.input--error:focus {
+  box-shadow: 0 0 0 3px rgba(179, 27, 37, 0.12);
+}
+
+/* Search input (inline with icon) */
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface-low);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  gap: var(--space-2);
+  border: 1.5px solid transparent;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-input-wrap:focus-within {
+  border-color: var(--color-primary-fixed-dim);
+  box-shadow: 0 0 0 3px rgba(0, 80, 212, 0.08);
+}
+
+.search-input-wrap .material-symbols-outlined {
+  color: var(--color-on-surface-variant);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.search-input-wrap input {
+  background: transparent;
+  font-size: var(--text-sm);
+  color: var(--color-on-surface);
+  width: 100%;
+}
+
+.search-input-wrap input::placeholder {
+  color: var(--color-on-surface-variant);
+}

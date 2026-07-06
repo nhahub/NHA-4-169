@@ -1,0 +1,141 @@
+/* ============================================
+   EKHDEMNI — Home / Onboarding Page Styles
+   ============================================ */
+
+/* ── Hero Content Column ── */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Hero Heading ── */
+.hero-heading {
+  font-family: var(--font-headline);
+  font-size: clamp(var(--text-4xl), 6vw, var(--text-7xl));
+  font-weight: var(--font-extrabold);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.03em;
+  color: var(--color-on-surface);
+}
+
+.hero-heading__accent--primary {
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+.hero-heading__accent--secondary {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-secondary-container);
+  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 3px;
+}
+
+/* ── Hero Description ── */
+.hero-description {
+  font-size: var(--text-xl);
+  line-height: var(--leading-relaxed);
+  color: var(--color-on-surface-variant);
+  max-width: 38rem;
+}
+
+/* ── Form Header ── */
+.form-header {
+  margin-bottom: var(--space-10);
+}
+
+.form-header__title {
+  font-family: var(--font-headline);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-2);
+  color: var(--color-on-surface);
+}
+
+.form-header__step {
+  font-size: var(--text-sm);
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Form Body ── */
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Form Footer ── */
+.form-footer {
+  text-align: center;
+  padding-top: var(--space-4);
+}
+
+.form-footer__text {
+  font-size: var(--text-sm);
+  color: var(--color-on-surface-variant);
+}
+
+.form-footer__link {
+  color: var(--color-primary);
+  font-weight: var(--font-bold);
+  margin-left: var(--space-1);
+  text-decoration: none;
+  transition: text-decoration var(--transition-fast);
+}
+
+.form-footer__link:hover {
+  text-decoration: underline;
+}
+
+/* ── Media Wrapper (with glow) ── */
+.hero-media {
+  position: relative;
+}
+
+.hero-media__glow {
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: calc(var(--radius-base) + 4px);
+  opacity: 0.22;
+  filter: blur(14px);
+  transition: opacity var(--transition-slow);
+}
+
+.hero-media:hover .hero-media__glow {
+  opacity: 0.38;
+}
+
+/* ── Page Entry Animation ── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeSlideUp 0.6s ease both;
+}
+
+.animate-in--delay-1 { animation-delay: 0.08s; }
+.animate-in--delay-2 { animation-delay: 0.16s; }
+.animate-in--delay-3 { animation-delay: 0.24s; }
+.animate-in--delay-4 { animation-delay: 0.32s; }
+.animate-in--delay-5 { animation-delay: 0.40s; }
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .hero-description {
+    font-size: var(--text-lg);
+  }
+
+  .form-header__title {
+    font-size: var(--text-2xl);
+  }
+}

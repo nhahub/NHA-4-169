@@ -1,0 +1,86 @@
+/* ============================================================
+   main.css — Master CSS Entry Point
+   Import order matters: variables → reset → base → layout → components → pages
+   ============================================================ */
+
+/* ── Google Fonts ────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
+
+/* ── Base ────────────────────────────────────────────────────── */
+@import "base/variables.css";
+@import "base/reset.css";
+@import "base/typography.css";
+
+/* ── Layout ──────────────────────────────────────────────────── */
+@import "layout/header.css";
+@import "layout/sidebar.css";
+@import "layout/footer.css";
+
+/* ── Components ──────────────────────────────────────────────── */
+@import "components/buttons.css";
+@import "components/cards.css";
+@import "components/inputs.css";
+
+/* ── Pages ───────────────────────────────────────────────────── */
+@import "pages/onboarding.css";
+
+/* ============================================================
+   Global Utilities
+   ============================================================ */
+
+/* Material Symbols default settings */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* Glass morphism utility */
+.bg-glass {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Primary gradient utility */
+.primary-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-fixed) 100%);
+}
+
+/* Flex helpers */
+.flex          { display: flex; }
+.flex-col      { flex-direction: column; }
+.items-center  { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2         { gap: var(--space-2); }
+.gap-4         { gap: var(--space-4); }
+.gap-6         { gap: var(--space-6); }
+.gap-8         { gap: var(--space-8); }
+
+/* Spacing helpers */
+.mt-auto { margin-top: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.w-full  { width: 100%; }
+
+/* Overflow */
+.overflow-hidden { overflow: hidden; }
+
+/* Position */
+.relative { position: relative; }
+.absolute { position: absolute; }
+
+/* Visually hidden (accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border-width: 0;
+}
