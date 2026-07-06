@@ -37,3 +37,9 @@
 /backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.csproj.AssemblyReference.cache
 /backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.AssemblyInfoInputs.cache
 /backend(.net)/BayTack/BayTack.Infrastructure/obj/Debug/net10.0/BayTack.Infrastructure.AssemblyInfo.cs
+
+
+
+.vs/
+[Ob]j/
+[Bb]in/
