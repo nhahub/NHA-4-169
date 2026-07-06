@@ -109,3 +109,10 @@
 /backend(.net)/BayTack/ChatApp.API/obj/project.nuget.cache
 >>>>>>> main
 /backend(.net)/BayTack/BayTack.Application/obj/Debug/net10.0/BayTack.Application.GeneratedMSBuildEditorConfig.editorconfig
+
+
+# Visual Studio / .NET Build Outputs
+[Ob]j/
+[Bb]in/
+*.user
+*.suo
