@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\IRepository\" />
-    <Folder Include="Abstractions\Interfaces\" />
     <Folder Include="Common\Behaviors\" />
     <Folder Include="Features\EventHandlers\" />
     <Folder Include="Features\Identity\Queries\" />

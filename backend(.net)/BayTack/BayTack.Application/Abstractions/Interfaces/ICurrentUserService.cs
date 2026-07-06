@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BayTack.Application.Common.Interfaces
+namespace BayTack.Application.Abstractions.Interfaces
 {
 	public interface ICurrentUserService
 	{

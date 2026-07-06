@@ -1,4 +1,4 @@
-﻿using BayTack.Application.Common.Interfaces;
+﻿using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Domain.Common.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using System;

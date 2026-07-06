@@ -1,5 +1,5 @@
-﻿using BayTack.Application.Abstractions.Messaging;
-using BayTack.Application.Common.Interfaces;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Abstractions.Messaging;
 using BayTack.Domain.Entities.JobAggregate;
 using BayTack.Domain.ValueObjects;
 
