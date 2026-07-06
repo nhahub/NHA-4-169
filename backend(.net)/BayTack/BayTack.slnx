@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="BayTack.API/BayTack.API.csproj" Id="2edd45ff-12c0-4885-996e-8a4012a48cf8" />
   <Project Path="BayTack.Application/BayTack.Application.csproj" />
   <Project Path="BayTack.Domain/BayTack.Domain.csproj" />
   <Project Path="BayTack.Infrastructure/BayTack.Infrastructure.csproj" />
