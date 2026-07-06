@@ -1,5 +1,4 @@
-﻿
-namespace BayTack.Application.Abstractions.Messaging
+﻿namespace BayTack.Application.Common.Models
 {
     public class Result<T>
     {

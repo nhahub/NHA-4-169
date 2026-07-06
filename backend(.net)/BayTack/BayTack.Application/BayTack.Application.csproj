@@ -12,7 +12,20 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\IRepository\" />
-    <Folder Include="Abstractions\Interfaces\" />
+    <Folder Include="Common\Behaviors\" />
+    <Folder Include="Features\EventHandlers\" />
+    <Folder Include="Features\Identity\Queries\" />
+    <Folder Include="Features\Jobs\Queries\" />
+    <Folder Include="Features\Notifications\Commands\" />
+    <Folder Include="Features\Orders\Commands\" />
+    <Folder Include="Features\Payments\" />
+    <Folder Include="Features\Providers\" />
+    <Folder Include="Features\Reviews\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 
 </Project>

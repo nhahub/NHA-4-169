@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BayTack.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+812eebbdd2d4cc61f2b4712735042111bc5a9149")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+56aa77543761841eede623c31ebdc9d636982131")]
 [assembly: System.Reflection.AssemblyProductAttribute("BayTack.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BayTack.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
