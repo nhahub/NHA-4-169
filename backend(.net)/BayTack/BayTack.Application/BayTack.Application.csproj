@@ -9,24 +9,21 @@
   <ItemGroup>
     <Compile Remove="Common\Behaviors\**" />
     <Compile Remove="Features\EventHandlers\**" />
+    <Compile Remove="Features\Jobs\Queries\**" />
     <Compile Remove="Features\Notifications\**" />
     <Compile Remove="Features\Orders\**" />
-    <Compile Remove="Features\Payments\**" />
-    <Compile Remove="Features\Providers\**" />
     <Compile Remove="Features\Reviews\**" />
     <EmbeddedResource Remove="Common\Behaviors\**" />
     <EmbeddedResource Remove="Features\EventHandlers\**" />
+    <EmbeddedResource Remove="Features\Jobs\Queries\**" />
     <EmbeddedResource Remove="Features\Notifications\**" />
     <EmbeddedResource Remove="Features\Orders\**" />
-    <EmbeddedResource Remove="Features\Payments\**" />
-    <EmbeddedResource Remove="Features\Providers\**" />
     <EmbeddedResource Remove="Features\Reviews\**" />
     <None Remove="Common\Behaviors\**" />
     <None Remove="Features\EventHandlers\**" />
+    <None Remove="Features\Jobs\Queries\**" />
     <None Remove="Features\Notifications\**" />
     <None Remove="Features\Orders\**" />
-    <None Remove="Features\Payments\**" />
-    <None Remove="Features\Providers\**" />
     <None Remove="Features\Reviews\**" />
   </ItemGroup>
 
@@ -36,7 +33,8 @@
 
   <ItemGroup>
     <Folder Include="Features\Identity\Queries\" />
-    <Folder Include="Features\Jobs\Queries\" />
+    <Folder Include="Features\Payments\" />
+    <Folder Include="Features\Providers\" />
   </ItemGroup>
 
   <ItemGroup>

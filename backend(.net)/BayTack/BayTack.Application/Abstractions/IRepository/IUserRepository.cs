@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BayTack.Application.Features.Users.Queries.GetAllUsers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,5 +13,9 @@ namespace BayTack.Application.Abstractions.IRepository
 			int page,
 			int limit,
 			CancellationToken cancellationToken);
+
+
+
+		Task<UserResponse?> GetByIdAsync(string id, CancellationToken ct = default);
 	}
 }

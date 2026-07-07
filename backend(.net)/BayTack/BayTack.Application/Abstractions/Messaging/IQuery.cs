@@ -1,5 +1,6 @@
 ﻿
 using BayTack.Application.Common.Models;
+using MediatR;
 
 namespace BayTack.Application.Abstractions.Messaging
 {

@@ -1,4 +1,5 @@
-﻿using BayTack.Application.Abstractions.Messaging;
+﻿using BayTack.Application.Abstractions.IRepository;
+using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,9 @@ namespace BayTack.Application.Features.Users.Queries.GetAllUsers
 			var (items, totalCount) = await _userRepository.SearchAsync(
 				request.Search, request.Role, request.Page, request.Limit, cancellationToken);
 
-			return new PaginatedList<UserResponse>(items.ToList(), totalCount, request.Page, request.Limit);
+			var paginatedList = new PaginatedList<UserResponse>(items, totalCount, request.Page, request.Limit);
+
+			return Result<PaginatedList<UserResponse>>.Success(paginatedList);
 		}
 	}
 }

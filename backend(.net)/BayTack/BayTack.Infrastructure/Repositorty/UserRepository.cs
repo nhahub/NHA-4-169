@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BayTack.Application.Abstractions.IRepository;
+using BayTack.Application.Features.Users.Queries.GetAllUsers;
+using BayTack.Infrastructure.Identity;
+using BayTack.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,10 +13,10 @@ namespace BayTack.Infrastructure.Repositorty
 	
 	public sealed class UserRepository : IUserRepository
 	{
-		private readonly ApplicationDbContext _context;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly AppDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-		public UserRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+		public UserRepository(AppDbContext context, UserManager<AppUser> userManager)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -20,7 +25,7 @@ namespace BayTack.Infrastructure.Repositorty
 		public async Task<(IReadOnlyList<UserResponse> Items, int TotalCount)> SearchAsync(
 			string? search, string? role, int page, int limit, CancellationToken cancellationToken)
 		{
-			IQueryable<ApplicationUser> query = _context.Users.AsNoTracking();
+			IQueryable<AppUser> query = _context.Users.AsNoTracking();
 
 			if (!string.IsNullOrWhiteSpace(search))
 			{
@@ -61,6 +66,24 @@ namespace BayTack.Infrastructure.Repositorty
 			}
 
 			return (items, totalCount);
+		}
+
+
+
+
+
+
+		public async Task<UserResponse?> GetByIdAsync(string id, CancellationToken ct = default)
+		{
+			var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, ct);
+			if (user is null) return null;
+
+			var roles = await _context.UserRoles
+				.Where(ur => ur.UserId == id)
+				.Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name!)
+				.ToListAsync(ct);
+
+			return new UserResponse(user.Id, user.FullName, user.Email, user.Status.ToString(), roles, user.CreatedAt);
 		}
 	}
 }
