@@ -1,4 +1,5 @@
-﻿using BayTack.Domain.Common.BaseEntity;
+﻿using BayTack.Application.Common.Specifications;
+using BayTack.Domain.Common.BaseEntity;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,5 +1,7 @@
 ﻿using BayTack.Application.Abstractions.IRepository;
+using BayTack.Application.Common.Specifications;
 using BayTack.Domain.Common.BaseEntity;
+using BayTack.Infrastructure.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

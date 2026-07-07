@@ -20,8 +20,4 @@
     <ProjectReference Include="..\BayTack.Application\BayTack.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\Configurations\" />
-  </ItemGroup>
-
 </Project>
