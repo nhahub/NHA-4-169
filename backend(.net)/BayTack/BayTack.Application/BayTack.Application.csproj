@@ -9,18 +9,21 @@
   <ItemGroup>
     <Compile Remove="Common\Behaviors\**" />
     <Compile Remove="Features\EventHandlers\**" />
+    <Compile Remove="Features\Identity\Queries\**" />
     <Compile Remove="Features\Jobs\Queries\**" />
     <Compile Remove="Features\Notifications\**" />
     <Compile Remove="Features\Orders\**" />
     <Compile Remove="Features\Reviews\**" />
     <EmbeddedResource Remove="Common\Behaviors\**" />
     <EmbeddedResource Remove="Features\EventHandlers\**" />
+    <EmbeddedResource Remove="Features\Identity\Queries\**" />
     <EmbeddedResource Remove="Features\Jobs\Queries\**" />
     <EmbeddedResource Remove="Features\Notifications\**" />
     <EmbeddedResource Remove="Features\Orders\**" />
     <EmbeddedResource Remove="Features\Reviews\**" />
     <None Remove="Common\Behaviors\**" />
     <None Remove="Features\EventHandlers\**" />
+    <None Remove="Features\Identity\Queries\**" />
     <None Remove="Features\Jobs\Queries\**" />
     <None Remove="Features\Notifications\**" />
     <None Remove="Features\Orders\**" />
@@ -32,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Identity\Queries\" />
     <Folder Include="Features\Payments\" />
     <Folder Include="Features\Providers\" />
   </ItemGroup>

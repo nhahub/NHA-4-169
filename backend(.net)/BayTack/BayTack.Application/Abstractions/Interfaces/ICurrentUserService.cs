@@ -6,7 +6,7 @@ namespace BayTack.Application.Abstractions.Interfaces
 {
 	public interface ICurrentUserService
 	{
-		int? UserId { get; }
+		string? UserId { get; }
 		string? Email { get; }
 		bool IsInRole(string role);
 		bool IsAuthenticated { get; }

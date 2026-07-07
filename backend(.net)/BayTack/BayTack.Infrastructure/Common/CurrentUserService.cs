@@ -1,8 +1,6 @@
 ﻿using BayTack.Application.Abstractions.Interfaces;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Text;
 
 namespace BayTack.Infrastructure.Common
 {
@@ -14,12 +12,12 @@ namespace BayTack.Infrastructure.Common
 
 		private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
-		public int? UserId
+		public string? UserId
 		{
 			get
 			{
 				var value = User?.FindFirstValue(ClaimTypes.NameIdentifier);
-				return int.TryParse(value, out var id) ? id : null;
+				return value;
 			}
 		}
 

@@ -2,5 +2,5 @@
 
 namespace BayTack.Application.Features.Identity.Command.Login
 {
-    public record LoginCommand(string Email, string Password) : ICommand<AuthResponse>;
+    //public record LoginCommand(string Email, string Password) : ICommand<AuthResponse>;
 }

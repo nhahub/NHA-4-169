@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BayTack.Application.Features.Users.Command
+namespace BayTack.Application.Features.Users.Command.CreateUser
 {
 	public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserResponse>
 	{

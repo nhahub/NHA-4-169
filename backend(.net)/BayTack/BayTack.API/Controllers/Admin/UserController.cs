@@ -1,5 +1,6 @@
 ﻿using BayTack.API.Extensions;
 using BayTack.Application.Features.Users.Command;
+using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
 using BayTack.Application.Features.Users.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,6 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-
-
-
 		/// <summary>GET /users/{id} -> User</summary>
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById(string id)
@@ -41,6 +39,25 @@ namespace BayTack.API.Controllers.Admin
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
+
+
+		/// <summary>PUT /users/{id}  Body: { name, email, phone, role } -> User</summary>
+		[HttpPut("{id}")]
+		public async Task<IActionResult> Update(string id, [FromBody] UpdateUserRequest request)
+		{
+			// UpdatedBy comes from the authenticated admin (claims), never from the request body.
+			var updatedBy = CurrentUserId ?? throw new InvalidOperationException("Authenticated user ID is required.");
+
+			var command = new UpdateUserCommand(id, request.Name, request.Email, request.Phone, request.Role, updatedBy);
+			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+
+
+
+
 	}
 }
 
@@ -54,18 +71,6 @@ public sealed record UpdateUserRequest(string Name, string Email, string? Phone,
 
 
 
-
-//	/// <summary>PUT /users/{id}  Body: { name, email, phone, role } -> User</summary>
-//	[HttpPut("{id:int}")]
-//	public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
-//	{
-//		// UpdatedBy comes from the authenticated admin (claims), never from the request body.
-//		var updatedBy = _currentUser.UserId ?? 0;
-//		var command = new UpdateUserCommand(id, request.Name, request.Email, request.Phone, request.Role, updatedBy);
-//		var result = await Sender.Send(command);
-//		var response = result.ToApiResponse();
-//		return StatusCode(response.StatusCode, response);
-//	}
 
 //	/// <summary>PATCH /users/{id}/deactivate -> { success: true }</summary>
 //	[HttpPatch("{id:int}/deactivate")]
