@@ -1,9 +1,6 @@
 ﻿using BayTack.Domain.Common.BaseEntity;
 using BayTack.Domain.Entities.PaymentAggregate;
 using BayTack.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BayTack.Domain.Entities.ServiceAggregate
 {

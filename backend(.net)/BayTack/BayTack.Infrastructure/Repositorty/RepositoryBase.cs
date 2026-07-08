@@ -1,13 +1,14 @@
 ﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Common.Specifications;
 using BayTack.Domain.Common.BaseEntity;
+using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BayTack.Infrastructure.Persistence.Repositories
+namespace BayTack.Infrastructure.Repositorty
 {
 	public class RepositoryBase<T, TId> : IRepository<T, TId> where T : BaseEntity<TId>
 	{

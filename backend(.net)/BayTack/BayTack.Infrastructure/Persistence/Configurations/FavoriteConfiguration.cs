@@ -1,4 +1,5 @@
 ﻿using BayTack.Domain.Entities.UserFeatures;
+using BayTack.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -12,8 +13,8 @@ namespace BayTack.Infrastructure.Persistence.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Favorite> builder)
 		{
-			builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(f => f.CustomerId).OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(f => f.ProviderId).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<AppUser>().WithMany().HasForeignKey(f => f.CustomerId).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<AppUser>().WithMany().HasForeignKey(f => f.ProviderId).OnDelete(DeleteBehavior.Restrict);
 			builder.HasIndex(f => new { f.CustomerId, f.ProviderId }).IsUnique();
 		}
 	}

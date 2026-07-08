@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BayTack.Domain.Enums
 {
-	public enum VerificationStatus { Pending, Verified, Rejected }
+	public enum VerificationStatus { Pending, UnderReview, Suspended, Approved, Rejected }
 
 }

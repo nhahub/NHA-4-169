@@ -1,5 +1,7 @@
 ﻿using BayTack.API.Extensions;
 using BayTack.Application.Features.Users.Command;
+using BayTack.Application.Features.Users.Command.DeactivateUser;
+using BayTack.Application.Features.Users.Command.DeleteUser;
 using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
 using BayTack.Application.Features.Users.Queries.GetUserById;
@@ -56,6 +58,30 @@ namespace BayTack.API.Controllers.Admin
 
 
 
+		/// <summary>PATCH /users/{id}/deactivate -> { success: true }</summary>
+		[HttpPatch("{id}/deactivate")]
+		public async Task<IActionResult> Deactivate(string id)
+		{
+			var result = await Sender.Send(new DeactivateUserCommand(id));
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+
+
+
+
+		/// <summary>DELETE /users/{id} -> { success: true } (soft delete)</summary>
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(string id)
+		{
+			var command = new DeleteUserCommand(id, CurrentUserId, "Deleted via admin API");
+			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+
 
 
 	}
@@ -67,29 +93,6 @@ public sealed record UpdateUserRequest(string Name, string Email, string? Phone,
 
 
 
-
-
-
-
-
-//	/// <summary>PATCH /users/{id}/deactivate -> { success: true }</summary>
-//	[HttpPatch("{id:int}/deactivate")]
-//	public async Task<IActionResult> Deactivate(int id)
-//	{
-//		var result = await Sender.Send(new DeactivateUserCommand(id));
-//		var response = result.ToApiResponse();
-//		return StatusCode(response.StatusCode, response);
-//	}
-
-//	/// <summary>DELETE /users/{id} -> { success: true } (soft delete)</summary>
-//	[HttpDelete("{id:int}")]
-//	public async Task<IActionResult> Delete(int id)
-//	{
-//		var command = new DeleteUserCommand(id, _currentUser.UserId, "Deleted via admin API");
-//		var result = await Sender.Send(command);
-//		var response = result.ToApiResponse();
-//		return StatusCode(response.StatusCode, response);
-//	}
 
 
 

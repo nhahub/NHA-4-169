@@ -1,16 +1,15 @@
-﻿using BayTack.Domain.Entities.ServiceAggregate;
+﻿using  entityService = BayTack.Domain.Entities.ServiceAggregate.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using BayTack.Domain.Entities.ServiceAggregate;
+
 
 namespace BayTack.Infrastructure.Persistence.Configurations.Service
 {
 
-	public class ServiceConfiguration : IEntityTypeConfiguration<Service>
+	public class ServiceConfiguration : IEntityTypeConfiguration<entityService>
 	{
-		public void Configure(EntityTypeBuilder<Service> builder)
+		public void Configure(EntityTypeBuilder<entityService> builder)
 		{
 			builder.Property(s => s.Name).HasMaxLength(150).IsRequired();
 			builder.HasOne<ServiceCategory>().WithMany(c => c.Services).HasForeignKey(s => s.CategoryId).OnDelete(DeleteBehavior.Restrict);
@@ -27,7 +26,7 @@ namespace BayTack.Infrastructure.Persistence.Configurations.Service
 			});
 
 			builder.HasMany(s => s.PaymentMethods).WithOne().HasForeignKey("ServiceId").OnDelete(DeleteBehavior.Cascade);
-			builder.Metadata.FindNavigation(nameof(Service.PaymentMethods))!.SetPropertyAccessMode(PropertyAccessMode.Field);
+			builder.Metadata.FindNavigation(nameof(entityService.PaymentMethods))!.SetPropertyAccessMode(PropertyAccessMode.Field);
 		}
 	}
 

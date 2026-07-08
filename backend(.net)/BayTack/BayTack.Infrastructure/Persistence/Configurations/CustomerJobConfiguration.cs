@@ -1,10 +1,13 @@
 ﻿using BayTack.Domain.Entities.JobAggregate;
 using BayTack.Domain.Entities.ServiceAggregate;
+using BayTack.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using entityService = BayTack.Domain.Entities.ServiceAggregate.Service;
+
 
 namespace BayTack.Infrastructure.Persistence.Configurations
 {
@@ -25,9 +28,9 @@ namespace BayTack.Infrastructure.Persistence.Configurations
 				a.Property(x => x.AreaId).HasColumnName("LocationAreaId");
 			});
 
-			builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(j => j.CustomerId).OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne<Service>().WithMany().HasForeignKey(j => j.ServiceId).OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(j => j.DeletedBy).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<AppUser>().WithMany().HasForeignKey(j => j.CustomerId).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<entityService>().WithMany().HasForeignKey(j => j.ServiceId).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<AppUser>().WithMany().HasForeignKey(j => j.DeletedBy).OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasMany(j => j.Images).WithOne().HasForeignKey(i => i.CustomerJobId).OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(j => j.Bids).WithOne().HasForeignKey(b => b.CustomerJobId).OnDelete(DeleteBehavior.Cascade);
@@ -39,11 +42,5 @@ namespace BayTack.Infrastructure.Persistence.Configurations
 		}
 	}
 
-	public class JobImageConfiguration : IEntityTypeConfiguration<JobImage>
-	{
-		public void Configure(EntityTypeBuilder<JobImage> builder)
-		{
-			builder.Property(i => i.ImageUrl).HasColumnType("nvarchar(max)").IsRequired();
-		}
-	}
+	
 }
