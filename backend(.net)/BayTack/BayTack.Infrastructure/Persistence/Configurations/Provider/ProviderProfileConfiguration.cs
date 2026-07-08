@@ -1,4 +1,5 @@
 ﻿using BayTack.Domain.Entities.ProviderAggregate;
+using BayTack.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -23,7 +24,7 @@ namespace BayTack.Infrastructure.Persistence.Configurations.Provider
 				a.Property(x => x.AreaId).HasColumnName("WorkshopAreaId");
 			});
 
-			builder.HasOne<ApplicationUser>().WithOne().HasForeignKey<ProviderProfile>(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
+			builder.HasOne<AppUser>().WithOne().HasForeignKey<ProviderProfile>(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
 			builder.HasIndex(p => p.UserId).IsUnique();
 
 			builder.HasMany(p => p.Documents).WithOne().HasForeignKey(d => d.ProviderProfileId).OnDelete(DeleteBehavior.Cascade);

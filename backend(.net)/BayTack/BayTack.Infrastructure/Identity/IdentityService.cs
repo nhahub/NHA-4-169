@@ -1,7 +1,11 @@
 ﻿using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.Models;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BayTack.Infrastructure.Identity
@@ -17,6 +21,7 @@ namespace BayTack.Infrastructure.Identity
 			_roleManager = roleManager;
 		}
 
+		
 		public async Task<Result<string>> CreateUserAsync(string fullName, string email, string? phoneNumber, string role, CancellationToken ct = default)
 		{
 			if (!await _roleManager.RoleExistsAsync(role))
@@ -130,5 +135,6 @@ namespace BayTack.Infrastructure.Identity
 
 			return new string(result);
 		}
+
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using BayTack.API.Extensions;
 using BayTack.Application.Features.Users.Command;
 using BayTack.Application.Features.Users.Command.DeactivateUser;
+using BayTack.Application.Features.Users.Command.DeleteUser;
 using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
 using BayTack.Application.Features.Users.Queries.GetUserById;

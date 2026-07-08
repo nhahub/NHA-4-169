@@ -1,4 +1,5 @@
 ﻿using BayTack.Domain.Entities.OrderAggregate;
+using BayTack.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

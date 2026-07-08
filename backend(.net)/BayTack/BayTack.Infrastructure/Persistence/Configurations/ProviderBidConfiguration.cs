@@ -1,4 +1,5 @@
 ﻿using BayTack.Domain.Entities.JobAggregate;
+using BayTack.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -21,7 +22,7 @@ namespace BayTack.Infrastructure.Persistence.Configurations
 				m.Property(x => x.Currency).HasColumnName("ProposedPriceCurrency").HasMaxLength(3);
 			});
 
-			builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(b => b.ProviderId).OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne<AppUser>().WithMany().HasForeignKey(b => b.ProviderId).OnDelete(DeleteBehavior.Restrict);
 			builder.HasIndex(b => new { b.CustomerJobId, b.ProviderId, b.Status });
 		}
 	}
