@@ -2,6 +2,7 @@ using BayTack.API.Extensions;
 using BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
 using BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
+using BayTack.Application.Features.Providers.Commands.VerifyProvider;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
 using BayTack.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,14 @@ namespace BayTack.API.Controllers.Providers
 		{
 			var command = new AddProviderDocumentCommand(id, request.DocType, request.DocUrl);
 			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+		[HttpPost("{id}/verify")]
+		public async Task<IActionResult> Verify(string id)
+		{
+			var result = await Sender.Send(new VerifyProviderCommand(id));
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
