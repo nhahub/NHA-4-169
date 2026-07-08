@@ -1,4 +1,5 @@
 using BayTack.API.Extensions;
+using BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
 using BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
 using BayTack.Application.Features.Providers.Commands.RejectProvider;
@@ -67,6 +68,15 @@ namespace BayTack.API.Controllers.Providers
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
+
+		[HttpPost("{id}/portfolio")]
+		public async Task<IActionResult> AddPortfolioItem(string id, [FromBody] AddPortfolioItemRequest request)
+		{
+			var command = new AddPortfolioItemCommand(id, request.Title, request.Description, request.ImageUrl);
+			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
 	}
 
 	public sealed record CreateProviderProfileRequest(
@@ -78,4 +88,6 @@ namespace BayTack.API.Controllers.Providers
 	public sealed record UpdateProviderBioRequest(string Bio, string UpdatedBy);
 
 	public sealed record AddProviderDocumentRequest(string DocType, string DocUrl);
+
+	public sealed record AddPortfolioItemRequest(string Title, string? Description, string? ImageUrl);
 }
