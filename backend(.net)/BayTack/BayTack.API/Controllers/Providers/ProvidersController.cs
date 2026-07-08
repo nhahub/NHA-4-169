@@ -1,5 +1,6 @@
 using BayTack.API.Extensions;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
+using BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
 using BayTack.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,15 @@ namespace BayTack.API.Controllers.Providers
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
+
+		[HttpPatch("{id}/bio")]
+		public async Task<IActionResult> UpdateBio(string id, [FromBody] UpdateProviderBioRequest request)
+		{
+			var command = new UpdateProviderBioCommand(id, request.Bio, request.UpdatedBy);
+			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
 	}
 
 	public sealed record CreateProviderProfileRequest(
@@ -36,4 +46,6 @@ namespace BayTack.API.Controllers.Providers
 		ProviderType ProviderType,
 		int YearsOfExperience,
 		string? Bio);
+
+	public sealed record UpdateProviderBioRequest(string Bio, string UpdatedBy);
 }
