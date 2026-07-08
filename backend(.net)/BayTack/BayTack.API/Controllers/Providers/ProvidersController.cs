@@ -1,6 +1,7 @@
 using BayTack.API.Extensions;
 using BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
+using BayTack.Application.Features.Providers.Commands.RejectProvider;
 using BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
 using BayTack.Application.Features.Providers.Commands.VerifyProvider;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
@@ -55,6 +56,14 @@ namespace BayTack.API.Controllers.Providers
 		public async Task<IActionResult> Verify(string id)
 		{
 			var result = await Sender.Send(new VerifyProviderCommand(id));
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+		[HttpPost("{id}/reject")]
+		public async Task<IActionResult> Reject(string id)
+		{
+			var result = await Sender.Send(new RejectProviderCommand(id));
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
