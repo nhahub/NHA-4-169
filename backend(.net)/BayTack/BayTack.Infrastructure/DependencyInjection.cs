@@ -1,11 +1,10 @@
-﻿using BayTack.Application.Abstractions.Interfaces;
-using BayTack.Application.Abstractions.IRepository;
-using BayTack.Infrastructure.Identity;
+﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Repositorty;
+using BayTack.Infrastructure.Repositorty.BayTack.Infrastructure.Repositorty;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace BayTack.Infrastructure
 {
@@ -14,18 +13,15 @@ namespace BayTack.Infrastructure
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
 
+			services.AddDbContext<AppDbContext>((sp, options) =>
+			{
+				options.UseSqlServer(
+					configuration.GetConnectionString("DefaultConnection"),
+					sql => sql.EnableRetryOnFailure());
+			});
 
 
-			//services.AddDbContext<AppDbContext>((sp, options) =>
-			//{
-
-			//	options.UseSqlServer(
-			//		configuration.GetConnectionString("DefaultConnection"),
-			//		sql => sql.EnableRetryOnFailure());
-			//});
-
-
-
+			services.AddScoped<IProviderVerificationReadRepository, ProviderVerificationReadRepository>();
 
 			//// Identity DB (separate)
 			//services.AddJobSiteIdentity(configuration);

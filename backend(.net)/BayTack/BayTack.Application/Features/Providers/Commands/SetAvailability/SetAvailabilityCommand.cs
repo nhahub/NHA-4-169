@@ -1,4 +1,5 @@
-using BayTack.Application.Abstractions.Messaging;
+﻿using BayTack.Application.Abstractions.Messaging;
+
 
 namespace BayTack.Application.Features.Providers.Commands.SetAvailability
 {

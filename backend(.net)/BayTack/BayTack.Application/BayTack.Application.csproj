@@ -31,12 +31,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Providers\Commands\SetAvailability\SetAvailabilityCommandHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BayTack.Domain\BayTack.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Features\Payments\" />
-    <Folder Include="Features\Providers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Features\Providers\Commands\SetAvailability\SetAvailabilityCommandHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>

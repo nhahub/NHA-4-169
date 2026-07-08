@@ -1,10 +1,7 @@
 ﻿using BayTack.Domain.Common.BaseEntity;
 using BayTack.Domain.Enums;
 using BayTack.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+ 
 
 namespace BayTack.Domain.Entities.ProviderAggregate
 {
@@ -66,7 +63,7 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 		{
 			if (!_documents.Any() || _documents.Any(d => d.Status != DocumentStatus.Approved))
 				throw new InvalidOperationException("All documents must be approved before a provider can be verified.");
-			VerificationStatus = VerificationStatus.Verified;
+			VerificationStatus = VerificationStatus.Approved;
 		}
 
 		public void Reject() => VerificationStatus = VerificationStatus.Rejected;
@@ -84,8 +81,29 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 			_availabilities.RemoveAll(a => a.DayOfWeek == day);
 			_availabilities.Add(ProviderAvailability.Create(Id, day, start, end));
 		}
+
+
+
+
+		public void MarkUnderReview()
+		{
+			//if (VerificationStatus is VerificationStatus.Approved or VerificationStatus.Suspended)
+			//	throw new DomainException("Cannot move a finalized provider back to review.");
+
+			VerificationStatus = VerificationStatus.UnderReview;
+			//AddDomainEvent(new ProviderUnderReviewDomainEvent(Id));
+		}
+
+		public void Reject(string reason)
+		{
+			if (string.IsNullOrWhiteSpace(reason))
+				throw new ArgumentException("A rejection reason is required.", nameof(reason));
+
+			VerificationStatus = VerificationStatus.Suspended;
+			//AddDomainEvent(new ProviderRejectedDomainEvent(Id, reason));
+		}
 	}
 
 	
-
+	
 }

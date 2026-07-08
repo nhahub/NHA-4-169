@@ -1,4 +1,6 @@
+using BayTack.Application.Abstractions.Messaging;
 using FluentValidation;
+using System;
 
 namespace BayTack.Application.Features.Providers.Commands.SetAvailability
 {
@@ -13,4 +15,6 @@ namespace BayTack.Application.Features.Providers.Commands.SetAvailability
 				.WithMessage("Start time must be before end time.");
 		}
 	}
+
+   
 }
