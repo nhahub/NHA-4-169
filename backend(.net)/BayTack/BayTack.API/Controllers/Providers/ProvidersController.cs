@@ -3,6 +3,7 @@ using BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
 using BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
 using BayTack.Application.Features.Providers.Commands.RejectProvider;
+using BayTack.Application.Features.Providers.Commands.SetAvailability;
 using BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
 using BayTack.Application.Features.Providers.Commands.VerifyProvider;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
@@ -77,6 +78,15 @@ namespace BayTack.API.Controllers.Providers
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
+
+		[HttpPost("{id}/availability")]
+		public async Task<IActionResult> SetAvailability(string id, [FromBody] SetAvailabilityRequest request)
+		{
+			var command = new SetAvailabilityCommand(id, request.DayOfWeek, request.StartTime, request.EndTime);
+			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
 	}
 
 	public sealed record CreateProviderProfileRequest(
@@ -90,4 +100,6 @@ namespace BayTack.API.Controllers.Providers
 	public sealed record AddProviderDocumentRequest(string DocType, string DocUrl);
 
 	public sealed record AddPortfolioItemRequest(string Title, string? Description, string? ImageUrl);
+
+	public sealed record SetAvailabilityRequest(DayOfWeek DayOfWeek, TimeSpan StartTime, TimeSpan EndTime);
 }
