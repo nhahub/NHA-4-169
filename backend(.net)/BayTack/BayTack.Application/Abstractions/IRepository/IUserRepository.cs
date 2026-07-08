@@ -1,4 +1,5 @@
 ﻿using BayTack.Application.Features.Users.Queries.GetAllUsers;
+using BayTack.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,5 +18,6 @@ namespace BayTack.Application.Abstractions.IRepository
 
 
 		Task<UserResponse?> GetByIdAsync(string id, CancellationToken ct = default);
-	}
+        Task<Address> GetAddressAsync(string customerId, CancellationToken ct);
+    }
 }

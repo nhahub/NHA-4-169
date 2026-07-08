@@ -50,7 +50,9 @@ namespace BayTack.Infrastructure.Persistence
 		public DbSet<Attachment> Attachments => Set<Attachment>();
 		public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
-		protected override void OnModelCreating(ModelBuilder builder)
+        public object Conversations { get; internal set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
 
