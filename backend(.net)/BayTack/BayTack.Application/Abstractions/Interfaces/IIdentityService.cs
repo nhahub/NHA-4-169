@@ -17,5 +17,4 @@ namespace BayTack.Application.Abstractions.Interfaces
 
 		Task<Result<bool>> SoftDeleteUserAsync(string userId, string? deletedBy, string? reason, CancellationToken ct = default);
 	}
-
 }
