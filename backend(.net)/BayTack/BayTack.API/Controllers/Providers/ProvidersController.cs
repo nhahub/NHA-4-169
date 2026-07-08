@@ -1,5 +1,6 @@
 using BayTack.API.Extensions;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
+using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
 using BayTack.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,14 @@ namespace BayTack.API.Controllers.Providers
 				request.Bio);
 
 			var result = await Sender.Send(command);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetById(string id)
+		{
+			var result = await Sender.Send(new GetProviderProfileByIdQuery(id));
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
