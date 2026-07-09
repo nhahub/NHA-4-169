@@ -25,6 +25,7 @@
 
         public static Result Success() => new(true, null);
         public static Result Failure(string error) => new(false, error);
+        public static Result NotFound(string error) => new(false, error);
     }
 
     public class Result<T> : IResult
@@ -42,6 +43,7 @@
 
         public static Result<T> Success(T value) => new(true, value, null);
         public static Result<T> Failure(string error) => new(false, default, error);
+        public static Result<T> NotFound(string error) => new(false, default, error);
 
         public static implicit operator Result<T>(T value) => Success(value);
     }
