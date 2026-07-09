@@ -1,5 +1,6 @@
 ﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
+using BayTack.Domain.ValueObjects;
 using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -88,5 +89,10 @@ namespace BayTack.Infrastructure.Repositorty
 
 			return new UserResponse(user.Id, user.FullName, user.Email, user.Status.ToString(), roles, user.CreatedAt);
 		}
-	}
+
+        public async Task<Address> GetAddressAsync(string customerId, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

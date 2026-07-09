@@ -9,15 +9,12 @@
   <ItemGroup>
     <Compile Remove="Features\EventHandlers\**" />
     <Compile Remove="Features\Identity\Queries\**" />
-    <Compile Remove="Features\Jobs\Queries\**" />
     <Compile Remove="Features\Reviews\**" />
     <EmbeddedResource Remove="Features\EventHandlers\**" />
     <EmbeddedResource Remove="Features\Identity\Queries\**" />
-    <EmbeddedResource Remove="Features\Jobs\Queries\**" />
     <EmbeddedResource Remove="Features\Reviews\**" />
     <None Remove="Features\EventHandlers\**" />
     <None Remove="Features\Identity\Queries\**" />
-    <None Remove="Features\Jobs\Queries\**" />
     <None Remove="Features\Reviews\**" />
   </ItemGroup>
 
@@ -30,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Jobs\Commands\" />
     <Folder Include="Features\Messages\Common\" />
     <Folder Include="Features\Messages\Specifications\" />
     <Folder Include="Features\Messages\Queries\" />

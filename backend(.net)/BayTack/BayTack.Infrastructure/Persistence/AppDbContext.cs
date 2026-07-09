@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using BayTack.Domain.Entities.Messaging;
 
 namespace BayTack.Infrastructure.Persistence
 {
@@ -50,7 +51,9 @@ namespace BayTack.Infrastructure.Persistence
 		public DbSet<Attachment> Attachments => Set<Attachment>();
 		public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
-        public object Conversations { get; internal set; }
+       // public object Conversations { get; internal set; }
+        public DbSet<Conversation> Conversations => Set<Conversation>();
+        public DbSet<Message> Messages => Set<Message>();
 
         protected override void OnModelCreating(ModelBuilder builder)
 		{

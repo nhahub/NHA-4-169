@@ -18,8 +18,4 @@
     <ProjectReference Include="..\BayTack.Infrastructure\BayTack.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Customer\" />
-  </ItemGroup>
-
 </Project>
