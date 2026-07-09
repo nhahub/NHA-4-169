@@ -13,9 +13,9 @@ namespace BayTack.Infrastructure.Identity
 	public class IdentityService : IIdentityService
 	{
 		private readonly UserManager<AppUser> _userManager;
-		private readonly RoleManager<IdentityRole<int>> _roleManager;
+		private readonly RoleManager<IdentityRole<string>> _roleManager;
 
-		public IdentityService(UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager)
+		public IdentityService(UserManager<AppUser> userManager, RoleManager<IdentityRole<string>> roleManager)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;

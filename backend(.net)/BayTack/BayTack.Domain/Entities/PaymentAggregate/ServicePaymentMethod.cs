@@ -15,6 +15,6 @@ namespace BayTack.Domain.Entities.PaymentAggregate
 		private ServicePaymentMethod() { }
 
 		internal static ServicePaymentMethod Create(string serviceId, string paymentMethodId) =>
-			new() { ServiceId = serviceId, PaymentMethodId = paymentMethodId, Allowed = true };
+			new() { Id = Guid.NewGuid().ToString(), ServiceId = serviceId, PaymentMethodId = paymentMethodId, Allowed = true };
 	}
 }

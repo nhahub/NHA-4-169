@@ -15,7 +15,7 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 		private ProviderAvailability() { }
 
 		internal static ProviderAvailability Create(string providerProfileId, DayOfWeek day, TimeSpan start, TimeSpan end) =>
-			new() { ProviderProfileId = providerProfileId, DayOfWeek = day, StartTime = start, EndTime = end };
+			new() { Id = Guid.NewGuid().ToString(), ProviderProfileId = providerProfileId, DayOfWeek = day, StartTime = start, EndTime = end };
 	}
 
 }

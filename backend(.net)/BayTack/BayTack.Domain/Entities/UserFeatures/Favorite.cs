@@ -15,6 +15,6 @@ namespace BayTack.Domain.Entities.UserFeatures
 		private Favorite() { }
 
 		public static Favorite Create(string customerId, string providerId) =>
-			new() { CustomerId = customerId, ProviderId = providerId };
+			new() { Id = Guid.NewGuid().ToString(), CustomerId = customerId, ProviderId = providerId };
 	}
 }

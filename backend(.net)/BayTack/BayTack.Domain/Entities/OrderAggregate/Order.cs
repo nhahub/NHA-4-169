@@ -25,6 +25,7 @@ namespace BayTack.Domain.Entities.OrderAggregate
 		{
 			var order = new Order
 			{
+				Id = Guid.NewGuid().ToString(),
 				CustomerJobId = customerJobId,
 				ProviderId = providerId,
 				FinalPrice = finalPrice,

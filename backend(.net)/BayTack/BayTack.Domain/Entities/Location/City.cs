@@ -14,7 +14,7 @@ namespace BayTack.Domain.Entities.Location
 
 		private City() { }
 
-		public static City Create(string name) => new() { Name = name };
+		public static City Create(string name) => new() { Id = Guid.NewGuid().ToString(), Name = name };
 
 		public Area AddArea(string name)
 		{

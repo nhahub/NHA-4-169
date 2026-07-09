@@ -25,6 +25,7 @@ namespace BayTack.Domain.Entities.PaymentAggregate
 
 			return new Payment
 			{
+				Id = Guid.NewGuid().ToString(),
 				OrderId = orderId,
 				MethodId = methodId,
 				Amount = amount,

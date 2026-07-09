@@ -35,6 +35,7 @@ namespace BayTack.Domain.Entities.JobAggregate
 
 			return new CustomerJob
 			{
+				Id = Guid.NewGuid().ToString(),
 				CustomerId = customerId,
 				ServiceId = serviceId,
 				Title = title,

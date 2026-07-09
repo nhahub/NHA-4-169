@@ -28,6 +28,7 @@ namespace BayTack.Infrastructure.Identity
 
 			return new AppUser
 			{
+				Id = Guid.NewGuid().ToString(),
 				UserName = userName,
 				Email = email,
 				FullName = fullName,

@@ -14,6 +14,6 @@ namespace BayTack.Domain.Entities.PaymentAggregate
 		private PaymentMethod() { }
 
 		public static PaymentMethod Create(string name, string? description = null) =>
-			new() { Name = name, Description = description };
+			new() { Id = Guid.NewGuid().ToString(), Name = name, Description = description };
 	}
 }

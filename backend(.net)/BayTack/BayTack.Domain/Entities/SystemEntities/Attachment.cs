@@ -16,6 +16,6 @@ namespace BayTack.Domain.Entities.SystemEntities
 		private Attachment() { }
 
 		public static Attachment Create(string fileUrl, string fileType, string uploadedBy) =>
-			new() { FileUrl = fileUrl, FileType = fileType, UploadedBy = uploadedBy };
+			new() { Id = Guid.NewGuid().ToString(), FileUrl = fileUrl, FileType = fileType, UploadedBy = uploadedBy };
 	}
 }

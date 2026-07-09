@@ -1,7 +1,11 @@
-﻿using BayTack.Application.Abstractions.IRepository;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Abstractions.IRepository;
+using BayTack.Infrastructure.Common;
+using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Repositorty;
 using BayTack.Infrastructure.Repositorty.BayTack.Infrastructure.Repositorty;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,22 +24,37 @@ namespace BayTack.Infrastructure
 					sql => sql.EnableRetryOnFailure());
 			});
 
+			services.AddIdentityCore<AppUser>(options =>
+			{
+				options.Password.RequireDigit = true;
+				options.Password.RequireLowercase = true;
+				options.Password.RequiredLength = 6;
+			})
+			.AddRoles<IdentityRole<string>>()  
+			.AddEntityFrameworkStores<AppDbContext>();
+
+
+
+
+			services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+
+
+
 
 			services.AddScoped<IProviderVerificationReadRepository, ProviderVerificationReadRepository>();
+			services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+			services.AddScoped<IUserRepository, UserRepository>();
+			services.AddScoped<IIdentityService, IdentityService>();
+
+
+
+			services.AddScoped<IIdentityService, IdentityService>();
+
 
 			//// Identity DB (separate)
 			//services.AddJobSiteIdentity(configuration);
 
-			// Repositories
-			//services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-			//services.AddScoped<IUserRepository, UserRepository>();
-			//services.AddScoped<ICompanyRepository, CompanyRepository>();
-			//services.AddScoped<IJobRepository, JobRepository>();
-			//services.AddScoped<IApplicationRepository, ApplicationRepository>();
-			//services.AddScoped<ICVRepository, CVRepository>();
-			//services.AddScoped<ISkillRepository, SkillRepository>();
-			//services.AddScoped<ICVJobRecommendationRepository, CVJobRecommendationRepository>();
-			//services.AddScoped<IUserSkillRepository, UserSkillsRepository>();
 
 
 			// Unit of Work

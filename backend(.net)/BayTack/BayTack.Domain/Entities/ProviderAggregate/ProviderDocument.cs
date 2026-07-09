@@ -19,7 +19,7 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 		private ProviderDocument() { }
 
 		internal static ProviderDocument Create(string providerProfileId, string docType, string docUrl) =>
-			new() { ProviderProfileId = providerProfileId, DocType = docType, DocUrl = docUrl };
+			new() { Id = Guid.NewGuid().ToString(), ProviderProfileId = providerProfileId, DocType = docType, DocUrl = docUrl };
 
 		public void Approve(string reviewedBy)
 		{

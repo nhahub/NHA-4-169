@@ -17,6 +17,6 @@ namespace BayTack.Domain.Entities.OrderAggregate
 		private OrderStatusHistory() { }
 
 		internal static OrderStatusHistory Create(string orderId, OrderStatus status, string changedBy) =>
-			new() { OrderId = orderId, Status = status, ChangedBy = changedBy };
+			new() { Id = Guid.NewGuid().ToString(), OrderId = orderId, Status = status, ChangedBy = changedBy };
 	}
 }

@@ -28,6 +28,7 @@ namespace BayTack.Domain.Entities.ServiceAggregate
 
 			return new Service
 			{
+				Id = Guid.NewGuid().ToString(),
 				CategoryId = categoryId,
 				Name = name,
 				Description = description,

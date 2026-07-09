@@ -19,7 +19,7 @@ namespace BayTack.Domain.Entities.UserFeatures
 		private Notification() { }
 
 		public static Notification Create(string userId, string title, string message, NotificationType type) =>
-			new() { UserId = userId, Title = title, Message = message, Type = type };
+			new() { Id = Guid.NewGuid().ToString(), UserId = userId, Title = title, Message = message, Type = type };
 
 		public void MarkAsRead() => IsRead = true;
 	}

@@ -32,7 +32,7 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 
 			return new ProviderProfile
 			{
-			    Id = Guid.NewGuid().ToString(),
+				Id = Guid.NewGuid().ToString(),
 				UserId = userId,
 				ProviderType = type,
 				YearsOfExperience = yearsOfExperience,

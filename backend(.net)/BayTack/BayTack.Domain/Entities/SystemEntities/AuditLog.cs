@@ -17,7 +17,7 @@ namespace BayTack.Domain.Entities.SystemEntities
 		private AuditLog() { }
 
 		public static AuditLog Create(string? userId, string action, string tableName, int? recordId) =>
-			new() { UserId = userId, Action = action, TableName = tableName, RecordId = recordId };
+			new() { Id = Guid.NewGuid().ToString(), UserId = userId, Action = action, TableName = tableName, RecordId = recordId };
 	}
 
 }

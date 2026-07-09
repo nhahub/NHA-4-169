@@ -17,6 +17,6 @@ namespace BayTack.Domain.Entities.ServiceAggregate
 		private ServiceCategory() { }
 
 		public static ServiceCategory Create(string name, string? description = null) =>
-			new() { Name = name, Description = description };
+			new() { Id = Guid.NewGuid().ToString(), Name = name, Description = description };
 	}
 }

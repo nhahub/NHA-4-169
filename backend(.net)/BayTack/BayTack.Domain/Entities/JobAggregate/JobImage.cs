@@ -14,6 +14,6 @@ namespace BayTack.Domain.Entities.JobAggregate
 		private JobImage() { }
 
 		internal static JobImage Create(string jobId, string imageUrl) =>
-			new() { CustomerJobId = jobId, ImageUrl = imageUrl };
+			new() { Id = Guid.NewGuid().ToString(), CustomerJobId = jobId, ImageUrl = imageUrl };
 	}
 }

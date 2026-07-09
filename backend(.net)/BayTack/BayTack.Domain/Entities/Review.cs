@@ -22,6 +22,7 @@ namespace BayTack.Domain.Entities
 
 			return new Review
 			{
+				Id = Guid.NewGuid().ToString(),
 				OrderId = orderId,
 				CustomerId = customerId,
 				Rating = rating,

@@ -26,6 +26,7 @@ namespace BayTack.Domain.Entities.JobAggregate
 
 			return new ProviderBid
 			{
+				Id = Guid.NewGuid().ToString(),
 				CustomerJobId = jobId,
 				ProviderId = providerId,
 				ProposedPrice = proposedPrice,
