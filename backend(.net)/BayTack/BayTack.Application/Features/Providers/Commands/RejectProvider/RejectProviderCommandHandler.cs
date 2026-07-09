@@ -3,37 +3,26 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Commands.RejectProvider
+namespace BayTack.Application.Features.Providers.Commands.RejectProvider;
+
+public sealed class RejectProviderCommandHandler(
+    IRepository<ProviderProfile, string> providerProfiles,
+    IUnitOfWork unitOfWork) : ICommandHandler<RejectProviderCommand, RejectProviderResponse>
 {
-	public sealed class RejectProviderCommandHandler
-		: ICommandHandler<RejectProviderCommand, RejectProviderResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<Result<RejectProviderResponse>> Handle(RejectProviderCommand command, CancellationToken cancellationToken)
+    {
+        var providerProfile = await providerProfiles.GetByIdAsync(command.ProviderProfileId, cancellationToken);
+        if (providerProfile is null)
+        {
+            return Result<RejectProviderResponse>.Failure("Provider profile not found.");
+        }
 
-		public RejectProviderCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
-		{
-			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
-		}
+        providerProfile.Reject();
 
-		public async Task<Result<RejectProviderResponse>> Handle(
-			RejectProviderCommand request, CancellationToken ct)
-		{
-			var profile = await _providerProfileRepository.GetByIdAsync(request.ProviderProfileId, ct);
+        providerProfiles.Update(providerProfile);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			if (profile is null)
-				return Result<RejectProviderResponse>.Failure("Provider profile not found.");
-
-			profile.Reject();
-
-			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
-
-			var response = new RejectProviderResponse(profile.Id, profile.VerificationStatus.ToString());
-			return Result<RejectProviderResponse>.Success(response);
-		}
-	}
+        return Result<RejectProviderResponse>.Success(
+            new RejectProviderResponse(providerProfile.Id, providerProfile.VerificationStatus.ToString()));
+    }
 }

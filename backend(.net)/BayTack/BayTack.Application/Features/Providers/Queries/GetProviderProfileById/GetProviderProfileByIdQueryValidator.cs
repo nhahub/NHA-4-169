@@ -1,12 +1,11 @@
 using FluentValidation;
 
-namespace BayTack.Application.Features.Providers.Queries.GetProviderProfileById
+namespace BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
+
+public sealed class GetProviderProfileByIdQueryValidator : AbstractValidator<GetProviderProfileByIdQuery>
 {
-	public sealed class GetProviderProfileByIdQueryValidator : AbstractValidator<GetProviderProfileByIdQuery>
-	{
-		public GetProviderProfileByIdQueryValidator()
-		{
-			RuleFor(x => x.ProviderProfileId).NotEmpty();
-		}
-	}
+    public GetProviderProfileByIdQueryValidator()
+    {
+        RuleFor(q => q.ProviderProfileId).NotEmpty();
+    }
 }
