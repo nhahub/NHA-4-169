@@ -16,6 +16,13 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 		private ProviderPortfolioItem() { }
 
 		internal static ProviderPortfolioItem Create(string providerProfileId, string title, string? description, string? imageUrl) =>
-			new() { Id = Guid.NewGuid().ToString(), ProviderProfileId = providerProfileId, Title = title, Description = description, ImageUrl = imageUrl };
+	new() { Id = Guid.NewGuid().ToString(), ProviderProfileId = providerProfileId, Title = title, Description = description, ImageUrl = imageUrl };
+
+public void UpdateDetails(string title, string? description, string? imageUrl)
+{
+	Title = title;
+	Description = description;
+	ImageUrl = imageUrl;
+}
 	}
 }
