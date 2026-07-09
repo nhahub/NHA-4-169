@@ -15,8 +15,6 @@ namespace BayTack.API.Controllers.Providers
 {
 	public class ProvidersController : ApiController
 	{
-
-		// localhost/api/providers/
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] CreateProviderProfileRequest request)
 		{
