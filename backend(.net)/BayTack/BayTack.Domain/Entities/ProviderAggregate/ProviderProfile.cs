@@ -75,6 +75,20 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 			return item;
 		}
 
+        public void UpdatePortfolioItem(string itemId, string title, string? description, string? imageUrl)
+		{
+			var item = _portfolio.FirstOrDefault(p => p.Id == itemId)
+				?? throw new InvalidOperationException("Portfolio item not found.");
+			item.UpdateDetails(title, description, imageUrl);
+		}
+
+		public void RemovePortfolioItem(string itemId)
+		{
+			var item = _portfolio.FirstOrDefault(p => p.Id == itemId)
+				?? throw new InvalidOperationException("Portfolio item not found.");
+			_portfolio.Remove(item);
+		}
+
 		public void SetAvailability(DayOfWeek day, TimeSpan start, TimeSpan end)
 		{
 			if (start >= end) throw new ArgumentException("Start time must be before end time.");
