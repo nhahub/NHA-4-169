@@ -3,37 +3,26 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Commands.UpdateProviderBio
+namespace BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
+
+public sealed class UpdateProviderBioCommandHandler(
+    IRepository<ProviderProfile, string> providerProfiles,
+    IUnitOfWork unitOfWork) : ICommandHandler<UpdateProviderBioCommand, UpdateProviderBioResponse>
 {
-	public sealed class UpdateProviderBioCommandHandler
-		: ICommandHandler<UpdateProviderBioCommand, UpdateProviderBioResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<Result<UpdateProviderBioResponse>> Handle(UpdateProviderBioCommand command, CancellationToken cancellationToken)
+    {
+        var providerProfile = await providerProfiles.GetByIdAsync(command.ProviderProfileId, cancellationToken);
+        if (providerProfile is null)
+        {
+            return Result<UpdateProviderBioResponse>.Failure("Provider profile not found.");
+        }
 
-		public UpdateProviderBioCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
-		{
-			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
-		}
+        providerProfile.UpdateBio(command.Bio, command.UpdatedBy);
 
-		public async Task<Result<UpdateProviderBioResponse>> Handle(
-			UpdateProviderBioCommand request, CancellationToken ct)
-		{
-			var profile = await _providerProfileRepository.GetByIdAsync(request.ProviderProfileId, ct);
+        providerProfiles.Update(providerProfile);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			if (profile is null)
-				return Result<UpdateProviderBioResponse>.Failure("Provider profile not found.");
-
-			profile.UpdateBio(request.Bio, request.UpdatedBy);
-
-			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
-
-			var response = new UpdateProviderBioResponse(profile.Id, profile.Bio!);
-			return Result<UpdateProviderBioResponse>.Success(response);
-		}
-	}
+        return Result<UpdateProviderBioResponse>.Success(
+            new UpdateProviderBioResponse(providerProfile.Id, providerProfile.Bio!));
+    }
 }

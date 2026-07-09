@@ -3,44 +3,33 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Commands.VerifyProvider
+namespace BayTack.Application.Features.Providers.Commands.VerifyProvider;
+
+public sealed class VerifyProviderCommandHandler(
+    IRepository<ProviderProfile, string> providerProfiles,
+    IUnitOfWork unitOfWork) : ICommandHandler<VerifyProviderCommand, VerifyProviderResponse>
 {
-	public sealed class VerifyProviderCommandHandler
-		: ICommandHandler<VerifyProviderCommand, VerifyProviderResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<Result<VerifyProviderResponse>> Handle(VerifyProviderCommand command, CancellationToken cancellationToken)
+    {
+        var providerProfile = await providerProfiles.GetByIdAsync(command.ProviderProfileId, cancellationToken);
+        if (providerProfile is null)
+        {
+            return Result<VerifyProviderResponse>.Failure("Provider profile not found.");
+        }
 
-		public VerifyProviderCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
-		{
-			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
-		}
+        try
+        {
+            providerProfile.Verify();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result<VerifyProviderResponse>.Failure(ex.Message);
+        }
 
-		public async Task<Result<VerifyProviderResponse>> Handle(
-			VerifyProviderCommand request, CancellationToken ct)
-		{
-			var profile = await _providerProfileRepository.GetByIdAsync(request.ProviderProfileId, ct);
+        providerProfiles.Update(providerProfile);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			if (profile is null)
-				return Result<VerifyProviderResponse>.Failure("Provider profile not found.");
-
-			try
-			{
-				profile.Verify();
-			}
-			catch (InvalidOperationException ex)
-			{
-				return Result<VerifyProviderResponse>.Failure(ex.Message);
-			}
-
-			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
-
-			var response = new VerifyProviderResponse(profile.Id, profile.VerificationStatus.ToString());
-			return Result<VerifyProviderResponse>.Success(response);
-		}
-	}
+        return Result<VerifyProviderResponse>.Success(
+            new VerifyProviderResponse(providerProfile.Id, providerProfile.VerificationStatus.ToString()));
+    }
 }

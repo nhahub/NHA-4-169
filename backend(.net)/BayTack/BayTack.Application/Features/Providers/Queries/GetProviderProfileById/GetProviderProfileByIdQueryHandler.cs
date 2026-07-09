@@ -3,41 +3,31 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Queries.GetProviderProfileById
+namespace BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
+
+public sealed class GetProviderProfileByIdQueryHandler(
+    IRepository<ProviderProfile, string> providerProfiles) : IQueryHandler<GetProviderProfileByIdQuery, ProviderProfileResponse>
 {
-	public sealed class GetProviderProfileByIdQueryHandler
-		: IQueryHandler<GetProviderProfileByIdQuery, ProviderProfileResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
+    public async Task<Result<ProviderProfileResponse>> Handle(GetProviderProfileByIdQuery query, CancellationToken cancellationToken)
+    {
+        var providerProfile = await providerProfiles.GetByIdAsync(query.ProviderProfileId, cancellationToken);
+        if (providerProfile is null)
+        {
+            return Result<ProviderProfileResponse>.Failure("Provider profile not found.");
+        }
 
-		public GetProviderProfileByIdQueryHandler(IRepository<ProviderProfile, string> providerProfileRepository)
-		{
-			_providerProfileRepository = providerProfileRepository;
-		}
-
-		public async Task<Result<ProviderProfileResponse>> Handle(
-			GetProviderProfileByIdQuery request, CancellationToken ct)
-		{
-			var profile = await _providerProfileRepository.GetByIdAsync(request.ProviderProfileId, ct);
-
-			if (profile is null)
-				return Result<ProviderProfileResponse>.Failure("Provider profile not found.");
-
-			var response = new ProviderProfileResponse(
-				profile.Id,
-				profile.UserId,
-				profile.ProviderType.ToString(),
-				profile.VerificationStatus.ToString(),
-				profile.YearsOfExperience,
-				profile.Bio,
-				profile.WorkshopAddress?.Details,
-				profile.WorkshopAddress?.CityId,
-				profile.WorkshopAddress?.AreaId,
-				profile.Documents.Count,
-				profile.Portfolio.Count,
-				profile.Availabilities.Count);
-
-			return Result<ProviderProfileResponse>.Success(response);
-		}
-	}
+        return Result<ProviderProfileResponse>.Success(new ProviderProfileResponse(
+            providerProfile.Id,
+            providerProfile.UserId,
+            providerProfile.ProviderType.ToString(),
+            providerProfile.VerificationStatus.ToString(),
+            providerProfile.YearsOfExperience,
+            providerProfile.Bio,
+            providerProfile.WorkshopAddress?.Details,
+            providerProfile.WorkshopAddress?.CityId,
+            providerProfile.WorkshopAddress?.AreaId,
+            providerProfile.Documents.Count,
+            providerProfile.Portfolio.Count,
+            providerProfile.Availabilities.Count));
+    }
 }

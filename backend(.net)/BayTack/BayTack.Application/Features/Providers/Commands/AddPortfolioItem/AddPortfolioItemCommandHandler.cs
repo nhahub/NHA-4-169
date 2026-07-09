@@ -3,43 +3,30 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Commands.AddPortfolioItem
+namespace BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
+
+public sealed class AddPortfolioItemCommandHandler(
+    IRepository<ProviderProfile, string> providerProfiles,
+    IUnitOfWork unitOfWork) : ICommandHandler<AddPortfolioItemCommand, AddPortfolioItemResponse>
 {
-	public sealed class AddPortfolioItemCommandHandler
-		: ICommandHandler<AddPortfolioItemCommand, AddPortfolioItemResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<Result<AddPortfolioItemResponse>> Handle(AddPortfolioItemCommand command, CancellationToken cancellationToken)
+    {
+        var providerProfile = await providerProfiles.GetByIdAsync(command.ProviderProfileId, cancellationToken);
+        if (providerProfile is null)
+        {
+            return Result<AddPortfolioItemResponse>.Failure("Provider profile not found.");
+        }
 
-		public AddPortfolioItemCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
-		{
-			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
-		}
+        var portfolioItem = providerProfile.AddPortfolioItem(command.Title, command.Description, command.ImageUrl);
 
-		public async Task<Result<AddPortfolioItemResponse>> Handle(
-			AddPortfolioItemCommand request, CancellationToken ct)
-		{
-			var profile = await _providerProfileRepository.GetByIdAsync(request.ProviderProfileId, ct);
+        providerProfiles.Update(providerProfile);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			if (profile is null)
-				return Result<AddPortfolioItemResponse>.Failure("Provider profile not found.");
-
-			var item = profile.AddPortfolioItem(request.Title, request.Description, request.ImageUrl);
-
-			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
-
-			var response = new AddPortfolioItemResponse(
-				profile.Id,
-				item.Id,
-				item.Title,
-				item.Description,
-				item.ImageUrl);
-
-			return Result<AddPortfolioItemResponse>.Success(response);
-		}
-	}
+        return Result<AddPortfolioItemResponse>.Success(new AddPortfolioItemResponse(
+            providerProfile.Id,
+            portfolioItem.Id,
+            portfolioItem.Title,
+            portfolioItem.Description,
+            portfolioItem.ImageUrl));
+    }
 }

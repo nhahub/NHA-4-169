@@ -3,51 +3,37 @@ using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using BayTack.Domain.Entities.ProviderAggregate;
 
-namespace BayTack.Application.Features.Providers.Commands.CreateProviderProfile
+namespace BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
+
+public sealed class CreateProviderProfileCommandHandler(
+    IRepository<ProviderProfile, string> providerProfiles,
+    IUnitOfWork unitOfWork) : ICommandHandler<CreateProviderProfileCommand, CreateProviderProfileResponse>
 {
-	public sealed class CreateProviderProfileCommandHandler
-		: ICommandHandler<CreateProviderProfileCommand, CreateProviderProfileResponse>
-	{
-		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<Result<CreateProviderProfileResponse>> Handle(CreateProviderProfileCommand command, CancellationToken cancellationToken)
+    {
+        var hasExistingProfile = await providerProfiles.AnyAsync(
+            new ProviderProfileByUserIdSpec(command.UserId), cancellationToken);
 
-		public CreateProviderProfileCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
-		{
-			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
-		}
+        if (hasExistingProfile)
+        {
+            return Result<CreateProviderProfileResponse>.Failure("A provider profile already exists for this user.");
+        }
 
-		public async Task<Result<CreateProviderProfileResponse>> Handle(
-			CreateProviderProfileCommand request, CancellationToken ct)
-		{
-			var alreadyExists = await _providerProfileRepository.AnyAsync(
-				new ProviderProfileByUserIdSpec(request.UserId), ct);
+        var newProfile = ProviderProfile.Create(
+            command.UserId,
+            command.ProviderType,
+            command.YearsOfExperience,
+            command.Bio);
 
-			if (alreadyExists)
-				return Result<CreateProviderProfileResponse>.Failure(
-					"A provider profile already exists for this user.");
+        providerProfiles.Add(newProfile);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-			var profile = ProviderProfile.Create(
-				request.UserId,
-				request.ProviderType,
-				request.YearsOfExperience,
-				request.Bio);
-
-			_providerProfileRepository.Add(profile);
-
-			await _unitOfWork.SaveChangesAsync(ct);
-
-			var response = new CreateProviderProfileResponse(
-				profile.Id,
-				profile.UserId,
-				profile.ProviderType.ToString(),
-				profile.VerificationStatus.ToString(),
-				profile.YearsOfExperience,
-				profile.Bio);
-
-			return Result<CreateProviderProfileResponse>.Success(response);
-		}
-	}
+        return Result<CreateProviderProfileResponse>.Success(new CreateProviderProfileResponse(
+            newProfile.Id,
+            newProfile.UserId,
+            newProfile.ProviderType.ToString(),
+            newProfile.VerificationStatus.ToString(),
+            newProfile.YearsOfExperience,
+            newProfile.Bio));
+    }
 }
