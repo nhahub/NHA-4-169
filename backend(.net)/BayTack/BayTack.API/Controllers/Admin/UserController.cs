@@ -33,6 +33,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		/// <summary>POST /users  Body: { name, email, phone, role } -> User</summary>
+		/// localhost:5001/api/users
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
 		{
