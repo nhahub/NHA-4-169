@@ -1,8 +1,9 @@
 ﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Features.Messages.Common;
-using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using BayTack.Domain.Entities;
+using BayTack.Domain.Entities.Messaging; // adjust to your actual namespace
 
 namespace BayTack.Infrastructure.Repositorty
 {
@@ -15,8 +16,8 @@ namespace BayTack.Infrastructure.Repositorty
         public async Task<List<ConversationSummaryResponse>> GetConversationsForCustomerAsync(
             string customerId, CancellationToken ct = default)
         {
-            var rows = await _context.Conversations
-                .AsNoTracking()
+            var rows = await _context.Set<Conversation>()
+                .AsNoTracking() 
                 .Where(c => c.CustomerId == customerId)
                 .OrderByDescending(c => c.LastMessageAt)
                 .Select(c => new

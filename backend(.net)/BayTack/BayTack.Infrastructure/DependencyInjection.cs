@@ -35,8 +35,8 @@ namespace BayTack.Infrastructure
 
 
 
-
 			services.AddScoped<ICurrentUserService, CurrentUserService>();
+			services.AddScoped<IIdentityService, IdentityService>();
 
 
 
@@ -44,8 +44,12 @@ namespace BayTack.Infrastructure
 
 			services.AddScoped<IProviderVerificationReadRepository, ProviderVerificationReadRepository>();
 			services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
-			services.AddScoped<IUserRepository, UserRepository>();
-			services.AddScoped<IIdentityService, IdentityService>();
+			services.AddScoped<IUserRepository, UserRepository>(); 
+			services.AddScoped<IOrdersReadRepository, OrdersReadRepository>();
+			services.AddScoped<IConversationRepository, ConversationRepository>();
+
+
+
 
 
 
