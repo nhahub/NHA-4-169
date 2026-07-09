@@ -2,6 +2,7 @@
 
 
 using BayTack.Infrastructure;
+using BayTack.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,10 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 
 
+builder.Services.AddHttpContextAccessor();
 
+
+builder.Services.AddApplication();
 
 
 
