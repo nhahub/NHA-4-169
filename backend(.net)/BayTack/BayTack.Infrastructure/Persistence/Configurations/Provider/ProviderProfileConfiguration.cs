@@ -16,6 +16,8 @@ namespace BayTack.Infrastructure.Persistence.Configurations.Provider
 			builder.Property(p => p.ProviderType).HasConversion<string>().HasMaxLength(20);
 			builder.Property(p => p.VerificationStatus).HasConversion<string>().HasMaxLength(20);
 			builder.Property(p => p.Bio).HasColumnType("nvarchar(max)");
+			builder.Property(p => p.PrimaryCategoryId).HasMaxLength(450);
+			builder.Property(p => p.SuspendReason).HasColumnType("nvarchar(max)");
 
 			builder.OwnsOne(p => p.WorkshopAddress, a =>
 			{

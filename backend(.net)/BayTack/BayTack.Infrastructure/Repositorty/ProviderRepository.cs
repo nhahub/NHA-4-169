@@ -71,7 +71,7 @@ namespace BayTack.Infrastructure.Repositorty
 
 			return (
 				Total: statuses.Count,
-				Verified: statuses.Count(s => s == VerificationStatus.Verified),
+				Verified: statuses.Count(s => s == VerificationStatus.Approved),
 				Pending: statuses.Count(s => s is VerificationStatus.Pending or VerificationStatus.UnderReview),
 				Suspended: statuses.Count(s => s == VerificationStatus.Suspended)
 			);

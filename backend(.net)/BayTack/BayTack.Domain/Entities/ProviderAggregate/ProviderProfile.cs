@@ -13,6 +13,9 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 		public int YearsOfExperience { get; private set; }
 		public Address? WorkshopAddress { get; private set; }
 		public VerificationStatus VerificationStatus { get; private set; } = VerificationStatus.Pending;
+		/// <summary>Primary category shown on the admin Providers/Verification pages. A provider can still offer Services in other categories individually.</summary>
+		public string? PrimaryCategoryId { get; private set; }
+		public string? SuspendReason { get; private set; }
 
 		private readonly List<ProviderDocument> _documents = new();
 		public IReadOnlyCollection<ProviderDocument> Documents => _documents.AsReadOnly();
@@ -25,7 +28,7 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 
 		private ProviderProfile() { }
 
-		public static ProviderProfile Create(string userId, ProviderType type, int yearsOfExperience, string? bio = null)
+		public static ProviderProfile Create(string userId, ProviderType type, int yearsOfExperience, string? bio = null, string? primaryCategoryId = null)
 		{
 			if (yearsOfExperience < 0)
 				throw new ArgumentException("Years of experience cannot be negative.", nameof(yearsOfExperience));
@@ -36,7 +39,8 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 				UserId = userId,
 				ProviderType = type,
 				YearsOfExperience = yearsOfExperience,
-				Bio = bio
+				Bio = bio,
+				PrimaryCategoryId = primaryCategoryId
 			};
 		}
 
@@ -99,13 +103,43 @@ namespace BayTack.Domain.Entities.ProviderAggregate
 
 
 
-		public void MarkUnderReview()
+		public void UpdateDetails(ProviderType? type, int? yearsOfExperience, string? primaryCategoryId, string? updatedBy)
 		{
-			//if (VerificationStatus is VerificationStatus.Approved or VerificationStatus.Suspended)
-			//	throw new DomainException("Cannot move a finalized provider back to review.");
+			if (type is not null) ProviderType = type.Value;
+			if (yearsOfExperience is not null) YearsOfExperience = yearsOfExperience.Value;
+			if (primaryCategoryId is not null) PrimaryCategoryId = primaryCategoryId;
+			SetUpdated(updatedBy);
+		}
 
+		// --- Admin verification-queue workflow (admin/verification.html + admin Providers page) ---
+		// Distinct from Verify()/Reject() above: an admin can approve/suspend a provider
+		// directly regardless of per-document review state — that's an explicit admin
+		// override, not the automated document-driven path.
+		public void MarkUnderReview(string? updatedBy = null)
+		{
 			VerificationStatus = VerificationStatus.UnderReview;
-			//AddDomainEvent(new ProviderUnderReviewDomainEvent(Id));
+			SetUpdated(updatedBy);
+		}
+
+		public void AdminApprove(string? updatedBy)
+		{
+			VerificationStatus = VerificationStatus.Approved;
+			SuspendReason = null;
+			SetUpdated(updatedBy);
+		}
+
+		public void Suspend(string? reason, string? updatedBy)
+		{
+			VerificationStatus = VerificationStatus.Suspended;
+			SuspendReason = reason;
+			SetUpdated(updatedBy);
+		}
+
+		public void Reinstate(string? updatedBy)
+		{
+			VerificationStatus = VerificationStatus.Approved;
+			SuspendReason = null;
+			SetUpdated(updatedBy);
 		}
 
 		public void Reject(string reason)
