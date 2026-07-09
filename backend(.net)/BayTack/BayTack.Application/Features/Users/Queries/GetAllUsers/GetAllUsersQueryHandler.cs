@@ -23,9 +23,8 @@ namespace BayTack.Application.Features.Users.Queries.GetAllUsers
 			var (items, totalCount) = await _userRepository.SearchAsync(
 				request.Search, request.Role, request.Page, request.Limit, cancellationToken);
 
-			var paginatedList = new PaginatedList<UserResponse>(items, totalCount, request.Page, request.Limit);
-
-			return Result<PaginatedList<UserResponse>>.Success(paginatedList);
+			var paginated = new PaginatedList<UserResponse>(items.ToList(), totalCount, request.Page, request.Limit);
+			return Result<PaginatedList<UserResponse>>.Success(paginated);
 		}
 	}
 }

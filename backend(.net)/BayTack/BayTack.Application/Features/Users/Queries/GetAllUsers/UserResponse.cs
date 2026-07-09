@@ -10,7 +10,5 @@ namespace BayTack.Application.Features.Users.Queries.GetAllUsers
 	string? Email,
 	string Status,
 	IReadOnlyList<string> Roles,
-	DateTime CreatedAt)
-	{
-	}
+	DateTime CreatedAt);
 }

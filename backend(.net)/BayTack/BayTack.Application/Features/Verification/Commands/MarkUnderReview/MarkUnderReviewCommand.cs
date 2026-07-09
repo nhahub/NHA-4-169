@@ -1,12 +1,7 @@
-﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Abstractions.Messaging;
+using BayTack.Application.Features.Verification;
 
+namespace BayTack.Application.Features.Verification.Commands.MarkUnderReview;
 
-namespace BayTack.Application.Features.Verification.Commands.MarkUnderReview
-{
- 
-	public sealed record MarkUnderReviewCommand(string ProviderProfileId) : ICommand<VerificationEntryResponse>;
-
-		
-}
-
+public sealed record MarkUnderReviewCommand(string ProviderProfileId)
+    : ICommand<VerificationEntryResponse>;
