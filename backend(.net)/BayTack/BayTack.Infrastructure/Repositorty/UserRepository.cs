@@ -5,12 +5,6 @@ using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BayTack.Infrastructure.Repositorty
 {
@@ -90,9 +84,10 @@ namespace BayTack.Infrastructure.Repositorty
 			return new UserResponse(user.Id, user.FullName, user.Email, user.Status.ToString(), roles, user.CreatedAt);
 		}
 
-        public async Task<Address> GetAddressAsync(string customerId, CancellationToken ct)
-        {
-            throw new NotImplementedException();
-        }
+		public async Task<Address> GetAddressAsync(string customerId, CancellationToken ct)
+		{
+			var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == customerId, ct);
+			return user!.Address!;
+		}
     }
 }
