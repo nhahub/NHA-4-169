@@ -27,16 +27,16 @@ namespace BayTack.Application.Features.Categories.Commands.UpdateCategory
 			{
 				var nameTaken = await _categories.AnyAsync(new CategoryByNameSpecification(request.Name), cancellationToken);
 				if (nameTaken)
-					return Result<CategoryResponse>.Failure($"Category '{request.Name}' already exists", statusCode: 409);
+					return Result<CategoryResponse>.Failure($"Category '{request.Name}' already exists" );
 			}
 
 			// TODO: pass the real signed-in user id once JWT auth (see Program.cs note) is wired up.
-			category.UpdateDetails(request.Name, request.Icon, request.Description, updatedBy: null);
+			category.UpdateDetails(request.Name, request.Icon, request.Description, request.IsActive, updatedBy: null);
 			_categories.Update(category);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<CategoryResponse>.Success(
-				new CategoryResponse(category.Id, category.Name, category.Icon, category.Description, category.IsActive, category.CreatedAt));
+				new CategoryResponse(category.Id, category.Name, request.Icon, category.Description, category.IsActive, category.CreatedAt));
 		}
 	}
 }

@@ -4,6 +4,7 @@ using BayTack.Infrastructure.Common;
 using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Repositorty;
+using BayTack.Infrastructure.Repositorty.BayTack.Infrastructure.Repositorty;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

@@ -21,14 +21,15 @@ namespace BayTack.Application.Features.Categories.Commands.CreateCategory
 		{
 			var exists = await _categories.AnyAsync(new CategoryByNameSpecification(request.Name), cancellationToken);
 			if (exists)
-				return Result<CategoryResponse>.Failure($"Category '{request.Name}' already exists", statusCode: 409);
+				return Result<CategoryResponse>.Failure($"Category '{request.Name}' already exists");
 
 			var category = ServiceCategory.Create(request.Name, request.Icon, request.Description);
 			_categories.Add(category);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<CategoryResponse>.Success(
-				new CategoryResponse(category.Id, category.Name, category.Icon, category.Description, category.IsActive, category.CreatedAt));
+				new CategoryResponse(category.Id, category.Name, request.Icon, category.Description, category.IsActive, category.CreatedAt));
 		}
 	}
 }
+

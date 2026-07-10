@@ -38,7 +38,7 @@ namespace BayTack.API.Controllers.Admin
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Update(string id, [FromBody] UpdateCategoryRequest body)
 		{
-			var result = await Sender.Send(new UpdateCategoryCommand(id, body.Name, body.Icon, body.Description));
+			var result = await Sender.Send(new UpdateCategoryCommand(id, body.Name, body.Icon, body.Description, body.IsActive));
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
@@ -61,5 +61,5 @@ namespace BayTack.API.Controllers.Admin
 	}
 
 	public sealed record CreateCategoryRequest(string Name, string? Icon, string? Description);
-	public sealed record UpdateCategoryRequest(string? Name, string? Icon, string? Description);
+	public sealed record UpdateCategoryRequest(string? Name, string? Icon, string? Description, bool IsActive);
 }

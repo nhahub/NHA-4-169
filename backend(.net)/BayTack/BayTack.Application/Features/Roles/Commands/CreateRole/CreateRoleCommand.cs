@@ -17,7 +17,7 @@ namespace BayTack.Application.Features.Roles.Commands.CreateRole
 		{
 			var role = await _roles.CreateAsync(request.Name, request.Permissions, cancellationToken);
 			return role is null
-				? Result<RoleResponse>.Failure($"Role '{request.Name}' already exists", statusCode: 409)
+				? Result<RoleResponse>.Failure($"Role '{request.Name}' already exists" )
 				: Result<RoleResponse>.Success(role);
 		}
 	}
