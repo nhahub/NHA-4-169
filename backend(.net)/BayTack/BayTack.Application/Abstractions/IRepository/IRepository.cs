@@ -1,8 +1,5 @@
 ﻿using BayTack.Application.Common.Specifications;
 using BayTack.Domain.Common.BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BayTack.Application.Abstractions.IRepository
 {
@@ -18,5 +15,4 @@ namespace BayTack.Application.Abstractions.IRepository
 		void Update(T entity);
 		void Remove(T entity);
 	}
-
 }
