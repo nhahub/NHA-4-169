@@ -1,11 +1,7 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BayTack.Application.Features.Users.Command.CreateUser
 {
-
 	public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 	{
 		public CreateUserCommandValidator()
@@ -14,6 +10,7 @@ namespace BayTack.Application.Features.Users.Command.CreateUser
 			RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
 			RuleFor(x => x.Phone).MaximumLength(20);
 			RuleFor(x => x.Role).NotEmpty().MaximumLength(256);
+			
 		}
 	}
 }
