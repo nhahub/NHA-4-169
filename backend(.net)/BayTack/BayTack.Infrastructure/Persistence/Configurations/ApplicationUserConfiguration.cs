@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BayTack.Infrastructure.Persistence.Configurations
 {
-	public class ApplicationUserConfiguration : IEntityTypeConfiguration<AppUser>
+	public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
 	{
 		public void Configure(EntityTypeBuilder<AppUser> builder)
 		{

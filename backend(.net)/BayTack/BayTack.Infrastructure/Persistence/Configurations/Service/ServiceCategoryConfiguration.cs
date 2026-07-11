@@ -14,7 +14,7 @@ namespace BayTack.Infrastructure.Persistence.Configurations.Service
 		{
 			builder.Property(c => c.Name).HasMaxLength(150).IsRequired();
 			builder.HasIndex(c => c.Name).IsUnique();
-			builder.Property(c => c.Icon).HasMaxLength(100).IsRequired();
+			builder.Property(c => c.Icon).HasMaxLength(100);
 		}
 	}
 }

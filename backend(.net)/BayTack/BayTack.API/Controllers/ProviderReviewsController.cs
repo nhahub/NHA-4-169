@@ -32,13 +32,13 @@ namespace BayTack.API.Controllers
 		{
 			var result = await Sender.Send(new ExportProviderReviewsCsvQuery(providerId, filter));
 
-			if (result.IsError)
+			if (!result.IsSuccess)
 			{
 				var response = result.ToApiResponse();
 				return StatusCode(response.StatusCode, response);
 			}
 
-			var bytes = Encoding.UTF8.GetBytes(result.Value);
+			var bytes = Encoding.UTF8.GetBytes(result.Value!);
 			return File(bytes, "text/csv", "reviews.csv");
 		}
 

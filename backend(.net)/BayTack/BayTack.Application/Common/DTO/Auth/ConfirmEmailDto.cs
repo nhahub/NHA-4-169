@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BayTack.Application.Common.DTO.Auth
 {
-	public record ConfirmEmailDto(string UserId, string Token);
+	public record ConfirmEmailDto(string UserId, string Token, string? ipAddress);
 
 }

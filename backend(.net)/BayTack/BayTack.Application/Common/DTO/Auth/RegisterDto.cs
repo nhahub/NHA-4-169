@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BayTack.Application.Common.DTO.Auth
 {
-
 	public record RegisterDto(
-		string FirstName,
-		string LastName,
+		string FullName,
 		string Email,
-		string UserName,
 		string Password,
-		string ConfirmPassword);
+		string? PhoneNumber,
+		string Role,
+		string? IpAddress);
 
 }
-
 
 

@@ -5,6 +5,7 @@ using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Repositorty;
 using BayTack.Infrastructure.Repositorty.BayTack.Infrastructure.Repositorty;
+using BayTack.Infrastructure.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,8 @@ namespace BayTack.Infrastructure
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
 
+			services.AddAuthenticationServices(configuration);
+
 			services.AddDbContext<AppDbContext>((sp, options) =>
 			{
 				options.UseSqlServer(
@@ -24,20 +27,11 @@ namespace BayTack.Infrastructure
 					sql => sql.EnableRetryOnFailure());
 			});
 
-			services.AddIdentityCore<AppUser>(options =>
-			{
-				options.Password.RequireDigit = true;
-				options.Password.RequireLowercase = true;
-				options.Password.RequiredLength = 6;
-			})
-			.AddRoles<IdentityRole<string>>()  
-			.AddEntityFrameworkStores<AppDbContext>();
-
+			 
+			
 
 
 			services.AddScoped<ICurrentUserService, CurrentUserService>();
-			services.AddScoped<IIdentityService, IdentityService>();
-
 
 
 
@@ -49,13 +43,6 @@ namespace BayTack.Infrastructure
 			services.AddScoped<IConversationRepository, ConversationRepository>();
 			services.AddScoped<IProviderRepository, ProviderRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
-
-
-
-
-
-
-			services.AddScoped<IIdentityService, IdentityService>();
 
 
 			//// Identity DB (separate)

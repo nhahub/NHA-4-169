@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BayTack.Application.Common.DTO.Auth
 {
-	public record RefreshTokenRequestDto(string AccessToken, string RefreshToken);
+	public record RefreshTokenRequestDto(string AccessToken, string RefreshToken, string? IpAddress);
 
 }

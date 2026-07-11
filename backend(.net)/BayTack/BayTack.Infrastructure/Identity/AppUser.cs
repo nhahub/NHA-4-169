@@ -19,6 +19,10 @@ namespace BayTack.Infrastructure.Identity
 		public string? DeletedBy { get; private set; }
 		public string? DeleteReason { get; private set; }
 
+
+
+		public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
 		private AppUser() { }
 
 		public static AppUser Create(string userName, string email, string fullName)

@@ -2,6 +2,7 @@
 using BayTack.Domain.Entities;
 using BayTack.Domain.Entities.JobAggregate;
 using BayTack.Domain.Entities.Location;
+using BayTack.Domain.Entities.Messaging;
 using BayTack.Domain.Entities.OrderAggregate;
 using BayTack.Domain.Entities.PaymentAggregate;
 using BayTack.Domain.Entities.ProviderAggregate;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using BayTack.Domain.Entities.Messaging;
+using System.Reflection.Emit;
 
 namespace BayTack.Infrastructure.Persistence
 {
@@ -55,7 +56,13 @@ namespace BayTack.Infrastructure.Persistence
         public DbSet<Conversation> Conversations => Set<Conversation>();
         public DbSet<Message> Messages => Set<Message>();
 
-        protected override void OnModelCreating(ModelBuilder builder)
+
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+
+
+
+		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
 
@@ -73,6 +80,16 @@ namespace BayTack.Infrastructure.Persistence
 				var lambda = Expression.Lambda(condition, parameter);
 				builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
 			}
+
+
+
+
+
+				builder.Entity<RefreshToken>()
+				.HasOne(rt => rt.AppUser)
+				.WithMany(u => u.RefreshTokens)
+				.HasForeignKey(rt => rt.UserId)
+				.IsRequired(false); 
 		}
 	}
 }

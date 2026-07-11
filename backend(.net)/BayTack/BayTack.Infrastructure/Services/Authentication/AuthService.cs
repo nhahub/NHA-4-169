@@ -1,200 +1,218 @@
 ﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Common.DTO.Auth;
 using BayTack.Application.Common.Models;
+using BayTack.Domain.Enums;
+using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
-using BayTack.Infrastructure.Persistence.Configurations;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace BayTack.Infrastructure.Services.Authentication
 {
 
-	//public class AuthService : IAuthService
-	//{
-	//	private readonly IIdentityService _identityService;
-	//	private readonly ITokenService _tokenService;
-	//	//private readonly IEmailService _emailService;
-	//	private readonly AppDbContext _context;
-	//	private readonly ICurrentUserService _currentUser;
-	//	private readonly IDateTimeProvider _dateTime;
-	//	private readonly ILogger<AuthService> _logger;
+	public class AuthService : IAuthService
+	{
+		private readonly UserManager<AppUser> _userManager;
+		private readonly SignInManager<AppUser> _signInManager;
+		private readonly RoleManager<IdentityRole<string>> _roles;
+		private readonly ITokenService _tokenService;
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IRepository<RefreshToken, string> _refreshTokenRepository;
+		//	//private readonly IEmailService _emailService;
+		//	private readonly ICurrentUserService _currentUser;
+		//	private readonly IDateTimeProvider _dateTime;
+		//	private readonly ILogger<AuthService> _logger;
+		public AuthService(
+			UserManager<AppUser> userManager,
+			SignInManager<AppUser> signInManager,
+			RoleManager<IdentityRole<string>> roles,
+			ITokenService tokenService,
+			IRepository<RefreshToken, string> refreshTokenRepository,
+			IUnitOfWork unitOfWork)
+		{
+			_userManager = userManager;
+			_signInManager = signInManager;
+			_roles = roles;
+			_tokenService = tokenService;
+			_refreshTokenRepository = refreshTokenRepository;
+			_unitOfWork = unitOfWork;
+		}
 
-	//	private const int RefreshTokenDaysToLive = 7;
+		
+		public async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto dto, CancellationToken ct = default)
+		{
+			// Front-end sends "customer" | "provider" (lowercase) - map to the actual
+			// seeded role names. Anything else is rejected; admins assign other roles
+			// (e.g. Admin) exclusively through POST /users, never through public registration.
+			var normalizedRole = dto.Role.Trim().ToLowerInvariant() switch
+			{
+				"customer" => "Customer",
+				"provider" => "Provider",
+				_ => null
+			};
 
-	//	public AuthService(
-	//		IIdentityService identityService,
-	//		ITokenService tokenService,
-	//		//IEmailService emailService,
-	//		AppDbContext context,
-	//		ICurrentUserService currentUser,
-	//		IDateTimeProvider dateTime,
-	//		ILogger<AuthService> logger)
-	//	{
-	//		_identityService = identityService;
-	//		_tokenService = tokenService;
-	//		//_emailService = emailService;
-	//		_context = context;
-	//		_currentUser = currentUser;
-	//		_dateTime = dateTime;
-	//		_logger = logger;
-	//	}
+			if (normalizedRole is null)
+				return Result<AuthResponseDto>.Failure("Invalid role specified.");
 
-	//	public async Task<Result<AuthResponseDto>> RegisterAsync(RegisterDto dto, CancellationToken ct = default)
-	//	{
-	//		if (dto.Password != dto.ConfirmPassword)
-	//			return Result<AuthResponseDto>.Failure("Password and confirmation password do not match.");
+			var existing = await _userManager.FindByEmailAsync(dto.Email);
+			if (existing is not null)
+				return Result<AuthResponseDto>.Failure("Email already exists.");
 
-	//		var createResult = await _identityService.CreateUserAsync(dto.FirstName, dto.LastName, dto.Email, dto.UserName, dto.Password, ct);
-	//		if (!createResult.IsSuccess || createResult.Value is null)
-	//			return Result<AuthResponseDto>.Failure(createResult.Error!);
+			var user = AppUser.Create(userName: dto.Email, email: dto.Email, fullName: dto.FullName);
+			if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+				user.PhoneNumber = dto.PhoneNumber;
 
-	//		var user = createResult.Value!;
+			var createResult = await _userManager.CreateAsync(user, dto.Password);
+			if (!createResult.Succeeded)
+				return Result<AuthResponseDto>.Failure("Registration failed.");
 
-	//		// Fire off the email confirmation link (does not block registration success on delivery failure)
-	//		try
-	//		{
-	//			var confirmToken = await _identityService.GenerateEmailConfirmationTokenAsync(user.UserId);
-	//			await _emailService.SendEmailConfirmationAsync(user.Email, user.UserId.ToString(), confirmToken, ct);
-	//		}
-	//		catch (Exception ex)
-	//		{
-	//			_logger.LogWarning(ex, "Failed to send confirmation email to {Email}", user.Email);
-	//		}
+			await _userManager.AddToRoleAsync(user, normalizedRole);
 
-	//		await _identityService.AssignRolesAsync(user.UserId, new[] { Domain.Constants.Roles.User });
+			return await IssueTokensAsync(user, dto.IpAddress, ct);
+		}
 
-	//		var authResponse = await BuildAuthResponseAsync(user.UserId, user.Email, user.UserName, $"{user.FirstName} {user.LastName}".Trim(), ct);
-	//		return Result<AuthResponseDto>.Success(authResponse);
-	//	}
+		public async Task<Result<AuthResponseDto>> LoginAsync(LoginDto dto, CancellationToken ct = default)
+		{
+			var user = await _userManager.FindByEmailAsync(dto.Email);
+			if (user is null)
+				return Result<AuthResponseDto>.Failure("Invalid email or password.");
 
-	//	public async Task<Result<AuthResponseDto>> LoginAsync(LoginDto dto, CancellationToken ct = default)
-	//	{
-	//		var user = await _identityService.FindByEmailOrUserNameAsync(dto.EmailOrUserName);
-	//		if (user is null)
-	//			return Result<AuthResponseDto>.Failure("Invalid credentials.");
+			if (user.Status == UserStatus.Suspended)
+				return Result<AuthResponseDto>.Failure("User account is suspended.");
+			var signInResult = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: true);
+			if (signInResult.IsLockedOut)
+				return Result<AuthResponseDto>.Failure("User account is locked out.");
+			if (!signInResult.Succeeded)
+				return Result<AuthResponseDto>.Failure("Invalid email or password.");
 
-	//		if (await _identityService.IsLockedOutAsync(user.UserId))
-	//			return Result<AuthResponseDto>.Failure("Account is temporarily locked due to multiple failed attempts. Try again later.");
+			return await IssueTokensAsync(user, dto.IpAddress, ct);
+		}
+		 
 
-	//		var passwordValid = await _identityService.CheckPasswordAsync(user.UserId, dto.Password);
-	//		if (!passwordValid)
-	//		{
-	//			await _identityService.RegisterFailedAttemptAsync(user.UserId);
-	//			return Result<AuthResponseDto>.Failure("Invalid credentials.");
-	//		}
+		public async Task<Result<AuthResponseDto>> RefreshTokenAsync(RefreshTokenRequestDto dto, CancellationToken ct = default)
+		{
+			var existingToken = await FindTrackedTokenAsync(dto.RefreshToken, ct);
+			if (existingToken is null)
+				return Result<AuthResponseDto>.Failure("Invalid refresh token.");
 
-	//		if (!await _identityService.IsEmailConfirmedAsync(user.UserId))
-	//			return Result<AuthResponseDto>.Failure("Email is not confirmed. Please check your inbox.");
+			if (!existingToken.IsActive)
+			{
+				// Reusing a revoked/expired token is a signal the token may have leaked -
+				// revoke every other active token for this user as a precaution.
+				if (existingToken.IsRevoked)
+					await RevokeAllTokensForUserAsync(existingToken.UserId, dto.IpAddress, ct);
 
-	//		await _identityService.ResetAccessFailedCountAsync(user.UserId);
-	//		await _identityService.UpdateLastLoginAsync(user.UserId);
+				return Result<AuthResponseDto>.Failure("Invalid refresh token.");
+			}
 
-	//		var authResponse = await BuildAuthResponseAsync(user.UserId, user.Email, user.UserName, $"{user.FirstName} {user.LastName}".Trim(), ct);
-	//		return Result<AuthResponseDto>.Success(authResponse);
-	//	}
+			var user = await _userManager.FindByIdAsync(existingToken.UserId.ToString());
+			if (user is null || user.Status == UserStatus.Suspended)
+				return Result<AuthResponseDto>.Failure("Invalid refresh token.");
 
-	//	public async Task<Result<AuthResponseDto>> RefreshTokenAsync(RefreshTokenRequestDto dto, CancellationToken ct = default)
-	//	{
-	//		var principal = _tokenService.GetPrincipalFromExpiredToken(dto.AccessToken);
-	//		if (principal is null)
-	//			return Result<AuthResponseDto>.Failure("Invalid access token.");
+			var newTokenValue = _tokenService.GenerateRefreshTokenString();
+			existingToken.Revoke(dto.IpAddress, replacedByToken: newTokenValue);
+			_refreshTokenRepository.Update(existingToken);
 
-	//		var jwtId = principal.FindFirst("jti")?.Value;
-	//		var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-	//		if (jwtId is null || userIdClaim is null || !Guid.TryParse(userIdClaim, out var userId))
-	//			return Result<AuthResponseDto>.Failure("Invalid token payload.");
+			var result = await IssueTokensAsync(user, dto.IpAddress, ct, precomputedRefreshTokenValue: newTokenValue);
+			return result;
+		}
 
-	//		var storedToken = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == dto.RefreshToken, ct);
-	//		if (storedToken is null)
-	//			return Result<AuthResponseDto>.Failure("Refresh token does not exist.");
+		public async Task<Result> RevokeTokenAsync(RevokeTokenRequestDto dto, CancellationToken ct = default)
+		{
+			var existingToken = await FindTrackedTokenAsync(dto.RefreshToken, ct);
+			if (existingToken is null || !existingToken.IsActive)
+				return Result.Failure("Invalid refresh token.");
 
-	//		if (storedToken.JwtId != jwtId)
-	//			return Result<AuthResponseDto>.Failure("Refresh token does not match this access token.");
+			existingToken.Revoke(dto.IpAddress);
+			_refreshTokenRepository.Update(existingToken);
+			await _unitOfWork.SaveChangesAsync(ct);
 
-	//		if (!storedToken.IsActive)
-	//			return Result<AuthResponseDto>.Failure("Refresh token is no longer active.");
+			return Result.Success();
+		}
 
-	//		var user = await _identityService.FindByIdAsync(storedToken.UserId);
-	//		if (user is null)
-	//			return Result<AuthResponseDto>.Failure("User no longer exists.");
+		
 
-	//		// rotate: invalidate old token, issue a new pair
-	//		storedToken.Used = true;
-	//		var authResponse = await BuildAuthResponseAsync(user.UserId, user.Email, user.UserName, $"{user.FirstName} {user.LastName}".Trim(), ct);
-	//		storedToken.ReplacedByToken = authResponse.RefreshToken;
-	//		await _context.SaveChangesAsync(ct);
+		public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordDto dto, CancellationToken ct = default)
+		{
+			var user = await _userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+				return Result.Failure("User not found");
 
-	//		return Result<AuthResponseDto>.Success(authResponse);
-	//	}
+			var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+			return result.Succeeded ? Result.Success() : Result.Failure("Failed to change password");
+		}
+		
+		public async Task<string?> GeneratePasswordResetTokenAsync(string email, CancellationToken ct = default)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+			return user is null ? null : await _userManager.GeneratePasswordResetTokenAsync(user);
+		}
 
-	//	public async Task<Result> RevokeTokenAsync(RevokeTokenRequestDto dto, CancellationToken ct = default)
-	//	{
-	//		var storedToken = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == dto.RefreshToken, ct);
-	//		if (storedToken is null)
-	//			return Result.Failure("Refresh token not found.");
+		public async Task<Result> ResetPasswordAsync(ResetPasswordDto dto, CancellationToken ct = default)
+		{
+			var user = await _userManager.FindByEmailAsync(dto.Email);
+			if (user is null)
+				return Result.Failure("Invalid reset token."); // same error either way - don't leak existence
 
-	//		storedToken.Invalidated = true;
-	//		storedToken.RevokedAt = _dateTime.UtcNow;
-	//		storedToken.RevokedByIp = _currentUser.IpAddress;
-	//		await _context.SaveChangesAsync(ct);
+			var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+			return result.Succeeded ? Result.Success() : Result.Failure("Invalid reset token.");
+		}
 
-	//		return Result.Success();
-	//	}
+		
 
-	//	public async Task<Result> ConfirmEmailAsync(ConfirmEmailDto dto, CancellationToken ct = default)
-	//		=> await _identityService.ConfirmEmailAsync(dto.UserId, dto.Token);
 
-	//	public async Task<Result> ForgotPasswordAsync(ForgotPasswordDto dto, CancellationToken ct = default)
-	//	{
-	//		var user = await _identityService.FindByEmailOrUserNameAsync(dto.Email);
-	//		// Always return success to avoid user enumeration, but only actually send if the user exists.
-	//		if (user is not null)
-	//		{
-	//			var token = await _identityService.GeneratePasswordResetTokenAsync(dto.Email);
-	//			await _emailService.SendPasswordResetAsync(user.Email, user.Email, token, ct);
-	//		}
 
-	//		return Result.Success();
-	//	}
+		private async Task<Result<AuthResponseDto>> IssueTokensAsync(AppUser user, string? ipAddress, CancellationToken ct, string? precomputedRefreshTokenValue = null)
+		{
+			var roleNames = await _userManager.GetRolesAsync(user);
 
-	//	public async Task<Result> ResetPasswordAsync(ResetPasswordDto dto, CancellationToken ct = default)
-	//	{
-	//		if (dto.NewPassword != dto.ConfirmPassword)
-	//			return Result.Failure("Password and confirmation password do not match.");
+			var perms = new HashSet<string>();
+			foreach (var rn in roleNames)
+			{
+				var role = await _roles.FindByNameAsync(rn);
+				if (role == null) continue;
+				var claims = await _roles.GetClaimsAsync(role);
+				foreach (var c in claims.Where(c => c.Type == "Permission")) perms.Add(c.Value);
+			}
+			var FirstName = user.FullName?.Split(' ').FirstOrDefault() ?? string.Empty;
+			var LastName = user.FullName?.Split(' ').Skip(1).FirstOrDefault() ?? string.Empty;
 
-	//		return await _identityService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
-	//	}
+			var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email!, FirstName, LastName, roleNames, perms);
+			var refreshToken = _tokenService.GenerateRefreshTokenString();
 
-	//	public async Task<Result> ChangePasswordAsync(Guid userId, ChangePasswordDto dto, CancellationToken ct = default)
-	//	{
-	//		if (dto.NewPassword != dto.ConfirmPassword)
-	//			return Result.Failure("Password and confirmation password do not match.");
+		    _refreshTokenRepository.Add(RefreshToken.Create(refreshToken, DateTime.UtcNow.AddDays(7), user.Id));
 
-	//		return await _identityService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
-	//	}
+			await _unitOfWork.SaveChangesAsync(ct);
+			var x = new AuthResponseDto(user.Id, user.Email ?? string.Empty,user.UserName ?? string.Empty,  user.FullName ?? string.Empty, accessToken.Token, accessToken.ExpiresAt, refreshToken, roleNames);
+			return Result<AuthResponseDto>.Success(x);
+		}
+ 
+		public async Task<Result> RevokeAllTokensForUserAsync(string userId, string? ipAddress, CancellationToken ct = default)
+		{
+			var activeTokens = await _refreshTokenRepository.ListAsync(new ActiveRefreshTokensForUserSpec(userId), ct);
+			foreach (var token in activeTokens)
+				token.Revoke(ipAddress);
 
-	//	private async Task<AuthResponseDto> BuildAuthResponseAsync(Guid userId, string email, string userName, string fullName, CancellationToken ct)
-	//	{
-	//		var roles = await _identityService.GetRolesAsync(userId);
-	//		var permissions = await _identityService.GetPermissionsAsync(userId);
+			await _unitOfWork.SaveChangesAsync(ct);
+			return Result.Success();
+		}
 
-	//		var applicationUser = new ApplicationUser { Id = userId, Email = email, UserName = userName };
-	//		var accessToken = _tokenService.GenerateAccessToken(applicationUser, roles, permissions);
-	//		var refreshTokenString = _tokenService.GenerateRefreshTokenString();
+		private Task<RefreshToken?> FindTrackedTokenAsync(string value, CancellationToken ct) =>
+			_refreshTokenRepository.FirstOrDefaultAsync(new RefreshTokenByValueSpec(value), ct);
 
-	//		_context.RefreshTokens.Add(new RefreshToken
-	//		{
-	//			Token = refreshTokenString,
-	//			JwtId = accessToken.JwtId,
-	//			UserId = userId,
-	//			ExpiryDate = _dateTime.UtcNow.AddDays(RefreshTokenDaysToLive),
-	//			CreatedByIp = _currentUser.IpAddress
-	//		});
-	//		await _context.SaveChangesAsync(ct);
 
-	//		return new AuthResponseDto(
-	//			userId, email, userName, fullName,
-	//			accessToken.Token, accessToken.ExpiresAt,
-	//			refreshTokenString, roles);
-	//	}
-	//}
+
+		public Task<Result> ConfirmEmailAsync(ConfirmEmailDto dto, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<Result> ForgotPasswordAsync(ForgotPasswordDto dto, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+	}
+
 }

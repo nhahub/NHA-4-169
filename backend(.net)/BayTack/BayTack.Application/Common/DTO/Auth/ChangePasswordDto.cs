@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BayTack.Application.Common.DTO.Auth
 {
-	public record ChangePasswordDto(string CurrentPassword, string NewPassword, string ConfirmPassword);
+	public record ChangePasswordDto(string CurrentPassword, string NewPassword);
 }
 

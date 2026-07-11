@@ -93,7 +93,7 @@ namespace BayTack.Infrastructure.Identity
 			if (user is null)
 				return Result<bool>.Failure("User not found.");
 
-			user.Suspend(); // domain method on ApplicationUser
+			user.Suspend(); // domain method on AppUser
 			var result = await _userManager.UpdateAsync(user);
 
 			return result.Succeeded
