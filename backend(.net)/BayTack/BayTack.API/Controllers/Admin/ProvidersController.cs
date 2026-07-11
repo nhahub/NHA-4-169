@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Admin
 {
+	[Route("api/admin/providers")]
 	public class ProvidersController : ApiController
 	{
 		[HttpGet]

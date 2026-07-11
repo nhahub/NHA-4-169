@@ -34,3 +34,4 @@ artifacts/
 [Bb]in/
 [Oo]bj/
 /backend(.net)/BayTack/BayTack.API/appsettings.json
+/backend(.net)/BayTack/BayTack.API/Properties/PublishProfiles
