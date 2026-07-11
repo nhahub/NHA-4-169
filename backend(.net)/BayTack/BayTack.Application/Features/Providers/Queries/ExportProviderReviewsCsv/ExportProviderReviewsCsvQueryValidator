@@ -1,0 +1,12 @@
+using FluentValidation;
+
+namespace BayTack.Application.Features.Providers.Queries.ExportProviderReviewsCsv
+{
+	public sealed class ExportProviderReviewsCsvQueryValidator : AbstractValidator<ExportProviderReviewsCsvQuery>
+	{
+		public ExportProviderReviewsCsvQueryValidator()
+		{
+			RuleFor(x => x.ProviderId).NotEmpty();
+		}
+	}
+}
