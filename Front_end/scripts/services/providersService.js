@@ -12,21 +12,23 @@ const ProvidersService = {
    * @param {{ page?, perPage?, search?, category?, status?, experience? }} params
    */
   async getAll(params = {}) {
-    return api.get('/providers', {
-      page:    params.page     ?? Config.PAGINATION.DEFAULT_PAGE,
-      perPage: params.perPage  ?? Config.PAGINATION.DEFAULT_PER_PAGE,
-      ...params,
+    return api.get('/admin/providers', {
+      page:       params.page    ?? Config.PAGINATION.DEFAULT_PAGE,
+      limit:      params.perPage ?? Config.PAGINATION.DEFAULT_PER_PAGE,
+      search:     params.search,
+      categoryId: params.categoryId,
+      status:     params.status,
     });
   },
 
   /** @param {string} id */
   async getById(id) {
-    return api.get(`/providers/${id}`);
+    return api.get(`/admin/providers/${id}`);
   },
 
   /** @param {object} payload */
   async create(payload) {
-    return api.post('/providers', payload);
+    return api.post('/admin/providers', payload);
   },
 
   /**
@@ -34,27 +36,27 @@ const ProvidersService = {
    * @param {object} payload
    */
   async update(id, payload) {
-    return api.put(`/providers/${id}`, payload);
+    return api.put(`/admin/providers/${id}`, payload);
   },
 
   /** Approve a pending provider */
   async approve(id) {
-    return api.patch(`/providers/${id}/approve`);
+    return api.patch(`/admin/providers/${id}/approve`);
   },
 
   /** Suspend a provider account */
   async suspend(id, reason = '') {
-    return api.patch(`/providers/${id}/suspend`, { reason });
+    return api.patch(`/admin/providers/${id}/suspend`, { reason });
   },
 
   /** Reinstate / unsuspend a provider */
   async reinstate(id) {
-    return api.patch(`/providers/${id}/reinstate`);
+    return api.patch(`/admin/providers/${id}/reinstate`);
   },
 
   /** @param {string} id */
   async delete(id) {
-    return api.delete(`/providers/${id}`);
+    return api.delete(`/admin/providers/${id}`);
   },
 
   /**
@@ -62,7 +64,7 @@ const ProvidersService = {
    * @returns {Promise<{ total, verified, pending, suspended }>}
    */
   async getStats() {
-    return api.get('/providers/stats');
+    return api.get('/admin/providers/stats');
   },
 };
 

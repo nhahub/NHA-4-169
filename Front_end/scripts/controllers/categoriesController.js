@@ -1,21 +1,12 @@
 /**
  * EKHDEMNI ADMIN — Categories Controller
- * Full CRUD for service categories — uses localStorage mock (no backend needed).
- * Pre-seeded with the 6 Ekhdemni services.
+ * Full CRUD for service categories, backed by BayTack.API
+ * (GET/POST/PUT/DELETE /api/admin/categories, PATCH .../{id}/toggle).
  */
 
-import AuthService from '../services/authService.js';
-import { showToast } from '../core/helpers.js';
-
-/* ── Default 6 categories ── */
-const DEFAULT_CATEGORIES = [
-  { id:1, name:'Carpentry',  icon:'carpenter',         description:'Furniture making, custom woodwork, doors & window frames',       isActive:true, createdAt:'2024-01-10' },
-  { id:2, name:'Painting',   icon:'format_paint',      description:'Interior & exterior painting, decorative finishes, wallpaper',   isActive:true, createdAt:'2024-01-10' },
-  { id:3, name:'AC Repair',  icon:'ac_unit',           description:'AC installation, maintenance, duct cleaning, refrigerant refill',isActive:true, createdAt:'2024-01-10' },
-  { id:4, name:'Electrical', icon:'bolt',              description:'Wiring, electrical panels, lighting, smart home installation',   isActive:true, createdAt:'2024-01-10' },
-  { id:5, name:'Plumbing',   icon:'plumbing',          description:'Pipe repair, bathroom fitting, water heater, leak detection',    isActive:true, createdAt:'2024-01-10' },
-  { id:6, name:'Cleaning',   icon:'cleaning_services', description:'Deep cleaning, move-in/out, post-construction, carpet & sofa',  isActive:true, createdAt:'2024-01-10' },
-];
+import AuthService      from '../services/authService.js';
+import CategoriesService from '../services/categoriesService.js';
+import { showToast }    from '../core/helpers.js';
 
 const ICON_COLORS = [
   { bg:'rgba(0,80,212,0.08)',   fg:'var(--color-primary)' },
@@ -26,28 +17,11 @@ const ICON_COLORS = [
   { bg:'rgba(251,81,81,0.1)',   fg:'var(--color-error)'   },
 ];
 
-const STORAGE_KEY = 'ek_admin_categories';
-
 let _categories = [];
-let _editId     = null;
+let _editId     = null; // string id (backend), or null when creating
 let _deleteId   = null;
 
 const $ = id => document.getElementById(id);
-
-function _loadFromStorage() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    _categories  = stored ?? DEFAULT_CATEGORIES;
-  } catch { _categories = [...DEFAULT_CATEGORIES]; }
-}
-
-function _persist() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_categories)); } catch {}
-}
-
-function _nextId() {
-  return _categories.length ? Math.max(..._categories.map(c => c.id ?? 0)) + 1 : 1;
-}
 
 function _fmt(d) {
   if (!d) return '—';
@@ -77,7 +51,7 @@ function _renderTable() {
     const clr    = ICON_COLORS[idx % ICON_COLORS.length];
     const active = cat.isActive !== false;
     return `<tr>
-      <td class="cat-id">#CAT-${String(cat.id).padStart(3,'0')}</td>
+      <td class="cat-id">#CAT-${String(cat.id).slice(0, 8).toUpperCase()}</td>
       <td><div class="cat-name-cell" style="display:flex;align-items:center;gap:0.75rem">
         <div style="width:2.25rem;height:2.25rem;border-radius:0.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${clr.bg}">
           <span class="material-symbols-outlined" style="color:${clr.fg};font-size:1.2rem;font-variation-settings:'FILL' 1">${cat.icon||'category'}</span>
@@ -98,6 +72,20 @@ function _renderTable() {
   }).join('');
 }
 
+async function _load() {
+  try {
+    _categories = await CategoriesService.getAll() ?? [];
+    _renderTable();
+    _updateStats();
+  } catch (err) {
+    console.error('[categoriesController] load', err);
+    showToast(err.message || 'Could not load categories', 'error');
+    _categories = [];
+    _renderTable();
+    _updateStats();
+  }
+}
+
 function _openModal(cat=null) {
   _editId = cat?.id ?? null;
   const t = $('admin-cat-modal-title'); if (t) t.textContent = cat ? 'Edit Category' : 'New Category';
@@ -111,45 +99,71 @@ function _closeModal()       { const b=$('admin-cat-modal-backdrop');  if(b) b.h
 function _openDeleteModal(c) { _deleteId=c.id; const n=$('admin-cat-delete-name'); if(n) n.textContent=c.name; const b=$('admin-cat-delete-backdrop'); if(b) b.hidden=false; }
 function _closeDeleteModal() { const b=$('admin-cat-delete-backdrop'); if(b) b.hidden=true; _deleteId=null; }
 
-function _saveCategory() {
+async function _saveCategory() {
   const name = $('admin-cat-name-input')?.value.trim();
-  const desc = $('admin-cat-desc-input')?.value.trim();
+  const description = $('admin-cat-desc-input')?.value.trim();
   const icon = $('admin-cat-icon-input')?.value.trim() || 'category';
   if (!name) { $('admin-cat-name-input')?.focus(); return; }
-  if (_editId !== null) {
-    const idx = _categories.findIndex(c => c.id === _editId);
-    if (idx !== -1) _categories[idx] = { ..._categories[idx], name, description: desc, icon };
-  } else {
-    _categories.unshift({ id: _nextId(), name, description: desc, icon, isActive: true, createdAt: new Date().toISOString().split('T')[0] });
+
+  const wasEdit  = _editId !== null;
+  const editId   = _editId;
+  const saveBtn  = $('admin-cat-modal-save');
+  try {
+    if (saveBtn) saveBtn.disabled = true;
+    if (wasEdit) {
+      await CategoriesService.update(editId, { name, description, icon });
+    } else {
+      await CategoriesService.create({ name, description, icon });
+    }
+    _closeModal();
+    await _load();
+    showToast(wasEdit ? 'Category updated' : 'Category created', 'success');
+  } catch (err) {
+    console.error('[categoriesController] save', err);
+    showToast(err.message || 'Could not save category', 'error');
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
   }
-  _persist(); _renderTable(); _updateStats(); _closeModal();
 }
 
-function _deleteCategory() {
+async function _deleteCategory() {
   if (_deleteId === null) return;
-  _categories = _categories.filter(c => c.id !== _deleteId);
-  _persist(); _renderTable(); _updateStats(); _closeDeleteModal();
+  const id = _deleteId;
+  const confirmBtn = $('admin-cat-delete-confirm');
+  try {
+    if (confirmBtn) confirmBtn.disabled = true;
+    await CategoriesService.delete(id);
+    _closeDeleteModal();
+    await _load();
+    showToast('Category deleted', 'success');
+  } catch (err) {
+    console.error('[categoriesController] delete', err);
+    showToast(err.message || 'Could not delete category', 'error');
+  } finally {
+    if (confirmBtn) confirmBtn.disabled = false;
+  }
 }
 
-function _toggleCategory(id) {
-  const idx = _categories.findIndex(c => c.id === id);
-  if (idx === -1) return;
-  _categories[idx].isActive = !_categories[idx].isActive;
-  _persist(); _renderTable(); _updateStats();
+async function _toggleCategory(id) {
+  try {
+    await CategoriesService.toggleActive(id);
+    await _load();
+  } catch (err) {
+    console.error('[categoriesController] toggle', err);
+    showToast(err.message || 'Could not update category', 'error');
+  }
 }
 
 const CategoriesController = {
   async init() {
     AuthService.requireAuth();
-    _loadFromStorage();
-    _renderTable();
-    _updateStats();
+    await _load();
 
     $('admin-categories-tbody')?.addEventListener('click', e => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
-      const id  = Number(btn.dataset.id);
-      const cat = _categories.find(c => c.id === id);
+      const id  = btn.dataset.id;
+      const cat = _categories.find(c => String(c.id) === String(id));
       if (btn.dataset.action === 'edit'   && cat) _openModal(cat);
       if (btn.dataset.action === 'delete' && cat) _openDeleteModal(cat);
       if (btn.dataset.action === 'toggle')         _toggleCategory(id);

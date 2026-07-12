@@ -3,7 +3,8 @@
  */
 
 const Config = Object.freeze({
-  API_BASE_URL:    '',  // Set to your backend URL when ready (e.g. 'https://api.ekhdemni.eg/api/v1')
+  // .NET backend (BayTack.API), see backend(.net)/BayTack/BayTack.API/Properties/launchSettings.json.
+  API_BASE_URL:    'http://localhost:5025/api',
   REQUEST_TIMEOUT: 15_000,
 
   STORAGE_KEYS: {

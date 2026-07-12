@@ -1,72 +1,63 @@
 /**
- * EKHDEMNI ADMIN — Verification Controller
- * Renders real submitted providers from localStorage (ek_admin_providers)
- * merged with static demo rows, with approve/reject/review actions.
+ * BAYTACK ADMIN — Verification Controller
+ * Renders the verification queue from the real backend
+ * (Controllers/Admin/VerificationController.cs) with approve/reject/review actions.
  */
-import AuthService from '../services/authService.js';
-import Modal       from '../components/modal.js';
+import AuthService        from '../services/authService.js';
+import VerificationService from '../services/verificationService.js';
+import Modal               from '../components/modal.js';
 import { showToast } from '../core/helpers.js';
 
-const SERVICE_LABELS = {
-  plumbing:'Plumbing', electrical:'Electrical', cleaning:'Cleaning',
-  carpentry:'Carpentry', painting:'Painting', ac_repair:'AC Repair',
-};
-
 const VerificationController = {
-  _providers: [],
+  _entries: [],
 
   async init() {
     AuthService.requireAuth();
-    this._loadProviders();
-    this._renderTable();
+    await this._loadQueue();
     this._bindSearch();
-    this._updateStats();
     console.log('[VerificationController] ready');
   },
 
-  _loadProviders() {
-    const DEMO = [
-      { id:'PV-8892', name:'Khaled Mansour',  category:'electrical', providerType:'individual', status:'pending', submittedAt:'2024-10-24', img:'https://ui-avatars.com/api/?name=Khaled+Mansour&background=0050d4&color=fff' },
-      { id:'PV-8901', name:'Sara El-Din',     category:'cleaning',   providerType:'individual', status:'review',  submittedAt:'2024-10-23', img:'https://ui-avatars.com/api/?name=Sara+ElDin&background=6f5900&color=fff' },
-      { id:'PV-8877', name:'Mustafa Kamel',   category:'plumbing',   providerType:'individual', status:'pending', submittedAt:'2024-10-22', img:'https://ui-avatars.com/api/?name=Mustafa+Kamel&background=595c5e&color=fff' },
-      { id:'PV-8899', name:'Hassan Zaki',     category:'carpentry',  providerType:'company',    status:'pending', submittedAt:'2024-10-21', img:'https://ui-avatars.com/api/?name=Hassan+Zaki&background=b31b25&color=fff' },
-    ];
+  async _loadQueue() {
     try {
-      const stored = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-      // Only show pending / review in verification
-      const relevant = stored.filter(p => p.status === 'pending' || p.status === 'review');
-      const demoIds  = new Set(relevant.map(p => p.id));
-      this._providers = [...relevant, ...DEMO.filter(d => !demoIds.has(d.id))];
-    } catch { this._providers = DEMO; }
+      this._entries = await VerificationService.getQueue();
+    } catch (err) {
+      console.warn('[VerificationController] failed to load queue', err);
+      showToast('Could not load the verification queue', 'error');
+      this._entries = [];
+    }
+    this._renderTable();
+    this._updateStats();
   },
 
   _renderTable() {
     const tbody = document.getElementById('vd-tbody');
     if (!tbody) return;
 
-    if (this._providers.length === 0) {
+    if (this._entries.length === 0) {
       tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:3rem;color:var(--color-on-surface-variant)">No pending submissions.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = this._providers.map(p => {
+    tbody.innerHTML = this._entries.map(p => {
       const date  = p.submittedAt ? new Date(p.submittedAt).toLocaleDateString('en-EG', { day:'numeric', month:'short', year:'numeric' }) : '—';
-      const label = SERVICE_LABELS[p.category] || p.category || '—';
-      const typeLabel = p.providerType === 'company' ? '🏢 Company' : '👤 Individual';
-      const statusCls = p.status === 'review' ? 'vd-status--review' : 'vd-status--pending';
-      const statusTxt = p.status === 'review' ? 'Under Review' : 'Pending';
+      const label = p.category || '—';
+      const typeLabel = (p.providerType || '').toLowerCase() === 'company' ? '🏢 Company' : '👤 Individual';
+      const isReview  = (p.status || '').toLowerCase() === 'underreview';
+      const statusCls = isReview ? 'vd-status--review' : 'vd-status--pending';
+      const statusTxt = isReview ? 'Under Review' : 'Pending';
+      const img = p.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=0050d4&color=fff`;
 
       return `
         <tr data-id="${p.id}">
           <td>
             <div class="provider-cell">
               <div class="provider-cell__avatar vd-avatar-wrap">
-                <img src="${p.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=0050d4&color=fff`}"
-                     alt="${p.name}" class="vd-avatar-img" width="40" height="40"/>
+                <img src="${img}" alt="${p.name}" class="vd-avatar-img" width="40" height="40"/>
               </div>
               <div>
                 <p class="provider-cell__name">${p.name}</p>
-                <p class="provider-cell__meta">ID: #${p.id} · ${typeLabel}${p.phone ? ' · ' + p.phone : ''}</p>
+                <p class="provider-cell__meta">ID: #${p.id.slice(0, 8)} · ${typeLabel}</p>
               </div>
             </div>
           </td>
@@ -104,26 +95,27 @@ const VerificationController = {
     document.querySelectorAll('[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
         const { action, id } = btn.dataset;
-        const provider = this._providers.find(p => p.id === id);
-        if (!provider) return;
+        const entry = this._entries.find(p => p.id === id);
+        if (!entry) return;
 
         if (action === 'review') {
-          // Save provider data and navigate to review page
-          sessionStorage.setItem('bt_review_provider', JSON.stringify(provider));
-          window.location.href = 'verification-review.html';
+          window.location.href = `verification-review.html?id=${encodeURIComponent(id)}`;
         }
 
         if (action === 'approve') {
           Modal.open({
             title: 'Approve Provider',
-            content: `<p>Approve <strong>${provider.name}</strong>? Their account will become active immediately.</p>`,
+            content: `<p>Approve <strong>${entry.name}</strong>? Their account will become active immediately.</p>`,
             confirmLabel: 'Approve',
-            onConfirm: () => {
-              this._updateStatus(id, 'verified');
-              this._providers = this._providers.filter(p => p.id !== id);
-              this._renderTable();
-              this._updateStats();
-              showToast(`${provider.name} has been approved!`, 'success');
+            onConfirm: async () => {
+              try {
+                await VerificationService.approve(id);
+                showToast(`${entry.name} has been approved!`, 'success');
+                await this._loadQueue();
+              } catch (err) {
+                console.warn('[VerificationController] approve failed', err);
+                showToast('Could not approve this provider', 'error');
+              }
             },
           });
         }
@@ -131,14 +123,17 @@ const VerificationController = {
         if (action === 'reject') {
           Modal.open({
             title: 'Reject Application',
-            content: `<p>Reject <strong>${provider.name}</strong>'s application? They will be notified and can re-apply.</p>`,
+            content: `<p>Reject <strong>${entry.name}</strong>'s application? They will be notified and can re-apply.</p>`,
             confirmLabel: 'Reject',
-            onConfirm: () => {
-              this._updateStatus(id, 'suspended');
-              this._providers = this._providers.filter(p => p.id !== id);
-              this._renderTable();
-              this._updateStats();
-              showToast(`${provider.name}'s application rejected.`, 'error');
+            onConfirm: async () => {
+              try {
+                await VerificationService.reject(id, 'Rejected from the verification queue');
+                showToast(`${entry.name}'s application rejected.`, 'error');
+                await this._loadQueue();
+              } catch (err) {
+                console.warn('[VerificationController] reject failed', err);
+                showToast('Could not reject this provider', 'error');
+              }
             },
           });
         }
@@ -146,42 +141,14 @@ const VerificationController = {
     });
   },
 
-  _updateStatus(id, newStatus) {
-    try {
-      // Update ek_admin_providers
-      const stored = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-      const idx = stored.findIndex(p => p.id === id);
-      if (idx !== -1) {
-        stored[idx].status = newStatus;
-        localStorage.setItem('ek_admin_providers', JSON.stringify(stored));
-        // Sync to ek_accounts so provider dashboard reflects change immediately
-        const phone = stored[idx].phone;
-        if (phone) {
-          const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
-          const aIdx = accounts.findIndex(a => a.phone === phone);
-          if (aIdx !== -1) {
-            accounts[aIdx].status = newStatus;
-            localStorage.setItem('ek_accounts', JSON.stringify(accounts));
-          }
-        }
-      }
-    } catch(e) {}
-  },
-
   _updateStats() {
-    const total   = this._providers.length;
-    const pending = this._providers.filter(p => p.status === 'pending').length;
-    const review  = this._providers.filter(p => p.status === 'review').length;
-    const el = document.querySelector('.vd-bento-label');
-    if (el) el.closest('.vd-bento-card')?.querySelector('.vd-bento-number') && null;
-    // Update bento stats if elements exist
-    document.querySelectorAll('.vd-bento-card').forEach((card, i) => {
-      const numEl = card.querySelector('.vd-bento-number');
-      if (!numEl) return;
-      if (i === 0) numEl.textContent = total;
-      if (i === 1) numEl.textContent = pending;
-      if (i === 2) numEl.textContent = review;
-    });
+    const pending = this._entries.filter(p => (p.status || '').toLowerCase() === 'pending').length;
+    const review  = this._entries.filter(p => (p.status || '').toLowerCase() === 'underreview').length;
+
+    const cards = document.querySelectorAll('.vd-bento-card');
+    // Card order on verification.html: [0] Pending Review, [1] Under Review, [2] Weekly Performance (no number), [3] Approved This Month (no live data source yet)
+    if (cards[0]) { const n = cards[0].querySelector('.vd-bento-number'); if (n) n.textContent = pending; }
+    if (cards[1]) { const n = cards[1].querySelector('.vd-bento-number'); if (n) n.textContent = review; }
   },
 
   _bindSearch() {

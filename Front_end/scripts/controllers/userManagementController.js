@@ -1,229 +1,274 @@
 /**
  * BAYTACK ADMIN — User Management Controller
- * Shows Customers + Providers. Providers loaded from localStorage (ek_admin_providers).
+ * Shows all platform users via the real backend (reuses UsersService / the same
+ * Controllers/Admin/UsersController.cs the Users page already talks to).
+ *
+ * NOTE on tabs: "Customers" / "Providers" filter by the `role` query param
+ * (Identity role name). If your database doesn't tag users with "Customer"/
+ * "Provider" Identity roles (this system distinguishes providers mainly by the
+ * presence of a ProviderProfile row, not an Identity role), those two tabs
+ * will legitimately come back empty rather than fabricating a distinction
+ * the backend doesn't expose yet.
+ *
+ * NOTE on Reinstate: there's no "reactivate" endpoint on UsersController yet
+ * (only deactivate/delete) - the Reinstate button is left in the UI but shows
+ * a toast explaining this instead of silently doing nothing.
  */
 import AuthService from '../services/authService.js';
-
-const SERVICE_LABELS = {
-  plumbing:'Plumbing', electrical:'Electrical', cleaning:'Cleaning',
-  carpentry:'Carpentry', painting:'Painting', ac_repair:'AC Repair',
-};
+import UsersService from '../services/usersService.js';
+import Modal from '../components/modal.js';
+import { showToast } from '../core/helpers.js';
 
 const UserManagementController = {
   _currentTab:  'all',
   _currentPage: 1,
-  _rowsPerPage: 10,
-  _allRows:     [],
+  _pageSize:    10,
+  _searchQuery: '',
+  _searchDebounce: null,
+  _totalCount:  0,
+  _totalPages:  1,
+  _rows:        [],
 
   async init() {
     AuthService.requireAuth();
-
-    // Inject real providers from localStorage before reading rows
-    this._injectRealProviders();
-
-    this._allRows = Array.from(document.querySelectorAll('#um-tbody tr'));
     this._bindTabs();
     this._bindSearch();
     this._bindPagination();
-    this._bindActions();
-    this._renderPage();
-    console.log('[UserManagementController] ready — rows:', this._allRows.length);
+    await this._loadStats();
+    await this._loadPage();
+    console.log('[UserManagementController] ready');
   },
 
-  /* ── Inject providers from localStorage into the table ── */
-  _injectRealProviders() {
+  _roleForTab(tab) {
+    return tab === 'customers' ? 'Customer' : tab === 'providers' ? 'Provider' : undefined;
+  },
+
+  async _loadStats() {
+    try {
+      const [all, customers, providers] = await Promise.all([
+        UsersService.getAll({ page: 1, perPage: 1 }),
+        UsersService.getAll({ page: 1, perPage: 1, role: 'Customer' }),
+        UsersService.getAll({ page: 1, perPage: 1, role: 'Provider' }),
+      ]);
+      this._setStat('um-stat-total', all.totalCount);
+      this._setStat('um-stat-customers', customers.totalCount);
+      this._setStat('um-stat-providers', providers.totalCount);
+      // No global "suspended count" endpoint yet - approximate from the full first page below in _loadPage().
+    } catch (err) {
+      console.warn('[UserManagementController] failed to load stats', err);
+    }
+  },
+
+  _setStat(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value.toLocaleString('en-US');
+  },
+
+  _bindTabs() {
+    document.querySelectorAll('.um-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.um-tab').forEach(t => {
+          t.classList.remove('um-tab--active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('um-tab--active');
+        tab.setAttribute('aria-selected', 'true');
+        this._currentTab = tab.dataset.tab;
+        this._currentPage = 1;
+        this._loadPage();
+      });
+    });
+  },
+
+  _bindSearch() {
+    const input = document.getElementById('um-search');
+    if (!input) return;
+    input.addEventListener('input', () => {
+      clearTimeout(this._searchDebounce);
+      this._searchDebounce = setTimeout(() => {
+        this._searchQuery = input.value.trim();
+        this._currentPage = 1;
+        this._loadPage();
+      }, 300);
+    });
+  },
+
+  _bindPagination() {
+    const controls = document.getElementById('um-pagination-controls');
+    if (!controls) return;
+    controls.addEventListener('click', (e) => {
+      const btn = e.target.closest('.pagination-btn');
+      if (!btn || btn.disabled) return;
+      const page = parseInt(btn.dataset.page, 10);
+      if (!isNaN(page)) {
+        this._currentPage = page;
+        this._loadPage();
+      }
+    });
+  },
+
+  async _loadPage() {
+    const tbody = document.getElementById('um-tbody');
+    try {
+      const result = await UsersService.getAll({
+        search: this._searchQuery,
+        role: this._roleForTab(this._currentTab),
+        page: this._currentPage,
+        perPage: this._pageSize,
+      });
+      this._rows = result.items;
+      this._totalCount = result.totalCount;
+      this._totalPages = Math.max(1, result.totalPages);
+      this._renderTable();
+
+      if (this._currentTab === 'all' && this._currentPage === 1) {
+        const suspended = result.items.filter(u => u.status === 'Suspended').length;
+        this._setStat('um-stat-suspended', suspended);
+      }
+    } catch (err) {
+      console.warn('[UserManagementController] failed to load users', err);
+      showToast('Could not load users', 'error');
+      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--color-on-surface-variant)">Could not load users.</td></tr>`;
+    }
+    this._renderPaginationInfo();
+    this._renderPaginationControls();
+  },
+
+  _renderTable() {
     const tbody = document.getElementById('um-tbody');
     if (!tbody) return;
-    try {
-      const stored = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-      if (!stored.length) return;
 
-      stored.forEach(p => {
-        // Skip if already in table (by phone or id)
-        const exists = Array.from(tbody.querySelectorAll('tr')).some(row =>
-          row.textContent.includes(p.phone || '') || row.textContent.includes(p.id || '')
-        );
-        if (exists) return;
+    if (!this._rows.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--color-on-surface-variant)">No users found.</td></tr>`;
+      return;
+    }
 
-        const statusMap = {
-          verified:     { cls: 'status-badge--verified',  label: 'Verified'  },
-          pending:      { cls: 'status-badge--pending',   label: 'Pending'   },
-          pending_review:{ cls:'status-badge--pending',   label: 'Pending'   },
-          review:       { cls: 'status-badge--review',    label: 'Review'    },
-          suspended:    { cls: 'status-badge--suspended', label: 'Suspended' },
-        };
-        const st  = statusMap[p.status] ?? statusMap.pending;
-        const svc = SERVICE_LABELS[p.category || p.service] || p.category || p.service || '—';
-        const typeLabel = p.providerType === 'company' ? '🏢 Co.' : '';
-        const joined = p.submittedAt
-          ? new Date(p.submittedAt).toLocaleDateString('en-EG',{day:'numeric',month:'short',year:'numeric'})
-          : '—';
+    const STATUS_BADGE = {
+      Active:      { cls: 'status-badge--active',    label: 'Active'      },
+      Suspended:   { cls: 'status-badge--suspended', label: 'Suspended'   },
+      Deactivated: { cls: 'status-badge--suspended', label: 'Deactivated' },
+    };
 
-        const tr = document.createElement('tr');
-        tr.dataset.providerId = p.id;
-        tr.innerHTML = `
+    tbody.innerHTML = this._rows.map(u => {
+      const isProvider = (u.roles || []).some(r => r.toLowerCase() === 'provider');
+      const typeLabel   = isProvider ? 'Provider' : 'Customer';
+      const typeCls     = isProvider ? 'um-badge--provider' : 'um-badge--customer';
+      const icon        = isProvider ? 'engineering' : 'person';
+      const iconStyle    = isProvider
+        ? 'background:rgba(0,105,71,0.10);color:var(--color-secondary)'
+        : 'background:rgba(0,80,212,0.10);color:var(--color-primary)';
+      const st = STATUS_BADGE[u.status] ?? { cls: 'status-badge--active', label: u.status };
+      const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+
+      return `
+        <tr data-id="${u.id}">
           <td>
             <div class="provider-cell">
-              <div class="provider-cell__avatar" style="background:rgba(0,105,71,0.10);color:var(--color-secondary)">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">engineering</span>
+              <div class="provider-cell__avatar" style="${iconStyle}">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">${icon}</span>
               </div>
               <div>
-                <p class="provider-cell__name">${p.name || '—'} ${typeLabel}</p>
-                <p class="provider-cell__meta">ID: #${p.id}</p>
+                <p class="provider-cell__name">${u.fullName}</p>
+                <p class="provider-cell__meta">ID: #${u.id.slice(0, 8)}</p>
               </div>
             </div>
           </td>
-          <td><span class="um-badge um-badge--provider">Provider</span></td>
-          <td><span class="provider-cell__meta">${p.email || p.phone || '—'}<br/><small>${svc}</small></span></td>
+          <td><span class="um-badge ${typeCls}">${typeLabel}</span></td>
+          <td><span class="provider-cell__meta">${u.email || '—'}</span></td>
           <td><span class="provider-cell__meta">${joined}</span></td>
           <td><span class="status-badge ${st.cls}">${st.label}</span></td>
           <td style="text-align:right">
             <div class="action-group">
-              <button class="btn btn--icon um-action" data-action="view"    data-id="${p.id}" title="View Profile"><span class="material-symbols-outlined">visibility</span></button>
-              <button class="btn btn--icon um-action" data-action="approve" data-id="${p.id}" title="Approve" style="color:var(--color-secondary)"><span class="material-symbols-outlined">check_circle</span></button>
-              <button class="btn btn--icon btn--icon-danger um-action" data-action="suspend" data-id="${p.id}" title="Suspend"><span class="material-symbols-outlined">block</span></button>
+              <button class="btn btn--icon" title="View Profile" data-action="view" data-id="${u.id}"><span class="material-symbols-outlined">visibility</span></button>
+              ${u.status === 'Suspended' || u.status === 'Deactivated'
+                ? `<button class="btn btn--icon" title="Reinstate" style="color:var(--color-secondary)" data-action="reinstate" data-id="${u.id}"><span class="material-symbols-outlined">check_circle</span></button>`
+                : `<button class="btn btn--icon btn--icon-danger" title="Suspend" data-action="suspend" data-id="${u.id}"><span class="material-symbols-outlined">block</span></button>`}
             </div>
           </td>
-        `;
-        tbody.insertBefore(tr, tbody.firstChild);
-      });
-    } catch (e) {
-      console.warn('[UM] Could not load providers from localStorage:', e);
-    }
+        </tr>
+      `;
+    }).join('');
+
+    this._bindRowActions();
   },
 
-  /* ── Bind action buttons ── */
-  _bindActions() {
-    document.getElementById('um-tbody')?.addEventListener('click', e => {
-      const btn = e.target.closest('.um-action');
-      if (!btn) return;
-      const { action, id } = btn.dataset;
-      const row = btn.closest('tr');
-      const name = row?.querySelector('.provider-cell__name')?.textContent.trim() || 'this user';
+  _bindRowActions() {
+    document.querySelectorAll('#um-tbody [data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const { action, id } = btn.dataset;
+        const user = this._rows.find(u => u.id === id);
+        if (!user) return;
 
-      if (action === 'view') {
-        // Navigate to verification-review with id
-        try {
-          const providers = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-          const p = providers.find(x => x.id === id);
-          if (p) sessionStorage.setItem('bt_review_provider', JSON.stringify(p));
-        } catch {}
-        window.location.href = 'verification-review.html';
-      }
+        if (action === 'view') {
+          showToast(`${user.fullName} \u2014 ${user.email || 'no email'} \u2014 ${user.status}`, 'info');
+        }
 
-      if (action === 'approve') {
-        if (!confirm(`Approve ${name}?`)) return;
-        this._updateProviderStatus(id, 'verified');
-        const badge = row?.querySelector('.status-badge');
-        if (badge) { badge.className = 'status-badge status-badge--verified'; badge.textContent = 'Verified'; }
-      }
+        if (action === 'suspend') {
+          Modal.open({
+            title: 'Suspend User',
+            content: `<p>Suspend <strong>${user.fullName}</strong>? They won't be able to sign in until reinstated.</p>`,
+            confirmLabel: 'Suspend',
+            onConfirm: async () => {
+              try {
+                await UsersService.deactivate(id);
+                showToast(`${user.fullName} has been suspended.`, 'success');
+                await this._loadPage();
+              } catch (err) {
+                console.warn('[UserManagementController] suspend failed', err);
+                showToast('Could not suspend this user', 'error');
+              }
+            },
+          });
+        }
 
-      if (action === 'suspend') {
-        if (!confirm(`Suspend ${name}?`)) return;
-        this._updateProviderStatus(id, 'suspended');
-        const badge = row?.querySelector('.status-badge');
-        if (badge) { badge.className = 'status-badge status-badge--suspended'; badge.textContent = 'Suspended'; }
-      }
-    });
-  },
-
-  _updateProviderStatus(id, status) {
-    try {
-      const list = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-      const idx  = list.findIndex(p => p.id === id);
-      if (idx !== -1) { list[idx].status = status; localStorage.setItem('ek_admin_providers', JSON.stringify(list)); }
-    } catch {}
-  },
-
-  /* ── Tabs ── */
-  _bindTabs() {
-    document.querySelectorAll('.um-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        this._currentTab  = tab.dataset.tab;
-        this._currentPage = 1;
-        document.querySelectorAll('.um-tab').forEach(t => { t.classList.remove('um-tab--active'); t.setAttribute('aria-selected','false'); });
-        tab.classList.add('um-tab--active');
-        tab.setAttribute('aria-selected','true');
-        this._renderPage();
+        if (action === 'reinstate') {
+          showToast('Reinstating a suspended user isn\u2019t supported by the backend yet.', 'info');
+        }
       });
     });
   },
 
-  /* ── Search ── */
-  _bindSearch() {
-    document.getElementById('um-search')?.addEventListener('input', () => {
-      this._currentPage = 1;
-      this._renderPage();
-    });
-  },
-
-  /* ── Pagination ── */
-  _bindPagination() {
-    document.getElementById('um-pagination-controls')?.addEventListener('click', e => {
-      const btn = e.target.closest('.pagination-btn');
-      if (!btn || btn.disabled) return;
-      const page = parseInt(btn.dataset.page);
-      if (!isNaN(page)) { this._currentPage = page; this._renderPage(); }
-    });
-  },
-
-  _getVisibleRows() {
-    const query = document.getElementById('um-search')?.value.trim().toLowerCase() || '';
-    return this._allRows.filter(row => {
-      const typeCell = row.querySelector('.um-badge');
-      const typeText = typeCell ? typeCell.textContent.toLowerCase() : '';
-      const matchesTab =
-        this._currentTab === 'all'
-        || (this._currentTab === 'customers' && typeText.includes('customer'))
-        || (this._currentTab === 'providers' && typeText.includes('provider'));
-      const matchesQuery = !query || row.textContent.toLowerCase().includes(query);
-      return matchesTab && matchesQuery;
-    });
-  },
-
-  _renderPage() {
-    const visible = this._getVisibleRows();
-    const total   = visible.length;
-    const pages   = Math.max(1, Math.ceil(total / this._rowsPerPage));
-    if (this._currentPage > pages) this._currentPage = pages;
-    const start = (this._currentPage - 1) * this._rowsPerPage;
-    const end   = start + this._rowsPerPage;
-
-    this._allRows.forEach(r => r.style.display = 'none');
-    visible.slice(start, end).forEach(r => r.style.display = '');
-
+  _renderPaginationInfo() {
     const infoEl = document.getElementById('um-pagination-info');
-    if (infoEl) {
-      const showing = Math.min(this._rowsPerPage, total - start);
-      infoEl.textContent = total === 0 ? 'No users found' : `Showing ${start + 1}–${start + showing} of ${total} users`;
-    }
+    if (!infoEl) return;
+    if (this._totalCount === 0) { infoEl.textContent = 'No users'; return; }
+    const start = (this._currentPage - 1) * this._pageSize + 1;
+    const end = Math.min(this._currentPage * this._pageSize, this._totalCount);
+    infoEl.textContent = `Showing ${start}\u2013${end} of ${this._totalCount} users`;
+  },
 
+  _renderPaginationControls() {
     const controls = document.getElementById('um-pagination-controls');
     if (!controls) return;
     controls.innerHTML = '';
 
-    const mkBtn = (label, pg, active=false, disabled=false, icon=null) => {
-      const b = document.createElement('button');
-      b.className = 'pagination-btn' + (active ? ' pagination-btn--active' : '');
-      b.disabled  = disabled;
-      if (pg !== null) b.dataset.page = pg;
-      b.innerHTML = icon ? `<span class="material-symbols-outlined">${icon}</span>` : label;
-      return b;
+    const mkBtn = (label, page, isActive = false, isDisabled = false, icon = null) => {
+      const btn = document.createElement('button');
+      btn.className = 'pagination-btn' + (isActive ? ' pagination-btn--active' : '');
+      btn.disabled  = isDisabled;
+      if (page !== null) btn.dataset.page = page;
+      btn.innerHTML = icon ? `<span class="material-symbols-outlined">${icon}</span>` : label;
+      return btn;
     };
 
-    controls.appendChild(mkBtn('', this._currentPage-1, false, this._currentPage===1, 'chevron_left'));
-    this._getPageNumbers(this._currentPage, pages).forEach(p => {
-      if (p === '...') { const s=document.createElement('span'); s.className='pagination-ellipsis'; s.textContent='…'; controls.appendChild(s); }
-      else controls.appendChild(mkBtn(p, p, p===this._currentPage));
+    controls.appendChild(mkBtn('', this._currentPage - 1, false, this._currentPage === 1, 'chevron_left'));
+    this._getPageNumbers(this._currentPage, this._totalPages).forEach(p => {
+      if (p === '...') {
+        const el = document.createElement('span');
+        el.className = 'pagination-ellipsis'; el.textContent = '\u2026';
+        controls.appendChild(el);
+      } else {
+        controls.appendChild(mkBtn(p, p, p === this._currentPage));
+      }
     });
-    controls.appendChild(mkBtn('', this._currentPage+1, false, this._currentPage===pages, 'chevron_right'));
+    controls.appendChild(mkBtn('', this._currentPage + 1, false, this._currentPage === this._totalPages, 'chevron_right'));
   },
 
-  _getPageNumbers(cur, total) {
-    if (total <= 7) return Array.from({length:total},(_,i)=>i+1);
-    if (cur <= 4)         return [1,2,3,4,5,'...',total];
-    if (cur >= total-3)  return [1,'...',total-4,total-3,total-2,total-1,total];
-    return [1,'...',cur-1,cur,cur+1,'...',total];
+  _getPageNumbers(current, total) {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+    if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    return [1, '...', current - 1, current, current + 1, '...', total];
   },
 };
 
