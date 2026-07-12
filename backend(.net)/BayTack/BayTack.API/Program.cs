@@ -1,6 +1,8 @@
 using BayTack.Application;
+using BayTack.Application.Abstractions.IRepository;
 using BayTack.Infrastructure;
 using BayTack.Infrastructure.Identity;
+using BayTack.Infrastructure.Repositorty;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
 
@@ -15,7 +17,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 builder.Services.AddHttpContextAccessor();
 

@@ -32,8 +32,9 @@ namespace BayTack.Infrastructure.Persistence
 
 		public DbSet<ServiceCategory> ServiceCategories => Set<ServiceCategory>();
 		public DbSet<Service> Services => Set<Service>();
+        public DbSet<ServiceListing> ServiceListings => Set<ServiceListing>();
 
-		public DbSet<CustomerJob> CustomerJobs => Set<CustomerJob>();
+        public DbSet<CustomerJob> CustomerJobs => Set<CustomerJob>();
 		public DbSet<JobImage> JobImages => Set<JobImage>();
 		public DbSet<ProviderBid> ProviderBids => Set<ProviderBid>();
 
