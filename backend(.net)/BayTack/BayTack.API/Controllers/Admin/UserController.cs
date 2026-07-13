@@ -5,13 +5,16 @@ using BayTack.Application.Features.Users.Command.DeleteUser;
 using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
 using BayTack.Application.Features.Users.Queries.GetUserById;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Admin
 {
+	[Authorize]
 	public class UsersController : ApiController
 	{
 		[HttpGet]
+		[Authorize(Policy = "Permissions.Users.View")]
 		public async Task<IActionResult> GetAll(
 			[FromQuery] string? search,
 			[FromQuery] string? role,
@@ -23,8 +26,8 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-		/// <summary>GET /users/{id} -> User</summary>
 		[HttpGet("{id}")]
+		[Authorize(Policy = "Permissions.Users.View")] // أو يتم التحقق داخل الـ Handler لو كان المستخدم بيجيب بيانات نفسه
 		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await Sender.Send(new GetUserByIdQuery(id));
@@ -32,8 +35,8 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-		/// <summary>POST /users  Body: { name, email, phone, role } -> User</summary>
 		[HttpPost]
+		[Authorize(Policy = "Permissions.Users.Create")]
 		public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
 		{
 			var command = new CreateUserCommand(request.Name, request.Email, request.Phone, request.Role);
@@ -42,12 +45,10 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-
-		/// <summary>PUT /users/{id}  Body: { name, email, phone, role } -> User</summary>
 		[HttpPut("{id}")]
+		[Authorize(Policy = "Permissions.Users.Update")]
 		public async Task<IActionResult> Update(string id, [FromBody] UpdateUserRequest request)
 		{
-			// UpdatedBy comes from the authenticated admin (claims), never from the request body.
 			var updatedBy = CurrentUserId ?? throw new InvalidOperationException("Authenticated user ID is required.");
 
 			var command = new UpdateUserCommand(id, request.Name, request.Email, request.Phone, request.Role, updatedBy);
@@ -56,10 +57,8 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-
-
-		/// <summary>PATCH /users/{id}/deactivate -> { success: true }</summary>
 		[HttpPatch("{id}/deactivate")]
+		[Authorize(Policy = "Permissions.Users.Deactivate")] // صلاحية تجميد الحسابات
 		public async Task<IActionResult> Deactivate(string id)
 		{
 			var result = await Sender.Send(new DeactivateUserCommand(id));
@@ -67,12 +66,8 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-
-
-
-
-		/// <summary>DELETE /users/{id} -> { success: true } (soft delete)</summary>
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "Permissions.Users.Delete")]
 		public async Task<IActionResult> Delete(string id)
 		{
 			var command = new DeleteUserCommand(id, CurrentUserId, "Deleted via admin API");
@@ -80,21 +75,12 @@ namespace BayTack.API.Controllers.Admin
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}
-
-
-
-
 	}
+
+
 }
+
 
 
 public sealed record CreateUserRequest(string Name, string Email, string? Phone, string Role);
 public sealed record UpdateUserRequest(string Name, string Email, string? Phone, string? Role);
-
-
-
-
-
-
-
-

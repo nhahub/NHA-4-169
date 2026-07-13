@@ -5,13 +5,16 @@ using BayTack.Application.Features.Categories.Commands.ToggleCategoryActive;
 using BayTack.Application.Features.Categories.Commands.UpdateCategory;
 using BayTack.Application.Features.Categories.Queries.GetAllCategories;
 using BayTack.Application.Features.Categories.Queries.GetCategoryById;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Admin
 {
+	[Authorize]
 	public class CategoriesController : ApiController
 	{
 		[HttpGet]
+		[Authorize(Policy = "Permissions.Categories.View")]
 		public async Task<IActionResult> GetAll()
 		{
 			var result = await Sender.Send(new GetAllCategoriesQuery());
@@ -20,6 +23,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpGet("{id}")]
+		[Authorize(Policy = "Permissions.Categories.View")]
 		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await Sender.Send(new GetCategoryByIdQuery(id));
@@ -28,6 +32,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "Permissions.Categories.Create")]
 		public async Task<IActionResult> Create([FromBody] CreateCategoryRequest body)
 		{
 			var result = await Sender.Send(new CreateCategoryCommand(body.Name, body.Icon, body.Description));
@@ -36,6 +41,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(Policy = "Permissions.Categories.Update")]
 		public async Task<IActionResult> Update(string id, [FromBody] UpdateCategoryRequest body)
 		{
 			var result = await Sender.Send(new UpdateCategoryCommand(id, body.Name, body.Icon, body.Description, body.IsActive));
@@ -44,6 +50,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "Permissions.Categories.Delete")]
 		public async Task<IActionResult> Delete(string id)
 		{
 			var result = await Sender.Send(new DeleteCategoryCommand(id));
@@ -52,6 +59,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPatch("{id}/toggle")]
+		[Authorize(Policy = "Permissions.Categories.Update")] 
 		public async Task<IActionResult> Toggle(string id)
 		{
 			var result = await Sender.Send(new ToggleCategoryActiveCommand(id));

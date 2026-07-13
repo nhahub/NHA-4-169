@@ -45,9 +45,9 @@ namespace BayTack.Infrastructure.Identity
 		{
 			var roleDefinitions = new Dictionary<string, string[]>
 			{
-				["Admin"] = Permissions.All.Select(p => p.Id).ToArray(),
-				["Provider"] = new[] { Permissions.JobsView, Permissions.ProvidersView },
-				["Customer"] = new[] { Permissions.JobsView },
+				["Admin"] = Permissions.GetAdminPermissions().ToArray(),
+				["Provider"] = Permissions.GetProviderPermissions().ToArray(),
+				["Customer"] = Permissions.GetCustomerPermissions().ToArray(),
 			};
 
 			foreach (var (roleName, permissionIds) in roleDefinitions)

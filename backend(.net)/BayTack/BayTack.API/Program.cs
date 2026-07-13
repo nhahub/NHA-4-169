@@ -1,3 +1,4 @@
+using BayTack.API.Middlewares;
 using BayTack.Application;
 using BayTack.Application.Abstractions.IRepository;
 using BayTack.Infrastructure;
@@ -16,6 +17,9 @@ builder.Services.AddControllers();
 
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
@@ -45,6 +49,9 @@ builder.Services.AddSwaggerGen(doc =>
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
+
+
 using (var scope = app.Services.CreateScope())
 {
 	await Seeder.SeedAsync(scope.ServiceProvider);
@@ -56,6 +63,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

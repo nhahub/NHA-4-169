@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace BayTack.Application.Common.DTO.Auth
 {
 	public record AuthResponseDto(
@@ -12,7 +9,9 @@ namespace BayTack.Application.Common.DTO.Auth
 	string AccessToken,
 	DateTime AccessTokenExpiration,
 	string RefreshToken,
-	IEnumerable<string> Roles);
+	IEnumerable<string> Roles,
+	IEnumerable<string> Permission
+	);
 }
 
 

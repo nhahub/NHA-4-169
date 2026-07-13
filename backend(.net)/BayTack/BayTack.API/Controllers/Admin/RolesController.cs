@@ -5,13 +5,16 @@ using BayTack.Application.Features.Roles.Commands.SetRolePermissions;
 using BayTack.Application.Features.Roles.Commands.UpdateRole;
 using BayTack.Application.Features.Roles.Queries.GetAllRoles;
 using BayTack.Application.Features.Roles.Queries.GetPermissions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Admin
 {
+	[Authorize]
 	public class RolesController : ApiController
 	{
 		[HttpGet]
+		[Authorize(Policy = "Permissions.Roles.View")]
 		public async Task<IActionResult> GetAll()
 		{
 			var result = await Sender.Send(new GetAllRolesQuery());
@@ -20,6 +23,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "Permissions.Roles.Create")]
 		public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
 		{
 			var result = await Sender.Send(command);
@@ -28,6 +32,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(Policy = "Permissions.Roles.Update")]
 		public async Task<IActionResult> Update(string id, [FromBody] UpdateRoleRequest body)
 		{
 			var result = await Sender.Send(new UpdateRoleCommand(id, body.Name));
@@ -36,6 +41,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "Permissions.Roles.Delete")]
 		public async Task<IActionResult> Delete(string id)
 		{
 			var result = await Sender.Send(new DeleteRoleCommand(id));
@@ -44,6 +50,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPost("{id}/permissions")]
+		[Authorize(Policy = "Permissions.Roles.ManagePermissions")] // صلاحية ربط الـ Permissions بالـ Role
 		public async Task<IActionResult> SetPermissions(string id, [FromBody] SetPermissionsRequest body)
 		{
 			var result = await Sender.Send(new SetRolePermissionsCommand(id, body.PermissionIds ?? new()));
@@ -52,6 +59,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpGet("/api/Permissions")]
+		[Authorize(Policy = "Permissions.Permissions.View")] // صلاحية عرض قائمة كل الـ Permissions
 		public async Task<IActionResult> GetPermissions()
 		{
 			var result = await Sender.Send(new GetPermissionsQuery());

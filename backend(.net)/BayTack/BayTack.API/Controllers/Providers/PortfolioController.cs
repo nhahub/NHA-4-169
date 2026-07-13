@@ -4,13 +4,16 @@ using BayTack.Application.Features.Providers.Commands.DeletePortfolioItem;
 using BayTack.Application.Features.Providers.Commands.UpdatePortfolioItem;
 using BayTack.Application.Features.Providers.Queries.GetAllPortfolioItems;
 using BayTack.Application.Features.Providers.Queries.GetPortfolioItemById;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Providers
 {
+	[Authorize]
 	public class PortfolioController : ApiController
 	{
 		[HttpGet]
+		[Authorize(Policy = "Permissions.Portfolio.View")] // مسموح للكل لرؤية أعمال الـ Provider
 		public async Task<IActionResult> GetAll([FromQuery] string providerProfileId)
 		{
 			var result = await Sender.Send(new GetAllPortfolioItemsQuery(providerProfileId));
@@ -19,6 +22,7 @@ namespace BayTack.API.Controllers.Providers
 		}
 
 		[HttpGet("{id}")]
+		[Authorize(Policy = "Permissions.Portfolio.View")] // مسموح للكل
 		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await Sender.Send(new GetPortfolioItemByIdQuery(id));
@@ -27,6 +31,7 @@ namespace BayTack.API.Controllers.Providers
 		}
 
 		[HttpPost]
+		[Authorize(Policy = "Permissions.Portfolio.ProviderManage")] // إدارة معرض الأعمال (إضافة)
 		public async Task<IActionResult> Create([FromBody] CreatePortfolioItemRequest request)
 		{
 			var command = new AddPortfolioItemCommand(
@@ -37,6 +42,7 @@ namespace BayTack.API.Controllers.Providers
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(Policy = "Permissions.Portfolio.ProviderManage")] // إدارة معرض الأعمال (تعديل)
 		public async Task<IActionResult> Update(string id, [FromBody] UpdatePortfolioItemRequest request)
 		{
 			var command = new UpdatePortfolioItemCommand(id, request.Title, request.Description, request.ImageUrl);
@@ -46,6 +52,7 @@ namespace BayTack.API.Controllers.Providers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Policy = "Permissions.Portfolio.ProviderManage")] // إدارة معرض الأعمال (حذف)
 		public async Task<IActionResult> Delete(string id)
 		{
 			var result = await Sender.Send(new DeletePortfolioItemCommand(id));

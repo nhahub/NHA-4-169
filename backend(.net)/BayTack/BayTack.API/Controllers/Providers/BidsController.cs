@@ -1,13 +1,16 @@
 using BayTack.API.Extensions;
 using BayTack.Application.Features.Jobs.Commands.RetractBid;
 using BayTack.Application.Features.Jobs.Commands.SubmitBid;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Providers
 {
+	[Authorize]
 	public class BidsController : ApiController
 	{
 		[HttpPost]
+		[Authorize(Policy = "Permissions.Bids.ProviderSubmit")] // صلاحية تقديم عرض من مقدم الخدمة
 		public async Task<IActionResult> Submit([FromBody] SubmitBidRequest request)
 		{
 			var command = new SubmitBidCommand(
@@ -24,6 +27,7 @@ namespace BayTack.API.Controllers.Providers
 		}
 
 		[HttpDelete("{bidId}")]
+		[Authorize(Policy = "Permissions.Bids.ProviderRetract")] // صلاحية سحب العرض أو إلغائه
 		public async Task<IActionResult> Retract(string bidId)
 		{
 			var result = await Sender.Send(new RetractBidCommand(bidId));
@@ -31,7 +35,6 @@ namespace BayTack.API.Controllers.Providers
 			return StatusCode(response.StatusCode, response);
 		}
 	}
-
 	public sealed record SubmitBidRequest(
 		string JobId,
 		string ProviderId,

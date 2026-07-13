@@ -1,4 +1,4 @@
-using BayTack.Application.Common.DTO;
+﻿using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Providers.Commands.ApproveProvider;
 using BayTack.Application.Features.Providers.Commands.ReinstateProvider;
 using BayTack.Application.Features.Providers.Commands.SuspendProvider;
@@ -7,14 +7,17 @@ using BayTack.Application.Features.Providers.Queries.GetAllProviders;
 using BayTack.Application.Features.Providers.Queries.GetProviderById;
 using BayTack.Application.Features.Providers.Queries.GetProviderStats;
 using BayTack.Application.Features.Providers.Queries.GetRecentProviders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Admin
 {
+	[Authorize]
 	[Route("api/admin/providers")]
 	public class ProvidersController : ApiController
 	{
 		[HttpGet]
+		[Authorize(Policy = "Permissions.Providers.View")]
 		public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] string? categoryId, [FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int limit = 20)
 		{
 			var result = await Sender.Send(new GetAllProvidersQuery(search, categoryId, status, page, limit));
@@ -23,6 +26,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpGet("stats")]
+		[Authorize(Policy = "Permissions.Providers.ViewStats")] // إحصائيات حساسة للوحة التحكم
 		public async Task<IActionResult> Stats()
 		{
 			var result = await Sender.Send(new GetProviderStatsQuery());
@@ -31,6 +35,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpGet("recent")]
+		[Authorize(Policy = "Permissions.Providers.View")]
 		public async Task<IActionResult> Recent([FromQuery] int limit = 5)
 		{
 			var result = await Sender.Send(new GetRecentProvidersQuery(limit));
@@ -39,6 +44,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpGet("{id}")]
+		[Authorize(Policy = "Permissions.Providers.View")]
 		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await Sender.Send(new GetProviderByIdQuery(id));
@@ -47,6 +53,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(Policy = "Permissions.Providers.Update")]
 		public async Task<IActionResult> Update(string id, [FromBody] UpdateProviderRequest body)
 		{
 			var result = await Sender.Send(new UpdateProviderCommand(id, body.ProviderType, body.YearsOfExperience, body.CategoryId));
@@ -55,6 +62,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPatch("{id}/approve")]
+		[Authorize(Policy = "Permissions.Providers.Approve")] // صلاحية قبول مقدم الخدمة
 		public async Task<IActionResult> Approve(string id)
 		{
 			var result = await Sender.Send(new ApproveProviderCommand(id));
@@ -63,6 +71,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPatch("{id}/suspend")]
+		[Authorize(Policy = "Permissions.Providers.Suspend")] // صلاحية إيقاف الحساب
 		public async Task<IActionResult> Suspend(string id, [FromBody] SuspendProviderRequest body)
 		{
 			var result = await Sender.Send(new SuspendProviderCommand(id, body.Reason));
@@ -71,6 +80,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPatch("{id}/reinstate")]
+		[Authorize(Policy = "Permissions.Providers.Suspend")] // إعادة التفعيل تتبع نفس الإدارة (أو منفصلة حسب رغبتك)
 		public async Task<IActionResult> Reinstate(string id)
 		{
 			var result = await Sender.Send(new ReinstateProviderCommand(id));

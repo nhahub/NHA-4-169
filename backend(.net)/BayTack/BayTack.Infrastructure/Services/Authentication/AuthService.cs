@@ -2,6 +2,7 @@
 using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Common.DTO.Auth;
 using BayTack.Application.Common.Models;
+using BayTack.Application.Common.Security;
 using BayTack.Domain.Enums;
 using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
@@ -166,14 +167,13 @@ namespace BayTack.Infrastructure.Services.Authentication
 		private async Task<Result<AuthResponseDto>> IssueTokensAsync(AppUser user, string? ipAddress, CancellationToken ct, string? precomputedRefreshTokenValue = null)
 		{
 			var roleNames = await _userManager.GetRolesAsync(user);
-
 			var perms = new HashSet<string>();
 			foreach (var rn in roleNames)
 			{
 				var role = await _roles.FindByNameAsync(rn);
 				if (role == null) continue;
 				var claims = await _roles.GetClaimsAsync(role);
-				foreach (var c in claims.Where(c => c.Type == "Permission")) perms.Add(c.Value);
+				foreach (var c in claims.Where(c => c.Type == Permissions.ClaimType)) perms.Add(c.Value);
 			}
 			var FirstName = user.FullName?.Split(' ').FirstOrDefault() ?? string.Empty;
 			var LastName = user.FullName?.Split(' ').Skip(1).FirstOrDefault() ?? string.Empty;
@@ -184,7 +184,7 @@ namespace BayTack.Infrastructure.Services.Authentication
 		    _refreshTokenRepository.Add(RefreshToken.Create(refreshToken, DateTime.UtcNow.AddDays(7), user.Id));
 
 			await _unitOfWork.SaveChangesAsync(ct);
-			var x = new AuthResponseDto(user.Id, user.Email ?? string.Empty,user.UserName ?? string.Empty,  user.FullName ?? string.Empty, accessToken.Token, accessToken.ExpiresAt, refreshToken, roleNames);
+			var x = new AuthResponseDto(user.Id, user.Email ?? string.Empty,user.UserName ?? string.Empty,  user.FullName ?? string.Empty, accessToken.Token, accessToken.ExpiresAt, refreshToken, roleNames, perms);
 			return Result<AuthResponseDto>.Success(x);
 		}
  
