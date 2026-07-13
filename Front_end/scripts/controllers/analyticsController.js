@@ -7,7 +7,7 @@
 
 import AuthService      from '../services/authService.js';
 import AnalyticsService from '../services/analyticsService.js';
-import { formatCurrency, showToast } from '../core/helpers.js';
+import { formatCurrency, showToast, exportToCsv } from '../core/helpers.js';
 
 /* ── Mock data (swap with real API calls when backend is ready) ── */
 const MOCK_KPI = {
@@ -224,11 +224,144 @@ const AnalyticsController = {
   /* ── Export Buttons ── */
   _bindExportButtons() {
     document.getElementById('admin-export-csv-btn')?.addEventListener('click', () => {
-      showToast('CSV export started…', 'success');
+      this._exportCsv();
     });
     document.getElementById('admin-export-pdf-btn')?.addEventListener('click', () => {
-      showToast('PDF generation started…', 'success');
+      this._exportPdf();
     });
+  },
+
+  /** Build a stamped filename, e.g. "baytack-analytics-2026-07-13.csv" */
+  _fileStamp(ext) {
+    const today = new Date().toISOString().slice(0, 10);
+    return `baytack-analytics-${today}.${ext}`;
+  },
+
+  _exportCsv() {
+    try {
+      const section = (title, headers, rows) => [
+        [title], headers, ...rows, [],
+      ];
+
+      const rows = [
+        ...section('Key Metrics', ['Metric', 'Value'], [
+          ['Total Revenue', MOCK_KPI.totalRevenue],
+          ['Active Users', MOCK_KPI.activeUsers],
+          ['Completed Orders', MOCK_KPI.completedOrders],
+          ['New Providers', MOCK_KPI.newProviders],
+        ]),
+        ...section('Revenue Trend', ['Month', 'Revenue'],
+          MOCK_TREND.map(t => [t.month, t.revenue]),
+        ),
+        ...section('Recent Transactions', ['Transaction ID', 'Customer', 'Service', 'Amount', 'Status'],
+          MOCK_TRANSACTIONS.map(tx => [tx.id, tx.customer, tx.service, tx.amount, tx.status]),
+        ),
+      ];
+
+      exportToCsv(this._fileStamp('csv'), [], rows);
+      showToast('CSV downloaded successfully', 'success');
+    } catch (err) {
+      console.error('[AnalyticsController] CSV export failed', err);
+      showToast('Could not export the CSV file', 'error');
+    }
+  },
+
+  /** jsPDF's built-in fonts can't render Arabic glyphs, so PDF text uses
+   *  plain Latin formatting instead of the Arabic-locale formatCurrency(). */
+  _pdfCurrency(amount) {
+    return `EGP ${Number(amount).toLocaleString('en-US')}`;
+  },
+
+  async _exportPdf() {
+    const jsPDFCtor = window.jspdf?.jsPDF;
+    if (!jsPDFCtor) {
+      showToast('PDF library failed to load — check your connection', 'error');
+      return;
+    }
+
+    try {
+      const doc = new jsPDFCtor({ unit: 'pt', format: 'a4' });
+      const marginX = 40;
+      let y = 50;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor(15, 76, 129);
+      doc.text('BayTack — Analytics Report', marginX, y);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(120, 120, 120);
+      y += 18;
+      doc.text(`Generated ${new Date().toLocaleString('en-GB')}`, marginX, y);
+
+      y += 30;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(30, 30, 30);
+      doc.text('Key Metrics', marginX, y);
+      y += 10;
+
+      const kpiRows = [
+        ['Total Revenue', this._pdfCurrency(MOCK_KPI.totalRevenue)],
+        ['Active Users', MOCK_KPI.activeUsers.toLocaleString('en-US')],
+        ['Completed Orders', MOCK_KPI.completedOrders.toLocaleString('en-US')],
+        ['New Providers', MOCK_KPI.newProviders.toLocaleString('en-US')],
+      ];
+
+      if (doc.autoTable) {
+        doc.autoTable({
+          startY: y + 8,
+          margin: { left: marginX, right: marginX },
+          head: [['Metric', 'Value']],
+          body: kpiRows,
+          theme: 'grid',
+          headStyles: { fillColor: [15, 76, 129] },
+          styles: { fontSize: 10 },
+        });
+        y = doc.lastAutoTable.finalY + 30;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.text('Recent Transactions', marginX, y);
+
+        doc.autoTable({
+          startY: y + 8,
+          margin: { left: marginX, right: marginX },
+          head: [['ID', 'Customer', 'Service', 'Amount', 'Status']],
+          body: MOCK_TRANSACTIONS.map(tx => [
+            tx.id, tx.customer, tx.service, this._pdfCurrency(tx.amount), tx.status,
+          ]),
+          theme: 'grid',
+          headStyles: { fillColor: [15, 76, 129] },
+          styles: { fontSize: 9 },
+        });
+      } else {
+        // Fallback if the autoTable plugin didn't load — plain text lines.
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        y += 20;
+        kpiRows.forEach(([label, val]) => {
+          doc.text(`${label}: ${val}`, marginX, y);
+          y += 18;
+        });
+        y += 15;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Recent Transactions', marginX, y);
+        doc.setFont('helvetica', 'normal');
+        y += 18;
+        MOCK_TRANSACTIONS.forEach(tx => {
+          doc.text(`${tx.id} — ${tx.customer} — ${tx.service} — ${this._pdfCurrency(tx.amount)} — ${tx.status}`, marginX, y);
+          y += 16;
+        });
+      }
+
+      doc.save(this._fileStamp('pdf'));
+      showToast('PDF downloaded successfully', 'success');
+    } catch (err) {
+      console.error('[AnalyticsController] PDF export failed', err);
+      showToast('Could not generate the PDF file', 'error');
+    }
   },
 };
 

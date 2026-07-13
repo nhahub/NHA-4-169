@@ -109,6 +109,7 @@
   background: rgba(0, 0, 0, 0.4);
   z-index: calc(var(--z-sidebar) - 1);
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--transition-normal);
 }
 
@@ -121,6 +122,12 @@
     height: calc(100% - var(--admin-header-height));
     transform: translateX(-100%);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+    /* Let the sidebar scroll on its own — without this, a finger placed on
+       the open sidebar drags the page behind it instead of the nav list,
+       and items past the fold (like Log out) are unreachable. */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .admin-sidebar.is-open {
@@ -133,7 +140,14 @@
 
   .admin-sidebar-overlay.is-visible {
     opacity: 1;
+    pointer-events: auto;
   }
+}
+
+/* Freeze the page behind the sidebar while it's open on mobile, so only
+   the sidebar scrolls and a tap anywhere outside it closes the menu. */
+body.admin-body--sidebar-open {
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {

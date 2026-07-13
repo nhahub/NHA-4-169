@@ -6,7 +6,7 @@
 import AuthService        from '../services/authService.js';
 import VerificationService from '../services/verificationService.js';
 import Modal               from '../components/modal.js';
-import { showToast } from '../core/helpers.js';
+import { showToast, exportToCsv } from '../core/helpers.js';
 
 const VerificationController = {
   _entries: [],
@@ -15,6 +15,7 @@ const VerificationController = {
     AuthService.requireAuth();
     await this._loadQueue();
     this._bindSearch();
+    this._bindExportLogs();
     console.log('[VerificationController] ready');
   },
 
@@ -149,6 +150,32 @@ const VerificationController = {
     // Card order on verification.html: [0] Pending Review, [1] Under Review, [2] Weekly Performance (no number), [3] Approved This Month (no live data source yet)
     if (cards[0]) { const n = cards[0].querySelector('.vd-bento-number'); if (n) n.textContent = pending; }
     if (cards[1]) { const n = cards[1].querySelector('.vd-bento-number'); if (n) n.textContent = review; }
+  },
+
+  _bindExportLogs() {
+    document.getElementById('vd-export-btn')?.addEventListener('click', () => {
+      if (this._entries.length === 0) {
+        showToast('No verification entries to export', 'info');
+        return;
+      }
+      try {
+        const headers = ['ID', 'Name', 'Provider Type', 'Category', 'Status', 'Submitted At'];
+        const rows = this._entries.map(p => [
+          p.id,
+          p.name,
+          p.providerType || '—',
+          p.category || '—',
+          p.status || '—',
+          p.submittedAt ? new Date(p.submittedAt).toLocaleString('en-GB') : '—',
+        ]);
+        const today = new Date().toISOString().slice(0, 10);
+        exportToCsv(`baytack-verification-log-${today}.csv`, headers, rows);
+        showToast('Verification log exported', 'success');
+      } catch (err) {
+        console.warn('[VerificationController] export failed', err);
+        showToast('Could not export the verification log', 'error');
+      }
+    });
   },
 
   _bindSearch() {

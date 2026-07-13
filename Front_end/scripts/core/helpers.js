@@ -88,3 +88,43 @@ export function showToast(message, type = 'info', duration = 3000) {
 export function generateId(prefix = 'EK') {
   return `#${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
 }
+
+/**
+ * Trigger a browser download for a Blob.
+ * @param {Blob} blob
+ * @param {string} filename
+ */
+export function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/**
+ * Escape + build a single CSV cell.
+ * @param {*} value
+ * @returns {string}
+ */
+function csvCell(value) {
+  const str = String(value ?? '');
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+}
+
+/**
+ * Build a CSV file from headers + rows and download it.
+ * Prefixes a UTF-8 BOM so Excel renders Arabic/accented text correctly.
+ * @param {string} filename
+ * @param {string[]} headers
+ * @param {Array<Array<*>>} rows
+ */
+export function exportToCsv(filename, headers, rows) {
+  const lines = headers?.length ? [headers.map(csvCell).join(',')] : [];
+  rows.forEach(row => lines.push(row.map(csvCell).join(',')));
+  const csv = `\uFEFF${lines.join('\r\n')}`;
+  downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), filename);
+}

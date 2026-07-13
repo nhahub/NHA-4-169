@@ -16,6 +16,7 @@ const AdminSidebarComponent = {
     this._bindFabBtn();
     this._bindLogout();
     this._syncUser();
+    this._bindNotifications();
   },
 
   _highlightActive() {
@@ -38,12 +39,105 @@ const AdminSidebarComponent = {
     const toggle  = document.getElementById('admin-sidebar-toggle');
     if (!sidebar) return;
 
-    const open  = () => { sidebar.classList.add('is-open');    overlay?.classList.add('is-visible'); };
-    const close = () => { sidebar.classList.remove('is-open'); overlay?.classList.remove('is-visible'); };
+    // Lock body scroll while the sidebar is open on mobile, so a touch that
+    // starts outside the sidebar can't drag the page behind it — the
+    // sidebar itself scrolls internally (see admin-sidebar.css overflow-y).
+    const open  = () => {
+      sidebar.classList.add('is-open');
+      overlay?.classList.add('is-visible');
+      document.body.classList.add('admin-body--sidebar-open');
+    };
+    const close = () => {
+      sidebar.classList.remove('is-open');
+      overlay?.classList.remove('is-visible');
+      document.body.classList.remove('admin-body--sidebar-open');
+    };
 
     toggle?.addEventListener('click', open);
     overlay?.addEventListener('click', close);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    // Collapse back to desktop layout without leaving the body locked.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) close();
+    });
+  },
+
+  /* ── Notifications dropdown ── */
+  _bindNotifications() {
+    const wrap  = document.getElementById('admin-notif');
+    const btn   = document.getElementById('admin-notif-btn');
+    const panel = document.getElementById('admin-notif-panel');
+    const list  = document.getElementById('admin-notif-list');
+    const badge = document.getElementById('admin-notif-badge');
+    const markAll = document.getElementById('admin-notif-mark-all');
+    if (!wrap || !btn || !panel || !list) return;
+
+    const NOTIFICATIONS = [
+      { id: 'n1', icon: 'verified',      title: 'New provider awaiting verification', desc: 'Cairo Electric Pros submitted documents for review.', time: '5m ago' },
+      { id: 'n2', icon: 'receipt_long',  title: 'Order marked completed',             desc: '#EK-9482 — Full Villa AC Revamp closed successfully.',  time: '1h ago' },
+      { id: 'n3', icon: 'report',        title: 'New complaint filed',                desc: 'A customer reported an issue with Nile Cleaning Co.',   time: '3h ago' },
+      { id: 'n4', icon: 'person_add',    title: 'New provider signup',                desc: 'Master Plumbers Giza completed registration.',          time: 'Yesterday' },
+    ];
+    const READ_KEY = 'ek_admin_notifications_read';
+
+    const getRead = () => {
+      const val = Storage.get(READ_KEY, []);
+      return Array.isArray(val) ? val : [];
+    };
+    const setRead = (ids) => Storage.set(READ_KEY, ids);
+
+    const render = () => {
+      const read = getRead();
+
+      list.innerHTML = NOTIFICATIONS.map(n => `
+        <button class="admin-notif-item${read.includes(n.id) ? '' : ' is-unread'}" data-id="${n.id}" type="button" role="menuitem">
+          <span class="material-symbols-outlined admin-notif-item__icon">${n.icon}</span>
+          <span class="admin-notif-item__body">
+            <span class="admin-notif-item__title">${n.title}</span>
+            <span class="admin-notif-item__desc">${n.desc}</span>
+            <span class="admin-notif-item__time">${n.time}</span>
+          </span>
+        </button>
+      `).join('') || `<p class="admin-notif-panel__empty">You're all caught up.</p>`;
+
+      const unread = NOTIFICATIONS.filter(n => !read.includes(n.id)).length;
+      badge?.classList.toggle('is-visible', unread > 0);
+
+      list.querySelectorAll('[data-id]').forEach(item => {
+        item.addEventListener('click', () => {
+          const ids = getRead();
+          if (!ids.includes(item.dataset.id)) setRead([...ids, item.dataset.id]);
+          render();
+        });
+      });
+    };
+
+    const openPanel = () => {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'true');
+    };
+    const closePanel = () => {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.contains('is-open') ? closePanel() : openPanel();
+    });
+    markAll?.addEventListener('click', () => {
+      setRead(NOTIFICATIONS.map(n => n.id));
+      render();
+    });
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target)) closePanel();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+    render();
   },
 
   _bindBottomNav() {

@@ -121,10 +121,19 @@
   <!-- Right: Notifications + User -->
   <div class="admin-header__right">
     <div class="admin-header__actions">
-      <button class="admin-header__icon-btn" aria-label="Notifications">
-        <span class="material-symbols-outlined">notifications</span>
-        <span class="admin-header__badge" aria-hidden="true"></span>
-      </button>
+      <div class="admin-notif" id="admin-notif">
+        <button class="admin-header__icon-btn" id="admin-notif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="admin-header__badge" id="admin-notif-badge" aria-hidden="true"></span>
+        </button>
+        <div class="admin-notif-panel" id="admin-notif-panel" role="menu" aria-hidden="true">
+          <div class="admin-notif-panel__header">
+            <p class="admin-notif-panel__title">Notifications</p>
+            <button class="admin-notif-panel__mark-all" id="admin-notif-mark-all" type="button">Mark all as read</button>
+          </div>
+          <div class="admin-notif-panel__list" id="admin-notif-list"></div>
+        </div>
+      </div>
       <button class="admin-header__icon-btn" aria-label="Help">
         <span class="material-symbols-outlined">help</span>
       </button>
@@ -405,6 +414,9 @@
 
 </nav>
 
+<!-- PDF export (Export Report → PDF button) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script type="module" src="../scripts/main.js"></script>
 </body>
 </html>
