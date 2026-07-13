@@ -34,6 +34,7 @@ const UserManagementController = {
     this._bindTabs();
     this._bindSearch();
     this._bindPagination();
+    this._bindAddUser();
     await this._loadStats();
     await this._loadPage();
     console.log('[UserManagementController] ready');
@@ -105,6 +106,134 @@ const UserManagementController = {
         this._loadPage();
       }
     });
+  },
+
+  _bindAddUser() {
+    const btn = document.getElementById('um-add-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => this._openCreateUserModal());
+  },
+
+  _openCreateUserModal() {
+    Modal.open({
+      title: 'Add User',
+      confirmLabel: 'Create User',
+      content: `
+        <div class="form-group" style="margin-bottom:var(--sp-3)">
+          <label class="form-label" for="um-new-name" style="display:block;margin-bottom:var(--sp-1);font-weight:600;font-size:var(--text-sm)">Full Name</label>
+          <input type="text" id="um-new-name" class="input-field" placeholder="e.g. Sara Ahmed" autocomplete="name" />
+        </div>
+        <div class="form-group" style="margin-bottom:var(--sp-3)">
+          <label class="form-label" for="um-new-email" style="display:block;margin-bottom:var(--sp-1);font-weight:600;font-size:var(--text-sm)">Email</label>
+          <input type="email" id="um-new-email" class="input-field" placeholder="sara@example.com" autocomplete="email" />
+        </div>
+        <div class="form-group" style="margin-bottom:var(--sp-3)">
+          <label class="form-label" for="um-new-phone" style="display:block;margin-bottom:var(--sp-1);font-weight:600;font-size:var(--text-sm)">Phone (optional)</label>
+          <input type="tel" id="um-new-phone" class="input-field" placeholder="+20 1xx xxxx xxxx" autocomplete="tel" />
+        </div>
+        <div class="form-group" style="margin-bottom:var(--sp-3)">
+          <label class="form-label" for="um-new-role" style="display:block;margin-bottom:var(--sp-1);font-weight:600;font-size:var(--text-sm)">Role</label>
+          <select id="um-new-role" class="select-field">
+            <option value="Customer">Customer</option>
+            <option value="Provider">Provider</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:var(--sp-1)">
+          <label class="form-label" for="um-new-password" style="display:block;margin-bottom:var(--sp-1);font-weight:600;font-size:var(--text-sm)">Password (optional)</label>
+          <div style="position:relative">
+            <input type="password" id="um-new-password" class="input-field" style="padding-right:2.6rem" placeholder="Leave blank to auto-generate" autocomplete="new-password" />
+            <button type="button" id="um-new-password-toggle" class="btn-icon" aria-label="Show password"
+              style="position:absolute;right:0.35rem;top:50%;transform:translateY(-50%);width:2rem;height:2rem;display:flex;align-items:center;justify-content:center">
+              <span class="material-symbols-outlined" style="font-size:1.15rem">visibility</span>
+            </button>
+          </div>
+          <p style="font-size:var(--text-xs);color:var(--color-on-surface-variant);margin-top:var(--sp-1)">
+            If left blank, a secure temporary password is generated automatically and shown to you once so you can share it with the new user.
+          </p>
+        </div>
+        <p id="um-new-error" class="hidden" style="color:var(--color-error);font-size:var(--text-sm);margin-top:var(--sp-2)"></p>
+      `,
+      onConfirm: async () => {
+        const name     = document.getElementById('um-new-name')?.value.trim();
+        const email    = document.getElementById('um-new-email')?.value.trim();
+        const phone    = document.getElementById('um-new-phone')?.value.trim();
+        const role     = document.getElementById('um-new-role')?.value;
+        const password = document.getElementById('um-new-password')?.value;
+
+        if (!name || !email) {
+          showToast('Name and email are required', 'error');
+          return;
+        }
+
+        try {
+          const created = await UsersService.create({
+            name, email, role,
+            phone: phone || undefined,
+            password: password || undefined,
+          });
+          showToast(`${created.fullName} was created successfully.`, 'success');
+          this._currentPage = 1;
+          await this._loadStats();
+          await this._loadPage();
+          if (created.temporaryPassword) {
+            this._showCreatedPasswordModal(created);
+          }
+        } catch (err) {
+          console.warn('[UserManagementController] create user failed', err);
+          showToast(err.message || 'Could not create user', 'error');
+        }
+      },
+    });
+
+    // Wire the eye-toggle after the modal's content is in the DOM.
+    const toggleBtn = document.getElementById('um-new-password-toggle');
+    const pwInput   = document.getElementById('um-new-password');
+    if (toggleBtn && pwInput) {
+      toggleBtn.addEventListener('click', () => {
+        const show = pwInput.type === 'password';
+        pwInput.type = show ? 'text' : 'password';
+        const icon = toggleBtn.querySelector('.material-symbols-outlined');
+        if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+        toggleBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    }
+  },
+
+  /** Shown exactly once, right after creation, since the backend never returns this again. */
+  _showCreatedPasswordModal(user) {
+    Modal.open({
+      title: 'User Created',
+      confirmLabel: 'Done',
+      hideFooter: false,
+      content: `
+        <p>Share these sign-in details with <strong>${user.fullName}</strong>. For security, this password is shown only once and can't be retrieved again later.</p>
+        <div style="margin-top:var(--sp-3);padding:var(--sp-3);border-radius:var(--radius-md);background:var(--color-surface-container-low)">
+          <p style="font-size:var(--text-xs);color:var(--color-on-surface-variant);margin-bottom:2px">Email</p>
+          <p style="font-weight:600;margin-bottom:var(--sp-2)">${user.email}</p>
+          <p style="font-size:var(--text-xs);color:var(--color-on-surface-variant);margin-bottom:2px">Password</p>
+          <div style="display:flex;align-items:center;gap:var(--sp-2)">
+            <code id="um-generated-password" style="font-weight:600;letter-spacing:0.03em">${user.temporaryPassword}</code>
+            <button type="button" id="um-copy-password" class="btn-icon" aria-label="Copy password" style="width:1.8rem;height:1.8rem;display:flex;align-items:center;justify-content:center">
+              <span class="material-symbols-outlined" style="font-size:1.05rem">content_copy</span>
+            </button>
+          </div>
+        </div>
+      `,
+      onConfirm: () => {},
+    });
+
+    const copyBtn = document.getElementById('um-copy-password');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(user.temporaryPassword);
+          showToast('Password copied to clipboard', 'success');
+        } catch {
+          showToast('Could not copy password', 'error');
+        }
+      });
+    }
   },
 
   async _loadPage() {

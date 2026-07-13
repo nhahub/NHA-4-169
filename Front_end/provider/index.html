@@ -73,6 +73,10 @@
     .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--on-surface); margin-bottom: 0.5rem; }
     .input-wrap { position: relative; }
     .input-wrap .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--outline); font-size: 1.1rem; pointer-events: none; }
+    .input.pw-input { padding-right: 2.75rem; }
+    .pw-toggle { position: absolute; right: 0.35rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--outline); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .pw-toggle:hover { color: var(--on-surface); background: rgba(0,0,0,0.05); }
+    .pw-toggle .material-symbols-outlined { font-size: 1.15rem; }
     .input { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border: 2px solid var(--outline-var); border-radius: var(--radius-full); font-size: 0.9rem; font-family: inherit; color: var(--on-surface); background: var(--surface); transition: border-color 0.2s; }
     .input:focus { outline: none; border-color: var(--primary); background: white; }
     .input.error { border-color: var(--error); }
@@ -255,7 +259,8 @@
           <label class="form-label" for="password">Password</label>
           <div class="input-wrap">
             <span class="material-symbols-outlined icon">lock</span>
-            <input class="input" id="password" type="password" placeholder="At least 8 characters" required oninput="checkPwStrength(this.value)" />
+            <input class="input pw-input" id="password" type="password" placeholder="At least 8 characters" required oninput="checkPwStrength(this.value)" />
+            <button type="button" class="pw-toggle" onclick="togglePasswordField('password',this)" aria-label="Show password"><span class="material-symbols-outlined">visibility</span></button>
           </div>
           <div class="pw-strength">
             <div class="pw-bar"><div class="pw-bar-fill" id="pw-bar-fill"></div></div>
@@ -333,6 +338,16 @@
       card.classList.add('selected');
       selectedService = value;
       document.getElementById('err-service').style.display = 'none';
+    }
+
+    function togglePasswordField(id, btn) {
+      const input = document.getElementById(id);
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
     }
 
     function checkPwStrength(value) {

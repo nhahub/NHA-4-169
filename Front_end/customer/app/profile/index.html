@@ -101,8 +101,14 @@
       <form id="bt-security-form" class="bg-white rounded-3xl shadow p-6 space-y-4">
         <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">lock</span> Security</h2>
         <div class="grid sm:grid-cols-2 gap-4">
-          <input type="password" placeholder="Current password" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
-          <input type="password" placeholder="New password" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+          <div class="relative">
+            <input type="password" id="bt-current-password" placeholder="Current password" class="w-full px-5 py-3 pr-12 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+            <button type="button" onclick="toggleProfilePw('bt-current-password',this)" aria-label="Show password" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined text-lg">visibility</span></button>
+          </div>
+          <div class="relative">
+            <input type="password" id="bt-new-password" placeholder="New password" class="w-full px-5 py-3 pr-12 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+            <button type="button" onclick="toggleProfilePw('bt-new-password',this)" aria-label="Show password" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined text-lg">visibility</span></button>
+          </div>
         </div>
         <button type="submit" class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:bg-primary-dim transition">Change Password</button>
       </form>
@@ -136,6 +142,16 @@
     e.preventDefault();
     alert('Password updated successfully!');
   });
+
+  function toggleProfilePw(id, btn) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  }
 </script>
 </body>
 </html>
