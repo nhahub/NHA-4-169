@@ -212,59 +212,48 @@
   </main>
 
   <script>
-    const SERVICE_MAP = { carpentry:'Carpentry', painting:'Painting', ac_repair:'AC Repair', electrical:'Electrical', plumbing:'Plumbing', cleaning:'Cleaning' };
+    /**
+     * Talks to the real BayTack.API backend (see BayTack.API/Controllers/Providers/ProvidersController.cs
+     * -> GET /providers/me and GET /providers/me/requests). The provider's session cookie
+     * (set on login, see AuthController.SetAuthCookies) is sent automatically via
+     * credentials:'include' - no manual token handling needed here.
+     *
+     * NOTE: this only works once the provider has actually completed a REAL login/registration
+     * against the backend. If step1/step2/step3-verification in this build still write to
+     * localStorage instead of calling POST /auth/register + POST /providers, GetMyProfile()
+     * below will 401/404 for every provider, because no real session or ProviderProfile row
+     * exists yet. That flow needs the same backend-wiring treatment as this page.
+     */
+    const API_BASE_URL = 'https://baytack.runasp.net/api'; // swap to http://localhost:5025/api for local dev
 
-    function getProviderData() {
-      try {
-        const signup   = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
-        const sess     = JSON.parse(localStorage.getItem('ek_user_session') || '{}');
-        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
-        const phone    = signup.phone || sess.phone || '';
-        const acct     = accounts.find(a => a.phone === phone) || signup || sess || {};
-        return acct;
-      } catch(e) { return {}; }
-    }
-
-    /* ── "Have they already seen the approval celebration?" flag ──
-       Stored per-phone so the congratulatory screen only ever shows
-       once; on every later visit we go straight to the normal Home feed. */
-    function hasSeenApproval(phone) {
-      try { return localStorage.getItem('ek_approval_seen_' + phone) === '1'; }
-      catch(e) { return false; }
-    }
-    function markApprovalSeen(phone) {
-      try { localStorage.setItem('ek_approval_seen_' + phone, '1'); } catch(e) {}
-    }
-
-    /* ── Matching job requests for this provider's category ──
-       Reads the customer-side "Post a Request" data (bt_c_requests) and
-       keeps only open requests in the provider's own service category. */
-    function getMatchingRequests(categoryLabel) {
-      try {
-        const all = JSON.parse(localStorage.getItem('bt_c_requests') || '[]');
-        return all.filter(r => r.status === 'open' && r.category === categoryLabel);
-      } catch(e) { return []; }
+    async function apiGet(path) {
+      const res = await fetch(API_BASE_URL + path, { method: 'GET', credentials: 'include' });
+      let json = null;
+      try { json = await res.json(); } catch (e) { /* empty body */ }
+      if (res.status === 401) { window.location.href = '../../index.html'; return null; }
+      if (!res.ok || (json && json.isSuccess === false)) {
+        throw new Error((json && json.errors) || `Request to ${path} failed (${res.status})`);
+      }
+      return json ? json.data : null;
     }
 
     function formatDate(iso) {
-      try { return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
-      catch(e) { return ''; }
+      try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+      catch (e) { return ''; }
     }
 
-    function renderHomeFeed(name, categoryLabel) {
-      const requests = getMatchingRequests(categoryLabel);
-      const feedHtml = requests.length
-        ? requests.map(r => `
+    function renderHomeFeed(name, categoryLabel, jobs) {
+      const feedHtml = jobs.length
+        ? jobs.map(r => `
             <article class="job-card">
               <div class="job-card__top">
                 <span class="job-card__title">${r.title}</span>
-                <span class="job-card__budget">${r.budget} ج.م</span>
               </div>
               <p class="job-card__desc">${r.description || ''}</p>
               <div class="job-card__meta">
                 <span><span class="material-symbols-outlined">location_on</span>${r.location || '—'}</span>
-                <span><span class="material-symbols-outlined">event</span>Due ${formatDate(r.deadline)}</span>
-                <span><span class="material-symbols-outlined">category</span>${r.category}</span>
+                <span><span class="material-symbols-outlined">event</span>Posted ${formatDate(r.createdAt)}</span>
+                <span><span class="material-symbols-outlined">category</span>${r.categoryName}</span>
               </div>
               <a href="../app/bid/index.html?request=${encodeURIComponent(r.id)}" class="btn-outline" style="background:#0050d4;color:white;border-color:#0050d4">
                 <span class="material-symbols-outlined">gavel</span> View &amp; Submit Bid
@@ -292,18 +281,26 @@
         </div>`;
     }
 
-    function renderDashboard() {
-      const p = getProviderData();
-      const name    = p.name || 'Provider';
-      const service = SERVICE_MAP[p.service || p.category] || p.service || p.category || '—';
-      const status  = p.status || 'pending_review';
+    async function renderDashboard() {
+      let profile;
+      try {
+        profile = await apiGet('/providers/me');
+      } catch (e) {
+        console.error('[dashboard] Failed to load provider profile:', e);
+        return;
+      }
+      if (!profile) return; // apiGet already redirected (401) or there's no profile yet
+
+      const name = profile.name || 'Provider';
+      const categoryLabel = profile.categoryName || '—';
+      const status = profile.verificationStatus; // Pending | UnderReview | Approved | Suspended | Rejected
 
       // Fill name / avatar
       const nameEl = document.getElementById('provider-name');
       const avatarEl = document.getElementById('avatar-initials');
       if (nameEl) {
         nameEl.textContent = name;
-        if (status === 'verified') {
+        if (status === 'Approved') {
           const badge = document.createElement('span');
           badge.className = 'verified-badge';
           badge.title = 'Verified provider';
@@ -318,65 +315,33 @@
       const pillService = document.getElementById('pill-service');
       const pillType = document.getElementById('pill-type');
       if (pillName) pillName.textContent = name;
-      if (pillPhone) pillPhone.textContent = p.phone || '—';
-      if (pillService) pillService.textContent = service;
-      if (pillType) pillType.textContent = p.providerType === 'company' ? 'Company' : 'Individual';
+      if (pillPhone) pillPhone.textContent = profile.phone || '—';
+      if (pillService) pillService.textContent = categoryLabel;
+      if (pillType) pillType.textContent = profile.providerType === 'Company' ? 'Company' : 'Individual';
 
-      // Status-based UI
-      const card       = document.querySelector('.pending-card');
+      const card = document.querySelector('.pending-card');
       const reviewBanner = document.querySelector('.review-banner');
 
-      if (status === 'verified') {
-        // APPROVED
+      if (status === 'Approved') {
+        // APPROVED: banner disappears, page becomes the real job feed for their category.
         if (reviewBanner) reviewBanner.style.display = 'none';
 
-        if (!hasSeenApproval(p.phone)) {
-          // FIRST TIME ONLY: show the one-off "Account Approved!" celebration
-          if (card) {
-            card.innerHTML = `
-              <div class="pending-icon-wrap" style="background:#d1fae5;border-color:#6ee7b7">
-                <span class="material-symbols-outlined" style="color:#059669;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24">verified</span>
-              </div>
-              <h1 style="color:#059669">Account Approved! 🎉</h1>
-              <p>Welcome to BayTack, <strong>${name}</strong>! Your account is verified and your profile is now live. Start accepting bookings from customers.</p>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:2rem">
-                <a href="../app/bookings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">event_available</span> Bookings
-                </a>
-                <a href="../app/earnings/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">payments</span> Earnings
-                </a>
-                <a href="../app/portfolio/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">photo_library</span> Portfolio
-                </a>
-                <a href="../app/reviews/index.html" style="display:flex;align-items:center;gap:0.5rem;padding:0.9rem 1rem;border:2px solid #c4c6d0;border-radius:0.75rem;font-size:0.9rem;font-weight:700;color:#1a1c20;text-decoration:none">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem;color:#0050d4">star_rate</span> Reviews
-                </a>
-              </div>
-              <a href="../app/bookings/index.html" class="btn-outline" style="background:#0050d4;color:white;border-color:#0050d4">
-                <span class="material-symbols-outlined">event_available</span> View My Bookings
-              </a>`;
-          }
-          markApprovalSeen(p.phone);
-        } else {
-          // RETURNING VISIT: replace the whole page with the normal Home
-          // feed — the celebration screen never shows again.
-          const mainEl = document.querySelector('main.page');
-          const categoryLabel = SERVICE_MAP[p.service || p.category] || service;
-          if (mainEl) {
-            mainEl.outerHTML = renderHomeFeed(name, categoryLabel);
-          }
-        }
-      } else if (status === 'suspended') {
-        // REJECTED: show rejection message + option to re-register
+        let jobs = [];
+        try { jobs = await apiGet('/providers/me/requests') || []; }
+        catch (e) { console.error('[dashboard] Failed to load matching requests:', e); }
+
+        const mainEl = document.querySelector('main.page');
+        if (mainEl) mainEl.outerHTML = renderHomeFeed(name, categoryLabel, jobs);
+      } else if (status === 'Suspended' || status === 'Rejected') {
+        // REJECTED/SUSPENDED
         if (reviewBanner) {
           reviewBanner.style.background = '#fde8e8';
           reviewBanner.style.borderColor = '#f87171';
           reviewBanner.querySelector('.review-banner__icon').style.color = '#dc2626';
           reviewBanner.querySelector('.review-banner__icon').textContent = 'cancel';
-          reviewBanner.querySelector('.review-banner__text strong').textContent = 'Application Rejected';
-          const span = reviewBanner.querySelector('.review-banner__text span');
-          if (span) span.textContent = 'Your application was not approved. You can re-submit after correcting your information.';
+          const strongEl = reviewBanner.querySelector('.review-banner__text');
+          if (strongEl) strongEl.innerHTML = 'Application Not Approved — <span>' +
+            (profile.suspendReason || 'Your application was not approved. You can re-submit after correcting your information.') + '</span>';
         }
         if (card) {
           card.innerHTML = `
@@ -384,35 +349,33 @@
               <span class="material-symbols-outlined" style="color:#dc2626;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24">cancel</span>
             </div>
             <h1 style="color:#dc2626">Application Not Approved</h1>
-            <p>Unfortunately, your application was rejected by our team. This may be due to incomplete or incorrect information. Please review your details and re-apply.</p>
-            <button onclick="startOver()" class="btn-outline" style="background:#dc2626;color:white;border-color:#dc2626;margin-bottom:1rem;width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem">
-              <span class="material-symbols-outlined">refresh</span> Re-apply Now
-            </button>
+            <p>${profile.suspendReason || 'Unfortunately, your application was rejected by our team. This may be due to incomplete or incorrect information. Please review your details and re-apply.'}</p>
             <a href="../../index.html" class="btn-outline">
               <span class="material-symbols-outlined">home</span> Back to Homepage
             </a>`;
         }
       } else {
-        // PENDING: show waiting state + allow access to pages with banner
-        // Update dashboard links to work
-        const exploreSection = document.getElementById('dashboard-explore');
-        if (exploreSection) exploreSection.style.display = 'block';
-      }
-    }
+        // Pending / UnderReview — banner text differs depending on whether documents were
+        // ever submitted, so "haven't uploaded yet" reads differently from "waiting on review".
+        if (reviewBanner) {
+          if (!profile.hasSubmittedDocuments) {
+            reviewBanner.querySelector('.review-banner__text').innerHTML =
+              'Verification Documents Required — <span>Upload your ID and certificates to start the review process.</span>';
+          } else {
+            reviewBanner.querySelector('.review-banner__text').innerHTML =
+              'Account Under Review — <span>Our team is verifying your information. This usually takes 1–2 business days.</span>';
+          }
+          reviewBanner.style.display = 'flex';
+        }
 
-    function startOver() {
-      // Clear provider data so they can re-register
-      try {
-        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
-        const p = getProviderData();
-        const filtered = accounts.filter(a => a.phone !== p.phone);
-        localStorage.setItem('ek_accounts', JSON.stringify(filtered));
-        const providers = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-        const filteredP = providers.filter(x => x.phone !== p.phone);
-        localStorage.setItem('ek_admin_providers', JSON.stringify(filteredP));
-        sessionStorage.removeItem('ek_provider_signup');
-      } catch(e) {}
-      window.location.href = '../../index.html';
+        // Reflect document-submission progress in the steps list.
+        const docStep = document.querySelectorAll('.steps-list .step-status')[1];
+        if (docStep && profile.hasSubmittedDocuments) {
+          docStep.classList.remove('step-status--pending');
+          docStep.classList.add('step-status--done');
+          docStep.innerHTML = '<span class="material-symbols-outlined">check</span>';
+        }
+      }
     }
 
     renderDashboard();

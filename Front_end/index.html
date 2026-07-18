@@ -449,16 +449,15 @@
         <p class="text-on-surface-variant mb-8">Log in to manage your bookings</p>
         <form id="bt-login-form" class="space-y-5" onsubmit="BayTack.handleLogin(event)">
           <div class="relative">
-            <input type="text" id="bt-login-identifier" placeholder="Phone Number (+20 1xx xxxx xxxx)" required autocomplete="username"
+            <input type="text" id="bt-login-identifier" placeholder="Email address" required autocomplete="username"
               class="w-full px-6 py-4 rounded-full bg-surface-container-low focus:ring-2 focus:ring-primary/40 outline-none border-none" />
             <p class="text-xs text-outline-variant px-4 mt-1">Admins can also use their username</p>
           </div>
           <div class="relative">
             <input type="password" id="bt-login-password" placeholder="Password (min. 8 chars)" required autocomplete="current-password"
-              class="w-full px-6 py-4 pr-14 rounded-full bg-surface-container-low focus:ring-2 focus:ring-primary/40 outline-none border-none" />
-            <button type="button" onclick="pvTogglePw('bt-login-password',this)" aria-label="Show password"
-              class="absolute right-5 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface">
-              <span class="material-symbols-outlined text-lg">visibility</span>
+              class="w-full px-6 py-4 rounded-full bg-surface-container-low focus:ring-2 focus:ring-primary/40 outline-none border-none pr-14" />
+            <button type="button" class="pw-toggle-btn absolute right-5 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface" data-target="bt-login-password" aria-label="Show password">
+              <span class="material-symbols-outlined">visibility</span>
             </button>
           </div>
           <p id="bt-login-error" class="hidden text-error text-sm px-2"></p>
@@ -569,7 +568,9 @@
             </div>
             <div class="relative">
               <input id="bt-cust-password" class="w-full bg-surface-container-high rounded-full px-6 py-4 outline-none focus:ring-2 focus:ring-primary/40 pr-12" placeholder="••••••••" type="password" required />
-              <button type="button" onclick="pvTogglePw('bt-cust-password',this)" aria-label="Show password" class="absolute right-5 top-4 text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined">visibility</span></button>
+              <button type="button" class="pw-toggle-btn absolute right-5 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface" data-target="bt-cust-password" aria-label="Show password">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
             </div>
             <p id="bt-customer-sign-error" class="hidden text-error text-sm px-2"></p>
             <div class="flex items-center gap-3 px-1">
@@ -718,7 +719,7 @@
             <div class="space-y-4">
               <div class="relative"><span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock</span><input id="pv-password" class="w-full pl-14 pr-14 py-4 bg-surface-container-low rounded-full outline-none focus:ring-2 focus:ring-primary/40 border-none" placeholder="Password (min. 8 characters)" type="password" oninput="pvCheckStrength(this.value)" /><button type="button" onclick="pvTogglePw('pv-password',this)" class="absolute right-5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface"><span class="material-symbols-outlined text-lg">visibility</span></button></div>
               <div class="px-2"><div class="h-1.5 bg-surface-container-high rounded-full overflow-hidden"><div id="pv-pw-bar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:#e0e0e0"></div></div><p id="pv-pw-text" class="text-xs text-outline mt-1">Enter a password</p></div>
-              <div class="relative"><span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock_reset</span><input id="pv-confirm-password" class="w-full pl-14 pr-14 py-4 bg-surface-container-low rounded-full outline-none focus:ring-2 focus:ring-primary/40 border-none" placeholder="Confirm password" type="password" /><button type="button" onclick="pvTogglePw('pv-confirm-password',this)" aria-label="Show password" class="absolute right-5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface"><span class="material-symbols-outlined text-lg">visibility</span></button></div>
+              <div class="relative"><span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock_reset</span><input id="pv-confirm-password" class="w-full pl-14 pr-14 py-4 bg-surface-container-low rounded-full outline-none focus:ring-2 focus:ring-primary/40 border-none" placeholder="Confirm password" type="password" /><button type="button" class="pw-toggle-btn absolute right-5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface" data-target="pv-confirm-password" aria-label="Show password"><span class="material-symbols-outlined text-lg">visibility</span></button></div>
             </div>
             <p id="pv-err-3" class="hidden text-error text-sm mt-3 px-2"></p>
             <div class="flex gap-3 mt-6">
@@ -798,5 +799,6 @@
 
 
   <script src="assets/js/landing.js"></script>
+  <script src="assets/js/password-toggle.js"></script>
 </body>
 </html>

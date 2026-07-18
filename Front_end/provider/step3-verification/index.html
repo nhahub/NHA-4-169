@@ -298,6 +298,7 @@
   <script>
     // Track uploaded files
     const uploaded = { 'id-front': false, 'id-back': false, cert: false };
+    const uploadedFileData = {}; // key -> base64 data URL, filled in by handleFile()
 
     const signup = JSON.parse(sessionStorage.getItem('ek_provider_signup') || '{}');
 
@@ -341,6 +342,15 @@
         chk.querySelector('.material-symbols-outlined').textContent = 'check_circle';
       }
 
+      // NOTE: AddProviderDocumentCommand stores a DocUrl string, not an uploaded file -
+      // there's no object-storage (S3/Azure Blob) endpoint yet. As a stopgap this reads
+      // the file into a base64 data: URL and sends that as the "URL". Fine for small
+      // images in a demo; swap for real file storage + presigned URLs before production
+      // (data: URLs bloat the database and have a practical size ceiling).
+      const reader = new FileReader();
+      reader.onload = e => { uploadedFileData[key] = e.target.result; };
+      reader.readAsDataURL(files[0]);
+
       uploaded[key] = true;
       updateSubmitBtn();
     }
@@ -353,61 +363,57 @@
       btn.disabled = !(consent && hasIdFront && hasIdBack);
     }
 
-    function submitDocuments() {
+    const API_BASE_URL = 'https://baytack.runasp.net/api'; // swap to http://localhost:5025/api for local dev
+
+    const DOC_TYPE_LABEL = {
+      'id-front': 'NationalIdFront', 'id-back': 'NationalIdBack', cert: 'Certificate',
+      'comm-reg': 'CommercialRegistration', 'tax-card': 'TaxCard', 'address-proof': 'AddressProof',
+    };
+
+    async function submitDocuments() {
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span> Submitting…';
 
-      // Save docs status to session
-      const step3Data = {
-        ...signup,
-        docsSubmitted: true,
-        docsSubmittedAt: new Date().toISOString(),
-        uploadedDocs: Object.entries(uploaded).filter(([,v]) => v).map(([k]) => k),
-        status: 'pending_review',
-      };
+      const providerProfileId = signup.providerProfileId;
+      if (!providerProfileId) {
+        alert('No provider profile found for this session - please go back and complete step 2 first.');
+        btn.disabled = false;
+        btn.innerHTML = 'Submit for Review';
+        return;
+      }
 
-      // Update localStorage account
       try {
-        const accounts = JSON.parse(localStorage.getItem('ek_accounts') || '[]');
-        const idx = accounts.findIndex(a => a.phone === signup.phone);
-        if (idx !== -1) {
-          accounts[idx] = { ...accounts[idx], ...step3Data };
-          localStorage.setItem('ek_accounts', JSON.stringify(accounts));
+        // Send one POST per uploaded document (AddProviderDocumentCommand handles a single
+        // doc at a time). Sequential rather than Promise.all so a failure part-way through
+        // is easy to reason about (still-pending items keep their "not yet uploaded" state).
+        for (const key of Object.keys(uploaded).filter(k => uploaded[k] && uploadedFileData[k])) {
+          const res = await fetch(`${API_BASE_URL}/providers/${providerProfileId}/documents`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ docType: DOC_TYPE_LABEL[key] || key, docUrl: uploadedFileData[key] }),
+          });
+          const json = await res.json();
+          if (!res.ok || json.isSuccess === false) {
+            throw new Error((json && json.errors) || `Failed to submit ${DOC_TYPE_LABEL[key] || key}.`);
+          }
         }
-      } catch(e) {}
 
-      sessionStorage.setItem('ek_provider_signup', JSON.stringify(step3Data));
-
-      // Also push to admin-visible providers list
-      try {
-        const adminProviders = JSON.parse(localStorage.getItem('ek_admin_providers') || '[]');
-        const existing = adminProviders.findIndex(p => p.phone === signup.phone);
-        const providerEntry = {
-          id:           `PRV-${Date.now().toString().slice(-5)}`,
-          name:         step3Data.name,
-          phone:        step3Data.phone,
-          email:        step3Data.email || '',
-          service:      step3Data.service,
-          providerType: step3Data.providerType || 'individual',
-          experience:   step3Data.experience ? `${step3Data.experience} yrs` : '—',
-          governorate:  step3Data.governorate || '',
-          bio:          step3Data.bio || '',
-          skills:       step3Data.skills || [],
-          status:       'pending',
-          submittedAt:  new Date().toISOString(),
-          companyName:  step3Data.companyName || null,
-          commercialReg: step3Data.commercialReg || null,
-          img: `https://ui-avatars.com/api/?name=${encodeURIComponent(step3Data.name || 'Provider')}&background=0050d4&color=fff`,
+        const step3Data = {
+          ...signup,
+          docsSubmitted: true,
+          docsSubmittedAt: new Date().toISOString(),
         };
-        if (existing !== -1) adminProviders[existing] = providerEntry;
-        else adminProviders.unshift(providerEntry);
-        localStorage.setItem('ek_admin_providers', JSON.stringify(adminProviders));
-      } catch(e) {}
+        sessionStorage.setItem('ek_provider_signup', JSON.stringify(step3Data));
 
-      setTimeout(() => {
         window.location.href = '../dashboard/index.html';
-      }, 1200);
+      } catch (err) {
+        console.error('[step3] Document submission failed:', err);
+        alert(err.message || 'Something went wrong submitting your documents. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = 'Submit for Review';
+      }
     }
 
     const style = document.createElement('style');

@@ -388,6 +388,76 @@
       });
     }
 
+    /**
+     * Talks to the real BayTack.API backend. See BayTack.API/Controllers/Auth/AuthController.cs
+     * (register) and BayTack.API/Controllers/Providers/ProvidersController.cs (create profile).
+     */
+    const API_BASE_URL = 'https://baytack.runasp.net/api'; // swap to http://localhost:5025/api for local dev
+
+    // Backend-seeded category names (see BayTack.Infrastructure/Identity/Seeder.cs
+    // SeedServiceCategoriesAsync). "ac_repair" has no match yet - an admin needs to
+    // add an "AC Repair" category before those providers can be linked to one.
+    const CATEGORY_NAME_BY_SERVICE = {
+      plumbing: 'Plumbing', electrical: 'Electrical', cleaning: 'Cleaning',
+      carpentry: 'Carpentry', painting: 'Painting',
+    };
+
+    async function resolveCategoryId(serviceValue) {
+      const wantedName = CATEGORY_NAME_BY_SERVICE[serviceValue];
+      if (!wantedName) return null;
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories`, { credentials: 'include' });
+        const json = await res.json();
+        const categories = (json && json.data) || json || [];
+        const match = categories.find(c => (c.name || '').toLowerCase() === wantedName.toLowerCase());
+        return match ? match.id : null;
+      } catch (e) {
+        console.error('[step2] Failed to resolve category id:', e);
+        return null;
+      }
+    }
+
+    async function registerAndCreateProfile(data) {
+      // 1) Create the account (sets the httpOnly session cookie on success).
+      const registerRes = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: data.name,
+          email: data.email,
+          password: data.password,
+          phone: data.phone,
+          role: 'provider',
+        }),
+      });
+      const registerJson = await registerRes.json();
+      if (!registerRes.ok || registerJson.isSuccess === false) {
+        throw new Error((registerJson && registerJson.errors) || 'Registration failed.');
+      }
+      const userId = registerJson.data.userId;
+
+      // 2) Create the provider profile itself.
+      const categoryId = await resolveCategoryId(data.service);
+      const profileRes = await fetch(`${API_BASE_URL}/providers`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          providerType: data.providerType === 'company' ? 'Company' : 'Individual',
+          yearsOfExperience: data.experience || 0,
+          bio: data.bio || null,
+          categoryId,
+        }),
+      });
+      const profileJson = await profileRes.json();
+      if (!profileRes.ok || profileJson.isSuccess === false) {
+        throw new Error((profileJson && profileJson.errors) || 'Could not create provider profile.');
+      }
+      return { userId, providerProfileId: profileJson.data.providerProfileId };
+    }
+
     function saveAndContinue() {
       const btn = document.getElementById('continue-btn');
       btn.disabled = true;
@@ -402,9 +472,20 @@
         minCharge:    document.getElementById('min-charge').value,
         photos:       uploadedPhotos,
       };
-      sessionStorage.setItem('ek_provider_signup', JSON.stringify(step2Data));
 
-      setTimeout(() => { window.location.href = '../step3-verification/index.html'; }, 600);
+      registerAndCreateProfile(step2Data)
+        .then(({ userId, providerProfileId }) => {
+          step2Data.userId = userId;
+          step2Data.providerProfileId = providerProfileId;
+          sessionStorage.setItem('ek_provider_signup', JSON.stringify(step2Data));
+          window.location.href = '../step3-verification/index.html';
+        })
+        .catch(err => {
+          console.error('[step2] Registration failed:', err);
+          btn.disabled = false;
+          btn.innerHTML = 'Continue to Verification <span class="material-symbols-outlined">arrow_forward</span>';
+          alert(err.message || 'Something went wrong creating your account. Please try again.');
+        });
     }
 
     const style = document.createElement('style');
