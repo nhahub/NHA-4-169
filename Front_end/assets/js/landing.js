@@ -12,6 +12,9 @@
 
 const BayTack = (() => {
 
+  // Talks to the real BayTack.API backend. Swap to http://localhost:5025/api for local dev.
+  const API_BASE_URL = 'https://baytack.runasp.net/api';
+
   /* ── Modal IDs ── */
   const MODALS = {
     login:        'bt-login-modal',
@@ -120,58 +123,62 @@ const BayTack = (() => {
         return;
       }
 
-      /* ── Admin login by username ── */
-      if (!_isPhoneNumber(identifier)) {
-        // Only admin can use non-phone login
-        if (identifier === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-          localStorage.setItem('ek_admin_access_token', 'mock_token_baytack_admin');
-          localStorage.setItem('ek_admin_user', JSON.stringify({
-            name: 'Admin',
-            username: 'admin',
-            role: 'admin',
+      /* ── Admin login by static username (unchanged - out of scope for the real-backend
+         wiring pass; the backend does have a seeded admin@homeservices.local account,
+         but this shortcut is left as-is for now) ── */
+      if (identifier === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        localStorage.setItem('ek_admin_access_token', 'mock_token_baytack_admin');
+        localStorage.setItem('ek_admin_user', JSON.stringify({
+          name: 'Admin',
+          username: 'admin',
+          role: 'admin',
+        }));
+        sessionStorage.setItem('ek_admin_redirect_target', 'admin/analytics.html');
+        window.location.href = 'loading.html';
+        return;
+      }
+
+      /* ── Real backend login (Provider / Customer), by email ── */
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing in…'; }
+
+      fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: identifier, password }),
+      })
+        .then(async res => {
+          const json = await res.json();
+          if (!res.ok || json.isSuccess === false) {
+            throw new Error((json && json.errors) || 'Invalid email or password.');
+          }
+          return json.data;
+        })
+        .then(data => {
+          localStorage.setItem('ek_user_session', JSON.stringify({
+            userId: data.userId, name: data.userName || data.fullName, email: data.email, roles: data.roles,
           }));
-          sessionStorage.setItem('ek_admin_redirect_target', 'admin/analytics.html');
-          window.location.href = 'loading.html';
-          return;
-        }
-        if (errEl) {
-          errEl.textContent = 'Non-admin users must log in with their phone number.';
-          errEl.classList.remove('hidden');
-        }
-        [identInput].forEach(el => {
-          if (!el) return;
-          el.style.outline = '2px solid #b31b25';
-          setTimeout(() => { el.style.outline = ''; }, 2000);
+          const roles = data.roles || [];
+          if (roles.includes('Provider')) {
+            window.location.href = 'provider/dashboard/index.html';
+          } else if (roles.includes('Customer')) {
+            window.location.href = 'customer/dashboard/index.html';
+          } else {
+            window.location.href = '/';
+          }
+        })
+        .catch(err => {
+          if (errEl) { errEl.textContent = err.message || 'Invalid email or password.'; errEl.classList.remove('hidden'); }
+          [identInput, passInput].forEach(el => {
+            if (!el) return;
+            el.style.outline = '2px solid #b31b25';
+            setTimeout(() => { el.style.outline = ''; }, 2000);
+          });
+        })
+        .finally(() => {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign In →'; }
         });
-        return;
-      }
-
-      /* ── Phone-based login (Provider / Customer) ── */
-      const normalizedPhone = identifier.replace(/\s/g, '');
-      const account = _findAccount(normalizedPhone, password);
-      if (!account) {
-        if (errEl) {
-          errEl.textContent = 'Invalid phone number or password.';
-          errEl.classList.remove('hidden');
-        }
-        [identInput, passInput].forEach(el => {
-          if (!el) return;
-          el.style.outline = '2px solid #b31b25';
-          setTimeout(() => { el.style.outline = ''; }, 2000);
-        });
-        return;
-      }
-
-      /* Successful phone login */
-      localStorage.setItem('ek_user_session', JSON.stringify({ phone: account.phone, name: account.name, role: account.role }));
-      // Redirect based on role
-      if (account.role === 'provider') {
-        window.location.href = 'provider/dashboard/index.html';
-      } else if (account.role === 'customer') {
-        window.location.href = 'customer/dashboard/index.html';
-      } else {
-        window.location.href = '/';
-      }
     },
 
     /** Register a new provider or customer account (called from sign-up flows) */
