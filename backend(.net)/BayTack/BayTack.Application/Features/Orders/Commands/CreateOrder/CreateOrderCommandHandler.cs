@@ -63,7 +63,7 @@ namespace BayTack.Application.Features.Orders.Commands.CreateOrder
 			// NOTE: no SaveChangesAsync call here - UnitOfWorkBehavior does it automatically.
 
 			const string status = "Pending";
-			return new OrderResponse(
+            return new OrderResponse(
 				job.Id,
 				job.ServiceId,
 				job.Title,
@@ -71,7 +71,9 @@ namespace BayTack.Application.Features.Orders.Commands.CreateOrder
 				null,
 				price.Amount,
 				status,
-				OrderResponse.ProgressFor(status));
+				OrderResponse.ProgressFor(status),
+				job.CreatedAt
+				);
 		}
 	}
 }

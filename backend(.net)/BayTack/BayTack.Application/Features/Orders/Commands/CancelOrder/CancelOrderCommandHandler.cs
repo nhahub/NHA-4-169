@@ -58,7 +58,9 @@ namespace BayTack.Application.Features.Orders.Commands.CancelOrder
 				null,
 				order.FinalPrice.Amount,
 				status,
-				OrderResponse.ProgressFor(status));
+				OrderResponse.ProgressFor(status),
+				order.CreatedAt
+				);
 		}
 	}
 }
