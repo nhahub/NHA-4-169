@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BayTack.Application.Common.DTO.Auth
 {
-	public record LoginDto(string Email, string Password, string? IpAddress);
+	public record LoginDto(string Identifier, string Password, string? IpAddress);
 
 }

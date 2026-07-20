@@ -48,10 +48,16 @@
   }
   function currentUser() {
     const s = getSession();
+    // Real sessions (set by landing.js after /api/Auth/login or /api/Auth/register)
+    // store { userId, name, email, roles: [...] } - no phone field is returned by
+    // the backend's AuthResponseDto. `role` (singular) / `phone` are kept as a
+    // fallback only for any old cached session written before this fix.
+    const roles = (s && s.roles) || (s && s.role ? [s.role] : []);
     return {
       name: (s && s.name) || 'Guest Customer',
       phone: (s && s.phone) || '',
-      role: (s && s.role) || 'customer',
+      email: (s && s.email) || '',
+      role: roles.includes('Provider') ? 'provider' : (roles[0] ? roles[0].toLowerCase() : 'customer'),
     };
   }
 

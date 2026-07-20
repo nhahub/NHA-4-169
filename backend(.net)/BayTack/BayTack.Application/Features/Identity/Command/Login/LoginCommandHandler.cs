@@ -17,7 +17,7 @@ namespace BayTack.Application.Features.Identity.Command.Login
 
 		public Task<Result<AuthResponseDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
 		{
-			return _authService.LoginAsync(new LoginDto ( request.Email, request.Password, request.IpAddress));
+			return _authService.LoginAsync(new LoginDto ( request.Identifier, request.Password, request.IpAddress));
 		}
 		
 	}

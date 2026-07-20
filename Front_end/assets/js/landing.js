@@ -44,27 +44,18 @@ const BayTack = (() => {
   }
 
   function _isPhoneNumber(value) {
-    // Egyptian phone: starts with +20, 010, 011, 012, 015 or just digits
-    return /^(\+20|0)?1[0125]\d{8}$/.test(value.replace(/\s/g, ''));
+    // Egyptian mobile: 01[0,1,2,5] + 8 digits = 11 digits total (or the +20 country-code form).
+    return /^(01[0125]\d{8}|\+201[0125]\d{8})$/.test(value.replace(/\s/g, ''));
   }
 
   function _validatePassword(password) {
-    return password.length >= 8;
-  }
-
-  /* ── Storage helpers for provider/customer accounts ── */
-  function _getAccounts() {
-    try { return JSON.parse(localStorage.getItem('ek_accounts') || '[]'); } catch { return []; }
-  }
-
-  function _saveAccount(account) {
-    const accounts = _getAccounts();
-    accounts.push(account);
-    localStorage.setItem('ek_accounts', JSON.stringify(accounts));
-  }
-
-  function _findAccount(phone, password) {
-    return _getAccounts().find(a => a.phone === phone && a.password === password);
+    // Must match BayTack.API's RegisterCommandValidator: 8+ chars, at least one
+    // uppercase, one lowercase and one digit - otherwise register calls fail
+    // server-side with a validation error the user never sees explained clearly.
+    return password.length >= 8
+      && /[A-Z]/.test(password)
+      && /[a-z]/.test(password)
+      && /[0-9]/.test(password);
   }
 
   /* ── Public API ── */
@@ -112,14 +103,14 @@ const BayTack = (() => {
         return;
       }
 
-      /* Password length check */
-      if (!_validatePassword(password)) {
-        if (errEl) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.remove('hidden'); }
-        [passInput].forEach(el => {
-          if (!el) return;
-          el.style.outline = '2px solid #b31b25';
-          setTimeout(() => { el.style.outline = ''; }, 2000);
-        });
+      /* Identifier must be a valid email OR an 11-digit Egyptian phone number */
+      const looksLikePhoneAttempt = !identifier.includes('@');
+      if (looksLikePhoneAttempt && !_isPhoneNumber(identifier)) {
+        if (errEl) { errEl.textContent = 'Enter a valid email address or an 11-digit phone number (e.g. 01012345678).'; errEl.classList.remove('hidden'); }
+        return;
+      }
+      if (!looksLikePhoneAttempt && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
+        if (errEl) { errEl.textContent = 'Enter a valid email address or an 11-digit phone number (e.g. 01012345678).'; errEl.classList.remove('hidden'); }
         return;
       }
 
@@ -146,7 +137,7 @@ const BayTack = (() => {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: identifier, password }),
+        body: JSON.stringify({ identifier, password }),
       })
         .then(async res => {
           const json = await res.json();
@@ -156,10 +147,13 @@ const BayTack = (() => {
           return json.data;
         })
         .then(data => {
-          localStorage.setItem('ek_user_session', JSON.stringify({
-            userId: data.userId, name: data.userName || data.fullName, email: data.email, roles: data.roles,
-          }));
           const roles = data.roles || [];
+          localStorage.setItem('ek_user_session', JSON.stringify({
+            userId: data.userId,
+            name: data.fullName || data.userName,
+            email: data.email,
+            roles: roles,
+          }));
           if (roles.includes('Provider')) {
             window.location.href = 'provider/dashboard/index.html';
           } else if (roles.includes('Customer')) {
@@ -181,33 +175,24 @@ const BayTack = (() => {
         });
     },
 
-    /** Register a new provider or customer account (called from sign-up flows) */
-    registerAccount(data) {
-      const existing = _getAccounts().find(a => a.phone === data.phone);
-      if (existing) throw new Error('An account with this phone number already exists.');
-      _saveAccount({
-        phone:    data.phone,
-        password: data.password,
-        name:     data.name,
-        role:     data.role || 'provider',
-        status:   data.role === 'customer' ? 'active' : 'pending_review',
-        createdAt: new Date().toISOString(),
-      });
-    },
-
-    /** Handle Customer Sign-Up modal form submit */
+    /** Handle Customer Sign-Up modal form submit — calls the real backend so the
+     *  account actually exists and can log in afterward (previously this only
+     *  wrote to a local mock list and never reached the server at all). */
     handleCustomerSignUp(event) {
       event.preventDefault();
       const errEl = document.getElementById('bt-customer-sign-error');
       if (errEl) errEl.classList.add('hidden');
 
-      const name     = (document.getElementById('bt-cust-name')  || {}).value || '';
+      const name     = (document.getElementById('bt-cust-name')  || {}).value.trim() || '';
       const phone    = ((document.getElementById('bt-cust-phone') || {}).value || '').replace(/\s/g, '');
-      const email    = (document.getElementById('bt-cust-email') || {}).value || '';
-      const address  = (document.getElementById('bt-cust-address') || {}).value || '';
+      const email    = (document.getElementById('bt-cust-email') || {}).value.trim() || '';
       const password = (document.getElementById('bt-cust-password') || {}).value || '';
+      // Note: the "Service Address" field (bt-cust-address) is collected in the form
+      // but RegisterCommand has no Address parameter on the backend, so it currently
+      // has nowhere to go - it's intentionally not sent. Flag to backend team if the
+      // address should be captured somewhere (e.g. as the customer's first saved address).
 
-      if (!name || !phone || !password) {
+      if (!name || !phone || !email || !password) {
         if (errEl) { errEl.textContent = 'Please fill in all required fields.'; errEl.classList.remove('hidden'); }
         return false;
       }
@@ -216,24 +201,45 @@ const BayTack = (() => {
         return false;
       }
       if (!_validatePassword(password)) {
-        if (errEl) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.remove('hidden'); }
-        return false;
-      }
-      if (_getAccounts().find(a => a.phone === phone)) {
-        if (errEl) { errEl.textContent = 'An account with this phone number already exists.'; errEl.classList.remove('hidden'); }
+        if (errEl) { errEl.textContent = 'Password must be 8+ characters and include an uppercase letter, a lowercase letter, and a digit.'; errEl.classList.remove('hidden'); }
         return false;
       }
 
-      try {
-        api.registerAccount({ name, phone, password, email, address, role: 'customer' });
-      } catch (e) {
-        if (errEl) { errEl.textContent = e.message; errEl.classList.remove('hidden'); }
-        return false;
-      }
+      const form = event.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const submitBtnOriginalHTML = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating account…'; }
 
-      /* Auto-login the new customer and go straight to their dashboard */
-      localStorage.setItem('ek_user_session', JSON.stringify({ phone, name, role: 'customer' }));
-      window.location.href = 'customer/dashboard/index.html';
+      fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName: name, email, password, phone, role: 'customer' }),
+      })
+        .then(async res => {
+          const json = await res.json();
+          if (!res.ok || json.isSuccess === false) {
+            throw new Error((json && json.errors) || 'Could not create your account. Please try again.');
+          }
+          return json.data;
+        })
+        .then(data => {
+          const roles = data.roles || ['Customer'];
+          localStorage.setItem('ek_user_session', JSON.stringify({
+            userId: data.userId,
+            name: data.fullName || data.userName || name,
+            email: data.email || email,
+            roles: roles,
+          }));
+          window.location.href = 'customer/dashboard/index.html';
+        })
+        .catch(err => {
+          if (errEl) { errEl.textContent = err.message || 'Could not create your account. Please try again.'; errEl.classList.remove('hidden'); }
+        })
+        .finally(() => {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = submitBtnOriginalHTML; }
+        });
+
       return false;
     },
   };
@@ -258,6 +264,22 @@ const BayTack = (() => {
     const link  = document.getElementById('bt-admin-link');
     if (token && link) link.classList.remove('hidden');
   }
+
+  /* ── Password show/hide eye buttons (login, customer signup, provider confirm-password) ──
+     These render with class="pw-toggle-btn" + data-target="<input id>" but nothing was ever
+     wired to listen for clicks on them - fixing via one delegated listener that covers all
+     current and future .pw-toggle-btn buttons. */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pw-toggle-btn');
+    if (!btn) return;
+    const input = document.getElementById(btn.dataset.target);
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  });
 
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', _checkAdminLink);

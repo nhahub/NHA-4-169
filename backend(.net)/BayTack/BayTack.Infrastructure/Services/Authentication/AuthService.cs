@@ -7,6 +7,7 @@ using BayTack.Domain.Enums;
 using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BayTack.Infrastructure.Services.Authentication
@@ -75,9 +76,16 @@ namespace BayTack.Infrastructure.Services.Authentication
 
 		public async Task<Result<AuthResponseDto>> LoginAsync(LoginDto dto, CancellationToken ct = default)
 		{
-			var user = await _userManager.FindByEmailAsync(dto.Email);
+			var identifier = dto.Identifier?.Trim() ?? string.Empty;
+			var user = await _userManager.FindByEmailAsync(identifier);
+			if (user is null && identifier.Contains('@') is false)
+			{
+				// Not found by email and doesn't look like one - try matching by phone number.
+				// UserManager has no FindByPhoneNumberAsync, so query directly.
+				user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == identifier, ct);
+			}
 			if (user is null)
-				return Result<AuthResponseDto>.Failure("Invalid email or password.");
+				return Result<AuthResponseDto>.Failure("Invalid email/phone or password.");
 
 			if (user.Status == UserStatus.Suspended)
 				return Result<AuthResponseDto>.Failure("User account is suspended.");
@@ -85,7 +93,7 @@ namespace BayTack.Infrastructure.Services.Authentication
 			if (signInResult.IsLockedOut)
 				return Result<AuthResponseDto>.Failure("User account is locked out.");
 			if (!signInResult.Succeeded)
-				return Result<AuthResponseDto>.Failure("Invalid email or password.");
+				return Result<AuthResponseDto>.Failure("Invalid email/phone or password.");
 
 			return await IssueTokensAsync(user, dto.IpAddress, ct);
 		}
