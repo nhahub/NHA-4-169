@@ -139,6 +139,13 @@
       /** GET /cities -> City[] { id, name, areas: [{ id, name }] } */
       cities: () => get('/cities'),
     },
+
+    preferences: {
+      /** GET /preferences */
+      get: () => get('/preferences'),
+      /** PATCH /preferences - full replace, send the whole shape back */
+      update: (prefs) => patch('/preferences', prefs),
+    },
   };
 
   global.CustomerApi = CustomerApi;

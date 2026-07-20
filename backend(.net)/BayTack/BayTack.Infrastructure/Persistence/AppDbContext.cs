@@ -48,6 +48,7 @@ namespace BayTack.Infrastructure.Persistence
 
 		public DbSet<Favorite> Favorites => Set<Favorite>();
 		public DbSet<Notification> Notifications => Set<Notification>();
+		public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
 
 		public DbSet<Attachment> Attachments => Set<Attachment>();
 		public DbSet<AuditLog> AuditLogs => Set<AuditLog>();

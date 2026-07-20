@@ -37,40 +37,40 @@
 
 <main class="max-w-4xl mx-auto px-6 pb-24">
   <h1 class="font-headline font-extrabold text-3xl md:text-4xl mb-2">Settings</h1>
-  <p class="text-sm text-on-surface-variant mb-8">Preferences below aren't saved yet - this section is coming soon.</p>
+  <p class="text-sm text-on-surface-variant mb-8" id="bt-settings-status">Loading your preferences…</p>
 
-  <div class="space-y-6 opacity-60 pointer-events-none">
+  <div class="space-y-6" id="bt-settings-form">
     <!-- General -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">tune</span> General</h2>
       <div class="flex items-center justify-between">
         <div><p class="font-medium text-sm">Show active job widget on dashboard</p><p class="text-xs text-on-surface-variant">Display live tracking when a provider is en route</p></div>
-        <div class="bt-switch on"></div>
+        <div class="bt-switch" data-setting="showActiveJobWidget"></div>
       </div>
     </div>
 
     <!-- Notifications -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">notifications</span> Notifications</h2>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">New offers on my requests</p><div class="bt-switch on"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Order status updates</p><div class="bt-switch on"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Promotions &amp; offers</p><div class="bt-switch"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">SMS notifications</p><div class="bt-switch"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">New offers on my requests</p><div class="bt-switch" data-setting="notifyNewOffers"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Order status updates</p><div class="bt-switch" data-setting="notifyOrderUpdates"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Promotions &amp; offers</p><div class="bt-switch" data-setting="notifyPromotions"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">SMS notifications</p><div class="bt-switch" data-setting="notifySms"></div></div>
     </div>
 
     <!-- Privacy -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">privacy_tip</span> Privacy</h2>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Show my profile to providers I've messaged</p><div class="bt-switch on"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Share location with active orders</p><div class="bt-switch on"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Show my profile to providers I've messaged</p><div class="bt-switch" data-setting="showProfileToMessagedProviders"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Share location with active orders</p><div class="bt-switch" data-setting="shareLocationWithActiveOrders"></div></div>
     </div>
 
     <!-- Language -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">translate</span> Language</h2>
-      <select disabled class="w-full sm:w-64 px-5 py-3 bg-surface-container-low rounded-2xl outline-none border-none">
-        <option>English</option>
-        <option>العربية</option>
+      <select id="bt-setting-language" class="w-full sm:w-64 px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
       </select>
     </div>
 
@@ -78,8 +78,8 @@
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">palette</span> Appearance</h2>
       <div class="flex gap-3">
-        <button class="flex-1 border-2 border-primary bg-primary/5 rounded-2xl p-4 text-center font-bold text-sm text-primary">Light</button>
-        <button class="flex-1 border-2 border-outline-variant/30 rounded-2xl p-4 text-center font-bold text-sm text-on-surface-variant">Dark (coming soon)</button>
+        <button data-theme="light" id="bt-theme-light" class="flex-1 border-2 border-primary bg-primary/5 rounded-2xl p-4 text-center font-bold text-sm text-primary">Light</button>
+        <button disabled class="flex-1 border-2 border-outline-variant/30 rounded-2xl p-4 text-center font-bold text-sm text-on-surface-variant opacity-60 cursor-not-allowed">Dark (coming soon)</button>
       </div>
     </div>
   </div>
@@ -92,5 +92,56 @@
 <script src="../_shared/customer-data.js"></script>
 <script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
+<script>
+  let saveTimer = null;
+
+  function currentPrefsFromUi() {
+    const prefs = { language: document.getElementById('bt-setting-language').value, theme: 'light' };
+    document.querySelectorAll('.bt-switch[data-setting]').forEach(sw => {
+      prefs[sw.dataset.setting] = sw.classList.contains('on');
+    });
+    return prefs;
+  }
+
+  function applyPrefsToUi(prefs) {
+    document.querySelectorAll('.bt-switch[data-setting]').forEach(sw => {
+      sw.classList.toggle('on', !!prefs[sw.dataset.setting]);
+    });
+    document.getElementById('bt-setting-language').value = prefs.language || 'en';
+  }
+
+  function scheduleSave() {
+    const status = document.getElementById('bt-settings-status');
+    status.textContent = 'Saving…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try {
+        await CustomerApi.preferences.update(currentPrefsFromUi());
+        status.textContent = 'Saved';
+        setTimeout(() => { if (status.textContent === 'Saved') status.textContent = ''; }, 1500);
+      } catch (err) {
+        status.textContent = err.message || 'Could not save your preferences.';
+      }
+    }, 500);
+  }
+
+  document.querySelectorAll('.bt-switch[data-setting]').forEach(sw => {
+    sw.addEventListener('click', () => { sw.classList.toggle('on'); scheduleSave(); });
+  });
+  document.getElementById('bt-setting-language').addEventListener('change', scheduleSave);
+
+  async function init() {
+    const status = document.getElementById('bt-settings-status');
+    try {
+      const prefs = await CustomerApi.preferences.get();
+      applyPrefsToUi(prefs);
+      status.textContent = '';
+    } catch (err) {
+      status.textContent = err.message || 'Could not load your preferences.';
+    }
+  }
+
+  init();
+</script>
 </body>
 </html>
