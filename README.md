@@ -305,13 +305,12 @@ Customers and providers communicate directly throughout the project.
 
 # ⚠️ Project Risks
 
-- Unqualified providers joining the platform
-- Service misconduct
-- Payment disputes
-- Fake verification documents
-- Customer-provider conflicts
-- Poor service quality impacting platform reputation
-
+- Slow adoption by customers and providers during the launch phase.
+- Delays in payment gateway integration or transaction processing.
+- High job cancellation rates affecting customer satisfaction.
+- Platform performance issues as user traffic increases.
+- Security and data protection risks.
+- Downtime or failures in third-party services (payment, email, notifications).
 ---
 
 # 🚀 BayTack Mission
