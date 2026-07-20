@@ -12,8 +12,8 @@ namespace BayTack.Application.Features.Jobs.Commands.CreateRequest
         string Title,
         string Description,
         string LocationDetails,
-        int CityId,
-        int? AreaId,
+        string CityId,
+        string? AreaId,
         decimal? Budget,
         DateTime? Deadline,
         string? PreferredPayment) : ICommand<RequestResponse>;

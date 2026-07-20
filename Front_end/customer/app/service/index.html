@@ -36,11 +36,14 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   const serviceId = params.get('id');
-  const service = BTData.services.byId(serviceId) || BTData.services.all()[0];
+  let service = null;
+  let allServicesCache = [];
+  let isSaved = false;
   let selectedPackage = 'standard';
 
   function renderStars(rating) {
@@ -48,11 +51,12 @@
   }
 
   function similarServices() {
-    return BTData.services.all().filter(s => s.category === service.category && s.id !== service.id).slice(0, 3);
+    return allServicesCache.filter(s => s.category === service.category && s.id !== service.id).slice(0, 3);
   }
 
   function packageCard(key) {
-    const p = service.packages[key];
+    const p = service.tiers && service.tiers[key];
+    if (!p) return '';
     const active = key === selectedPackage;
     return `
     <button data-pkg="${key}" class="bt-pkg-btn text-left w-full p-5 rounded-2xl border-2 transition-all ${active ? 'border-primary bg-primary/5' : 'border-outline-variant/30 hover:border-primary/50'}">
@@ -64,11 +68,13 @@
   }
 
   function render() {
-    const saved = BTData.saved.isSaved(service.id);
+    if (!(service.tiers && service.tiers[selectedPackage])) {
+      selectedPackage = ['basic', 'standard', 'premium'].find(k => service.tiers && service.tiers[k]) || 'basic';
+    }
     document.getElementById('bt-service-content').innerHTML = `
-      <!-- Gallery -->
-      <div class="rounded-3xl overflow-hidden mb-8 shadow-lg">
-        <img src="${service.image}" class="w-full h-72 md:h-96 object-cover" alt="${service.title}" />
+      <!-- Icon banner (real API has no service image yet) -->
+      <div class="rounded-3xl overflow-hidden mb-8 shadow-lg h-56 md:h-72 bg-primary/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary" style="font-size:5rem">${service.icon || 'home_repair_service'}</span>
       </div>
 
       <div class="grid lg:grid-cols-3 gap-10">
@@ -78,62 +84,18 @@
             <span class="text-xs font-bold text-primary uppercase tracking-wide">${service.category}</span>
             <h1 class="font-headline font-extrabold text-3xl md:text-4xl mt-2">${service.title}</h1>
             <div class="flex items-center gap-4 mt-3 text-sm">
-              <span class="flex items-center gap-1">${renderStars(service.rating)} <span class="font-bold ml-1">${service.rating}</span> <span class="text-on-surface-variant">(${service.reviews} reviews)</span></span>
-              <span class="text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-base">location_on</span>${service.location}</span>
+              <span class="flex items-center gap-1">${renderStars(service.rating)} <span class="font-bold ml-1">${service.rating}</span></span>
             </div>
           </div>
 
           <!-- Provider card -->
           <div class="bg-white rounded-3xl shadow p-6 flex items-center gap-4">
-            <img src="${service.avatar}" class="w-16 h-16 rounded-full object-cover" alt="${service.provider}" />
+            <img src="${service.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(service.provider)}" class="w-16 h-16 rounded-full object-cover" alt="${service.provider}" />
             <div class="flex-1 min-w-0">
               <p class="font-headline font-bold text-lg">${service.provider}</p>
               <p class="text-sm text-on-surface-variant">${service.category} Specialist · ⭐ ${service.rating}</p>
             </div>
             <button id="bt-message-provider" class="px-5 py-2.5 border-2 border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition shrink-0">Message</button>
-          </div>
-
-          <!-- Description -->
-          <div>
-            <h2 class="font-headline font-bold text-xl mb-3">Description</h2>
-            <p class="text-on-surface-variant leading-relaxed">${service.description}</p>
-          </div>
-
-          <!-- Features -->
-          <div>
-            <h2 class="font-headline font-bold text-xl mb-3">Features</h2>
-            <ul class="grid sm:grid-cols-2 gap-3">
-              ${service.features.map(f => `<li class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-secondary text-lg">check_circle</span>${f}</li>`).join('')}
-            </ul>
-          </div>
-
-          <!-- Requirements -->
-          <div>
-            <h2 class="font-headline font-bold text-xl mb-3">Requirements</h2>
-            <ul class="space-y-2">
-              ${service.requirements.map(r => `<li class="flex items-center gap-2 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-lg">info</span>${r}</li>`).join('')}
-            </ul>
-          </div>
-
-          <!-- Reviews -->
-          <div>
-            <h2 class="font-headline font-bold text-xl mb-3">Reviews</h2>
-            <div class="bg-white rounded-3xl shadow p-6 space-y-5">
-              <div class="flex gap-4">
-                <img src="https://i.pravatar.cc/100?img=25" class="w-11 h-11 rounded-full object-cover" alt="reviewer" />
-                <div>
-                  <p class="font-bold text-sm">Nourhan Samir <span class="text-yellow-500 ml-2">⭐⭐⭐⭐⭐</span></p>
-                  <p class="text-sm text-on-surface-variant mt-1">Excellent work, very professional and on time.</p>
-                </div>
-              </div>
-              <div class="flex gap-4">
-                <img src="https://i.pravatar.cc/100?img=8" class="w-11 h-11 rounded-full object-cover" alt="reviewer" />
-                <div>
-                  <p class="font-bold text-sm">Mahmoud Tarek <span class="text-yellow-500 ml-2">⭐⭐⭐⭐⭐</span></p>
-                  <p class="text-sm text-on-surface-variant mt-1">Great communication and fair pricing. Recommended!</p>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Similar services -->
@@ -142,10 +104,10 @@
             <div class="grid sm:grid-cols-3 gap-5">
               ${similarServices().map(s => `
                 <a href="index.html?id=${s.id}" class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition">
-                  <img src="${s.image}" class="h-28 w-full object-cover" alt="${s.title}" />
+                  <div class="h-28 w-full bg-primary/10 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-3xl">${s.icon || 'home_repair_service'}</span></div>
                   <div class="p-3">
                     <p class="font-bold text-sm truncate">${s.title}</p>
-                    <p class="text-xs text-primary font-bold mt-1">From ${s.price} EGP</p>
+                    <p class="text-xs text-primary font-bold mt-1">From ${(s.tiers && s.tiers.basic && s.tiers.basic.price) || 0} EGP</p>
                   </div>
                 </a>`).join('') || '<p class="text-sm text-on-surface-variant">No similar services found.</p>'}
             </div>
@@ -157,8 +119,8 @@
           <div class="bg-white rounded-3xl shadow-lg p-6 sticky top-28 space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="font-headline font-bold text-lg">Packages</h3>
-              <button id="bt-save-btn" class="flex items-center gap-1 text-sm font-bold ${saved ? 'text-error' : 'text-on-surface-variant'}">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' ${saved ? 1 : 0}">favorite</span>
+              <button id="bt-save-btn" class="flex items-center gap-1 text-sm font-bold ${isSaved ? 'text-error' : 'text-on-surface-variant'}">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' ${isSaved ? 1 : 0}">favorite</span>
               </button>
             </div>
             <div class="space-y-3" id="bt-package-list">
@@ -176,22 +138,51 @@
     document.querySelectorAll('.bt-pkg-btn').forEach(btn => {
       btn.addEventListener('click', () => { selectedPackage = btn.dataset.pkg; render(); });
     });
-    document.getElementById('bt-save-btn').addEventListener('click', () => { BTData.saved.toggle(service.id); render(); });
+    document.getElementById('bt-save-btn').addEventListener('click', async () => {
+      try {
+        if (isSaved) { await CustomerApi.saved.remove(service.id); isSaved = false; }
+        else { await CustomerApi.saved.add(service.id); isSaved = true; }
+        render();
+      } catch (err) { alert(err.message || 'Please sign in to save services.'); }
+    });
     document.getElementById('bt-message-provider').addEventListener('click', () => { window.location.href = '../messages/index.html'; });
-    document.getElementById('bt-book-now').addEventListener('click', () => {
-      const pkg = service.packages[selectedPackage];
-      BTData.orders.add({
-        id: BTData.uid('ord'), serviceId: service.id, title: `${service.title} (${pkg.name})`,
-        provider: service.provider, avatar: service.avatar, price: pkg.price, status: 'active', progress: 10,
-        createdAt: new Date().toISOString(), timeline: [
-          { label: 'Order Placed', done: true }, { label: 'Provider Confirmed', done: false },
-          { label: 'In Progress', done: false }, { label: 'Completed', done: false },
-        ] });
-      window.location.href = '../orders/index.html';
+    document.getElementById('bt-book-now').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true; btn.textContent = 'Booking…';
+      try {
+        await CustomerApi.orders.create(service.id, selectedPackage);
+        window.location.href = '../orders/index.html';
+      } catch (err) {
+        alert(err.message || 'Could not book this service. Please make sure you are signed in.');
+        btn.disabled = false; btn.textContent = 'Book Now';
+      }
     });
   }
 
-  render();
+  async function init() {
+    const content = document.getElementById('bt-service-content');
+    content.innerHTML = `<p class="text-center text-on-surface-variant py-24">Loading service…</p>`;
+    try {
+      [service, allServicesCache] = await Promise.all([
+        CustomerApi.services.byId(serviceId),
+        CustomerApi.services.all(),
+      ]);
+    } catch (err) {
+      content.innerHTML = `<p class="text-center text-error py-24">Could not load this service: ${err.message}</p>`;
+      return;
+    }
+    if (!service) {
+      content.innerHTML = `<p class="text-center text-on-surface-variant py-24">Service not found. <a href="../browse/index.html" class="text-primary font-bold">Back to Browse</a></p>`;
+      return;
+    }
+    try {
+      const saved = await CustomerApi.saved.all();
+      isSaved = saved.some(s => s.id === service.id);
+    } catch (err) { isSaved = false; }
+    render();
+  }
+
+  init();
 </script>
 </body>
 </html>

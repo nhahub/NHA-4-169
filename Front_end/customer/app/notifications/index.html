@@ -41,28 +41,67 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
-  const GROUP_LABELS = { today: 'Today', yesterday: 'Yesterday', week: 'This Week' };
+  const GROUP_LABELS = { today: 'Today', yesterday: 'Yesterday', week: 'This Week', older: 'Older' };
+  // Backend's NotificationResponse.icon is a semantic name (package/gavel/...),
+  // not a Material Symbols icon name - map it here.
+  const ICON_MAP = {
+    package: 'local_shipping', gavel: 'gavel', 'credit-card': 'credit_card',
+    'alert-triangle': 'warning', 'check-circle': 'check_circle', settings: 'settings', bell: 'notifications',
+  };
+
+  function timeBucket(createdAt) {
+    const d = new Date(createdAt);
+    const now = new Date();
+    const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+    const diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+    if (diffDays <= 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays <= 7) return 'week';
+    return 'older';
+  }
+
+  function relativeTime(createdAt) {
+    const diffMs = Date.now() - new Date(createdAt).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return days === 1 ? 'Yesterday' : `${days} days ago`;
+  }
 
   function itemHtml(n) {
     return `
     <div data-id="${n.id}" class="flex items-start gap-4 p-4 rounded-2xl transition ${n.read ? '' : 'bg-blue-50'}">
-      <div class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center shrink-0 text-primary"><span class="material-symbols-outlined text-lg">${n.icon}</span></div>
+      <div class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center shrink-0 text-primary"><span class="material-symbols-outlined text-lg">${ICON_MAP[n.icon] || 'notifications'}</span></div>
       <div class="flex-1 min-w-0">
         <p class="font-bold text-sm">${n.title}</p>
-        <p class="text-sm text-on-surface-variant mt-0.5">${n.text}</p>
-        <p class="text-xs text-on-surface-variant mt-1">${n.time}</p>
+        <p class="text-sm text-on-surface-variant mt-0.5">${n.body}</p>
+        <p class="text-xs text-on-surface-variant mt-1">${relativeTime(n.createdAt)}</p>
       </div>
       ${!n.read ? '<span class="w-2.5 h-2.5 bg-primary rounded-full mt-1 shrink-0"></span>' : ''}
     </div>`;
   }
 
-  function render() {
-    const all = BTData.notifications.all();
-    const groups = ['today', 'yesterday', 'week'];
-    document.getElementById('bt-notif-groups').innerHTML = groups.map(g => {
-      const items = all.filter(n => n.group === g);
+  async function render() {
+    const container = document.getElementById('bt-notif-groups');
+    container.innerHTML = `<p class="text-center text-on-surface-variant py-16">Loading…</p>`;
+
+    let all;
+    try {
+      all = await CustomerApi.notifications.all();
+    } catch (err) {
+      container.innerHTML = `<p class="text-center text-error py-16">Could not load notifications: ${err.message}</p>`;
+      return;
+    }
+
+    const groups = ['today', 'yesterday', 'week', 'older'];
+    container.innerHTML = groups.map(g => {
+      const items = all.filter(n => timeBucket(n.createdAt) === g);
       if (!items.length) return '';
       return `
       <div>
@@ -71,13 +110,16 @@
       </div>`;
     }).join('') || `<p class="text-center text-on-surface-variant py-16">You're all caught up!</p>`;
 
-    document.querySelectorAll('[data-id]').forEach(el => el.addEventListener('click', () => {
-      BTData.notifications.markRead(el.dataset.id);
-      render();
+    document.querySelectorAll('[data-id]').forEach(el => el.addEventListener('click', async () => {
+      try { await CustomerApi.notifications.markRead(el.dataset.id); render(); }
+      catch (err) { /* non-critical, ignore */ }
     }));
   }
 
-  document.getElementById('bt-mark-all').addEventListener('click', () => { BTData.notifications.markAllRead(); render(); });
+  document.getElementById('bt-mark-all').addEventListener('click', async () => {
+    try { await CustomerApi.notifications.markAllRead(); render(); }
+    catch (err) { alert(err.message || 'Could not mark notifications as read.'); }
+  });
   render();
 </script>
 </body>

@@ -2,7 +2,6 @@
 using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
 using MediatR;
-using System.Windows.Input;
 
 namespace BayTack.Application.Common.Behaviors
 {
@@ -23,7 +22,11 @@ namespace BayTack.Application.Common.Behaviors
         {
             var response = await next();
 
-            var isCommand = request is System.Windows.Input.ICommand || typeof(TRequest).GetInterfaces()
+            // BUG FIX: this used to check `request is System.Windows.Input.ICommand` - a WPF
+            // interface with no relation to this app's ICommand - so it never matched anything,
+            // and commands with no return value never got their changes saved even though their
+            // handlers ran successfully. Checking the real ICommand fixes that.
+            var isCommand = request is ICommand || typeof(TRequest).GetInterfaces()
                 .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>));
 
             if (isCommand && response is IResult { IsSuccess: true })

@@ -11,7 +11,7 @@ namespace BayTack.Application.Features.Jobs.Commands.CreateRequest
             RuleFor(x => x.Title).NotEmpty().MaximumLength(150);
             RuleFor(x => x.Description).NotEmpty();
             RuleFor(x => x.LocationDetails).NotEmpty();
-            RuleFor(x => x.CityId).GreaterThan(0);
+            RuleFor(x => x.CityId).NotEmpty();
             RuleFor(x => x.Budget).GreaterThan(0).When(x => x.Budget.HasValue);
         }
     }

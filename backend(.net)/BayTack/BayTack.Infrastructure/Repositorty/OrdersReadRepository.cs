@@ -30,7 +30,8 @@ namespace BayTack.Infrastructure.Repositorty
                     x.cj.Title,
                     x.o.ProviderId,
                     x.o.FinalPrice.Amount,
-                    Status = x.o.Status.ToString()
+                    Status = x.o.Status.ToString(),
+                    x.o.CreatedAt
                 })
                 .ToListAsync(ct);
 
@@ -53,7 +54,8 @@ namespace BayTack.Infrastructure.Repositorty
                 null,
                 r.Amount,
                 r.Status,
-                OrderResponse.ProgressFor(r.Status)))
+                OrderResponse.ProgressFor(r.Status),
+                r.CreatedAt))
                 .ToList();
         }
 
@@ -91,6 +93,7 @@ namespace BayTack.Infrastructure.Repositorty
                 row.o.FinalPrice.Currency,
                 status,
                 OrderResponse.ProgressFor(status),
+                row.o.CreatedAt,
                 row.o.StartDate,
                 row.o.EndDate,
                 history);

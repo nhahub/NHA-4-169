@@ -13,8 +13,8 @@ public sealed record ProviderProfileResponse(
     int YearsOfExperience,
     string? Bio,
     string? WorkshopAddressDetails,
-    int? WorkshopAddressCityId,
-    int? WorkshopAddressAreaId,
+    string? WorkshopAddressCityId,
+    string? WorkshopAddressAreaId,
     int DocumentsCount,
     int PortfolioCount,
     int AvailabilitiesCount);

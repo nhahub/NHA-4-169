@@ -47,18 +47,34 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
+  // Backend statuses are only open/assigned/closed - no separate "completed", and
+  // Budget/Deadline are always null (CustomerJob doesn't persist them yet - see
+  // RequestResponse.cs on the backend). There's also no manual "close" endpoint,
+  // so that button is removed rather than left non-functional.
   const STATUS_STYLES = {
-    open:      { label: 'Open',      cls: 'bg-blue-100 text-primary' },
-    closed:    { label: 'Closed',    cls: 'bg-gray-100 text-on-surface-variant' },
-    completed: { label: 'Completed', cls: 'bg-emerald-100 text-secondary' },
+    open:     { label: 'Open',     cls: 'bg-blue-100 text-primary' },
+    assigned: { label: 'Assigned', cls: 'bg-amber-100 text-amber-700' },
+    closed:   { label: 'Closed',   cls: 'bg-gray-100 text-on-surface-variant' },
   };
 
-  function render() {
-    const requests = BTData.requests.all();
+  async function render() {
+    const list = document.getElementById('bt-requests-list');
+    list.innerHTML = `<p class="text-center text-on-surface-variant py-16">Loading requests…</p>`;
+    document.getElementById('bt-empty').classList.add('hidden');
+
+    let requests;
+    try {
+      requests = await CustomerApi.requests.all();
+    } catch (err) {
+      list.innerHTML = `<p class="text-center text-error py-16">Could not load requests: ${err.message}</p>`;
+      return;
+    }
+
     document.getElementById('bt-empty').classList.toggle('hidden', requests.length > 0);
-    document.getElementById('bt-requests-list').innerHTML = requests.map(r => {
+    list.innerHTML = requests.map(r => {
       const st = STATUS_STYLES[r.status] || STATUS_STYLES.open;
       return `
       <div class="bg-white rounded-3xl shadow p-6">
@@ -66,31 +82,25 @@
           <div>
             <span class="text-xs font-bold px-3 py-1 rounded-full ${st.cls}">${st.label}</span>
             <h3 class="font-headline font-bold text-xl mt-3">${r.title}</h3>
-            <p class="text-sm text-on-surface-variant mt-2 max-w-xl">${r.description}</p>
           </div>
           <div class="text-right shrink-0">
-            <p class="font-bold text-primary text-lg">${r.budget} EGP</p>
-            <p class="text-xs text-on-surface-variant mt-1">Deadline: ${BTData.formatDate(r.deadline)}</p>
+            <p class="text-xs text-on-surface-variant mt-1">${r.location || ''}</p>
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-4 mt-5 text-sm text-on-surface-variant">
-          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">event</span>Posted ${BTData.formatDate(r.createdAt)}</span>
           <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">local_offer</span>${r.offers.length} offer(s)</span>
         </div>
         <div class="flex flex-wrap gap-3 mt-5">
           <a href="../request/index.html?id=${r.id}" class="px-5 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim transition">View</a>
-          ${r.status === 'open' ? `<button data-close="${r.id}" class="px-5 py-2.5 border-2 border-outline-variant/30 rounded-full font-bold text-sm hover:border-primary hover:text-primary transition">Close</button>` : ''}
           <button data-delete="${r.id}" class="px-5 py-2.5 border-2 border-red-200 text-error rounded-full font-bold text-sm hover:bg-red-50 transition">Delete</button>
         </div>
       </div>`;
     }).join('');
 
-    document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => {
-      BTData.requests.update(btn.dataset.close, { status: 'closed' });
-      render();
-    }));
-    document.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => {
-      if (confirm('Delete this request? This cannot be undone.')) { BTData.requests.remove(btn.dataset.delete); render(); }
+    document.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', async () => {
+      if (!confirm('Delete this request? This cannot be undone.')) return;
+      try { await CustomerApi.requests.remove(btn.dataset.delete); render(); }
+      catch (err) { alert(err.message || 'Could not delete this request.'); }
     }));
   }
 

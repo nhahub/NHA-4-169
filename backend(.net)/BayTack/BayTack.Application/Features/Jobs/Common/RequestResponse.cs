@@ -2,29 +2,31 @@
 
 namespace BayTack.Application.Features.Jobs.Common
 {
-    /// <summary>Shape expected by Front_end/customer/app/post-request, requests/ (was mocked -> bt_c_requests).</summary>
     public sealed record RequestResponse(
         string Id,
         string Title,
+        string Description,
         string Category,
         decimal? Budget,
         DateTime? Deadline,
         string Location,
         string Status,
+        DateTime CreatedAt,
         List<OfferResponse> Offers)
     {
-        // CustomerJob doesn't persist Budget/Deadline yet (they aren't in the original
-        // domain model - see Domain/Entities/JobAggregate/CustomerJob.cs). Returning null
-        // rather than guessing a value. If the frontend needs these, they should become
-        // real columns on CustomerJob (with a migration) instead of being faked here.
+        // NOTE: "Category" here is actually job.ServiceId (the request is always tied to a
+        // specific Service, not a free-text category name) - kept the existing field name
+        // since RequestsController/frontend already key off "Category".
         public static RequestResponse FromEntity(CustomerJob job) => new(
             job.Id,
             job.Title,
+            job.Description,
             job.ServiceId,
-            null,
-            null,
+            job.Budget,
+            job.Deadline,
             job.Location.Details,
             StatusFor(job.Status),
+            job.CreatedAt,
             job.Bids.Select(OfferResponse.FromEntity).ToList());
 
         private static string StatusFor(Domain.Enums.JobStatus status) => status switch

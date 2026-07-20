@@ -43,10 +43,7 @@
       <div class="border-b border-gray-100 p-4 flex items-center gap-3" id="bt-chat-header"></div>
       <div class="flex-1 overflow-y-auto p-5 space-y-4" id="bt-chat-thread"></div>
       <div class="border-t border-gray-100 p-3 flex items-center gap-2">
-        <button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center shrink-0" aria-label="Attach"><span class="material-symbols-outlined text-on-surface-variant">attach_file</span></button>
-        <button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center shrink-0" aria-label="Emoji"><span class="material-symbols-outlined text-on-surface-variant">mood</span></button>
         <input id="bt-chat-input" type="text" placeholder="Type a message..." class="flex-1 bg-surface-container-low rounded-full px-5 py-3 outline-none text-sm" />
-        <button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center shrink-0" aria-label="Voice message"><span class="material-symbols-outlined text-on-surface-variant">mic</span></button>
         <button id="bt-chat-send" class="w-11 h-11 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-primary-dim transition" aria-label="Send"><span class="material-symbols-outlined">send</span></button>
       </div>
     </div>
@@ -56,64 +53,101 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   let activeConvId = params.get('conv');
-  const conversations = BTData.messages.all();
-  if (!activeConvId && conversations.length) activeConvId = conversations[0].id;
+  let conversations = [];
+
+  function relativeTime(iso) {
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return new Date(iso).toLocaleDateString();
+  }
 
   function renderList() {
     document.getElementById('bt-conv-list').innerHTML = conversations.map(c => `
       <button data-conv="${c.id}" class="w-full flex items-center gap-3 p-4 text-left hover:bg-surface-container-low transition ${c.id === activeConvId ? 'bg-blue-50' : ''}">
-        <img src="${c.avatar}" class="w-11 h-11 rounded-full object-cover shrink-0" alt="${c.providerName}" />
+        <img src="${c.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.providerName)}" class="w-11 h-11 rounded-full object-cover shrink-0" alt="${c.providerName}" />
         <div class="min-w-0 flex-1">
           <p class="font-bold text-sm truncate">${c.providerName}</p>
-          <p class="text-xs text-on-surface-variant truncate">${c.lastMessage}</p>
+          <p class="text-xs text-on-surface-variant truncate">${c.lastMessage || ''}</p>
         </div>
-      </button>`).join('');
+        ${c.unreadCount > 0 ? `<span class="w-2.5 h-2.5 bg-primary rounded-full shrink-0"></span>` : ''}
+      </button>`).join('') || `<p class="text-center text-on-surface-variant p-8 text-sm">No conversations yet.</p>`;
 
     document.querySelectorAll('[data-conv]').forEach(btn => btn.addEventListener('click', () => {
       activeConvId = btn.dataset.conv; renderList(); renderChat();
     }));
   }
 
-  function renderChat() {
-    const conv = conversations.find(c => c.id === activeConvId);
-    if (!conv) {
+  async function renderChat() {
+    const thread = document.getElementById('bt-chat-thread');
+    if (!activeConvId) {
       document.getElementById('bt-chat-header').innerHTML = '';
-      document.getElementById('bt-chat-thread').innerHTML = `<p class="text-center text-on-surface-variant py-16">Select a conversation to start chatting.</p>`;
+      thread.innerHTML = `<p class="text-center text-on-surface-variant py-16">Select a conversation to start chatting.</p>`;
+      return;
+    }
+    thread.innerHTML = `<p class="text-center text-on-surface-variant py-16">Loading…</p>`;
+    let conv;
+    try {
+      conv = await CustomerApi.messages.byId(activeConvId);
+    } catch (err) {
+      thread.innerHTML = `<p class="text-center text-error py-16">Could not load this conversation: ${err.message}</p>`;
       return;
     }
     document.getElementById('bt-chat-header').innerHTML = `
-      <img src="${conv.avatar}" class="w-10 h-10 rounded-full object-cover" alt="${conv.providerName}" />
-      <div><p class="font-bold text-sm">${conv.providerName}</p><p class="text-xs text-secondary">Online</p></div>`;
+      <img src="${conv.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(conv.providerName)}" class="w-10 h-10 rounded-full object-cover" alt="${conv.providerName}" />
+      <div><p class="font-bold text-sm">${conv.providerName}</p></div>`;
 
-    document.getElementById('bt-chat-thread').innerHTML = conv.thread.map(m => `
-      <div class="flex ${m.from === 'customer' ? 'justify-end' : 'justify-start'}">
-        <div class="max-w-[75%] ${m.from === 'customer' ? 'bg-primary text-on-primary' : 'bg-surface-container-low text-on-surface'} rounded-2xl px-4 py-2.5">
+    thread.innerHTML = conv.thread.map(m => `
+      <div class="flex ${m.isMine ? 'justify-end' : 'justify-start'}">
+        <div class="max-w-[75%] ${m.isMine ? 'bg-primary text-on-primary' : 'bg-surface-container-low text-on-surface'} rounded-2xl px-4 py-2.5">
           <p class="text-sm">${m.text}</p>
-          <p class="text-[10px] mt-1 opacity-70">${m.time}</p>
+          <p class="text-[10px] mt-1 opacity-70">${relativeTime(m.sentAt)}</p>
         </div>
-      </div>`).join('');
-    const thread = document.getElementById('bt-chat-thread');
+      </div>`).join('') || `<p class="text-center text-on-surface-variant py-16">No messages yet. Say hello!</p>`;
     thread.scrollTop = thread.scrollHeight;
   }
 
   document.getElementById('bt-chat-send').addEventListener('click', sendMessage);
   document.getElementById('bt-chat-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-  function sendMessage() {
+  async function sendMessage() {
     const input = document.getElementById('bt-chat-input');
     const text = input.value.trim();
     if (!text || !activeConvId) return;
-    BTData.messages.send(activeConvId, text);
-    input.value = '';
-    location.reload();
+    input.disabled = true;
+    try {
+      await CustomerApi.messages.send(activeConvId, text);
+      input.value = '';
+      await renderChat();
+      await loadConversations();
+    } catch (err) {
+      alert(err.message || 'Could not send message.');
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
   }
 
-  renderList();
-  renderChat();
+  async function loadConversations() {
+    try {
+      conversations = await CustomerApi.messages.all();
+    } catch (err) {
+      document.getElementById('bt-conv-list').innerHTML = `<p class="text-center text-error p-8 text-sm">${err.message}</p>`;
+      return;
+    }
+    if (!activeConvId && conversations.length) activeConvId = conversations[0].id;
+    renderList();
+  }
+
+  loadConversations().then(renderChat);
 </script>
 </body>
 </html>

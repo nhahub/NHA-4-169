@@ -18,14 +18,15 @@ namespace BayTack.Infrastructure.Persistence.Configurations
 			builder.Property(j => j.Title).HasMaxLength(150).IsRequired();
 			builder.Property(j => j.Description).HasColumnType("nvarchar(max)").IsRequired();
 			builder.Property(j => j.PreferredPayment).HasMaxLength(50);
+			builder.Property(j => j.Budget).HasColumnType("decimal(18,2)");
 			builder.Property(j => j.Status).HasConversion<string>().HasMaxLength(20);
 			builder.Property(j => j.DeleteReason).HasColumnType("nvarchar(max)");
 
 			builder.OwnsOne(j => j.Location, a =>
 			{
 				a.Property(x => x.Details).HasColumnName("LocationDetails").HasColumnType("nvarchar(max)").IsRequired();
-				a.Property(x => x.CityId).HasColumnName("LocationCityId").IsRequired();
-				a.Property(x => x.AreaId).HasColumnName("LocationAreaId");
+				a.Property(x => x.CityId).HasColumnName("LocationCityId").HasMaxLength(450).IsRequired();
+				a.Property(x => x.AreaId).HasColumnName("LocationAreaId").HasMaxLength(450);
 			});
 
 			builder.HasOne<AppUser>().WithMany().HasForeignKey(j => j.CustomerId).OnDelete(DeleteBehavior.Restrict);

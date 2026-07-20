@@ -48,9 +48,6 @@
     <select id="bt-filter-category" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
       <option value="">All Categories</option>
     </select>
-    <select id="bt-filter-location" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
-      <option value="">All Locations</option>
-    </select>
     <select id="bt-filter-price" class="rounded-full border-2 border-outline-variant/30 px-4 py-2 text-sm font-medium bg-white focus:border-primary outline-none">
       <option value="">Any Price</option>
       <option value="0-300">Up to 300 EGP</option>
@@ -82,24 +79,26 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
   const PAGE_SIZE = 6;
   let currentPage = 1;
-  const allServices = BTData.services.all();
+  let allServices = [];
+  let savedIds = new Set();
 
-  /* Populate filter dropdowns dynamically */
-  const categories = [...new Set(allServices.map(s => s.category))];
-  const locations = [...new Set(allServices.map(s => s.location))];
-  document.getElementById('bt-filter-category').innerHTML += categories.map(c => `<option value="${c}">${c}</option>`).join('');
-  document.getElementById('bt-filter-location').innerHTML += locations.map(l => `<option value="${l}">${l}</option>`).join('');
+  function priceOf(s) {
+    // Tiers.basic is the "starting from" price shown on the card.
+    return (s.tiers && s.tiers.basic && s.tiers.basic.price) || 0;
+  }
 
   function cardHtml(s) {
-    const saved = BTData.saved.isSaved(s.id);
+    const saved = savedIds.has(s.id);
+    const price = priceOf(s);
     return `
     <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-2xl transition group">
-      <a href="../service/index.html?id=${s.id}" class="block relative">
-        <img src="${s.image}" class="h-52 w-full object-cover group-hover:scale-105 transition duration-500" alt="${s.title}" />
+      <a href="../service/index.html?id=${s.id}" class="relative h-40 flex items-center justify-center bg-primary/10 group-hover:bg-primary/15 transition">
+        <span class="material-symbols-outlined text-primary" style="font-size:3rem">${s.icon || 'home_repair_service'}</span>
         <span class="absolute top-3 left-3 bg-white/90 text-primary text-xs font-bold px-3 py-1 rounded-full">${s.category}</span>
       </a>
       <button data-fav="${s.id}" class="absolute mt-3 ml-3 bt-fav-btn" aria-label="Save to favorites"></button>
@@ -111,15 +110,14 @@
           </button>
         </div>
         <div class="flex items-center gap-2 mt-3">
-          <img src="${s.avatar}" class="w-7 h-7 rounded-full object-cover" alt="${s.provider}" />
+          <img src="${s.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(s.provider)}" class="w-7 h-7 rounded-full object-cover" alt="${s.provider}" />
           <span class="text-sm text-on-surface-variant">${s.provider}</span>
         </div>
         <div class="flex items-center justify-between mt-4">
-          <div class="flex items-center gap-1 text-sm"><span class="text-yellow-500">⭐</span> ${s.rating} <span class="text-on-surface-variant">(${s.reviews})</span></div>
-          <span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span>${s.delivery}</span>
+          <div class="flex items-center gap-1 text-sm"><span class="text-yellow-500">⭐</span> ${s.rating}</div>
         </div>
         <div class="flex items-center justify-between mt-5">
-          <span class="font-bold text-primary">From ${s.price} EGP</span>
+          <span class="font-bold text-primary">From ${price} EGP</span>
           <a href="../service/index.html?id=${s.id}" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dim transition">Book Now</a>
         </div>
       </div>
@@ -129,7 +127,6 @@
   function applyFilters() {
     const q = document.getElementById('bt-search').value.trim().toLowerCase();
     const cat = document.getElementById('bt-filter-category').value;
-    const loc = document.getElementById('bt-filter-location').value;
     const price = document.getElementById('bt-filter-price').value;
     const rating = parseFloat(document.getElementById('bt-filter-rating').value || 0);
     const sort = document.getElementById('bt-sort').value;
@@ -137,19 +134,18 @@
     let list = allServices.filter(s => {
       if (q && !(`${s.title} ${s.provider} ${s.category}`.toLowerCase().includes(q))) return false;
       if (cat && s.category !== cat) return false;
-      if (loc && s.location !== loc) return false;
       if (rating && s.rating < rating) return false;
       if (price) {
         const [min, max] = price.split('-').map(Number);
-        if (s.price < min || s.price > max) return false;
+        const p = priceOf(s);
+        if (p < min || p > max) return false;
       }
       return true;
     });
 
-    if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
-    else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+    if (sort === 'price-asc') list.sort((a, b) => priceOf(a) - priceOf(b));
+    else if (sort === 'price-desc') list.sort((a, b) => priceOf(b) - priceOf(a));
     else if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
-    else list.sort((a, b) => b.reviews - a.reviews);
 
     render(list);
   }
@@ -166,11 +162,16 @@
     empty.classList.toggle('hidden', list.length > 0);
 
     document.querySelectorAll('.bt-fav-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         e.preventDefault();
         const id = btn.dataset.fav;
-        BTData.saved.toggle(id);
-        applyFilters();
+        try {
+          if (savedIds.has(id)) { await CustomerApi.saved.remove(id); savedIds.delete(id); }
+          else { await CustomerApi.saved.add(id); savedIds.add(id); }
+          applyFilters();
+        } catch (err) {
+          alert(err.message || 'Please sign in to save services.');
+        }
       });
     });
 
@@ -187,13 +188,36 @@
     }
   }
 
-  ['bt-filter-category','bt-filter-location','bt-filter-price','bt-filter-rating','bt-sort'].forEach(id => {
+  ['bt-filter-category','bt-filter-price','bt-filter-rating','bt-sort'].forEach(id => {
     document.getElementById(id).addEventListener('change', () => { currentPage = 1; applyFilters(); });
   });
   document.getElementById('bt-search-btn').addEventListener('click', () => { currentPage = 1; applyFilters(); });
   document.getElementById('bt-search').addEventListener('keydown', (e) => { if (e.key === 'Enter') { currentPage = 1; applyFilters(); } });
 
-  applyFilters();
+  async function init() {
+    const grid = document.getElementById('bt-service-grid');
+    grid.innerHTML = `<p class="col-span-full text-center text-on-surface-variant py-16">Loading services…</p>`;
+    const qParam = new URLSearchParams(window.location.search).get('q');
+    if (qParam) document.getElementById('bt-search').value = qParam;
+    try {
+      allServices = await CustomerApi.services.all();
+    } catch (err) {
+      grid.innerHTML = `<p class="col-span-full text-center text-error py-16">Could not load services: ${err.message}</p>`;
+      return;
+    }
+    // Saved list needs a logged-in customer - if this fails (e.g. guest browsing), just show no hearts filled.
+    try {
+      const saved = await CustomerApi.saved.all();
+      savedIds = new Set(saved.map(s => s.id));
+    } catch (err) { savedIds = new Set(); }
+
+    const categories = [...new Set(allServices.map(s => s.category))];
+    document.getElementById('bt-filter-category').innerHTML += categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    applyFilters();
+  }
+
+  init();
 </script>
 </body>
 </html>

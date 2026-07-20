@@ -106,11 +106,6 @@
           <a href="../app/saved/index.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-surface-container-low transition"><span class="material-symbols-outlined text-primary">favorite</span> <span class="font-medium text-sm">Saved Services</span></a>
         </div>
       </div>
-
-      <div>
-        <h2 class="font-headline font-bold text-xl mb-4">Recent Providers</h2>
-        <div class="bg-white rounded-3xl shadow p-4 space-y-4" id="bt-recent-providers"></div>
-      </div>
     </div>
   </div>
 </main>
@@ -118,56 +113,59 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../app/_shared/customer-data.js"></script>
+<script src="../app/_shared/customer-api.js"></script>
 <script src="../app/_shared/customer-shell.js"></script>
 <script>
   const user = BTData.currentUser();
   document.getElementById('bt-welcome-name').textContent = `Welcome back, ${user.name.split(' ')[0]}! 👋`;
 
-  const requests = BTData.requests.all().filter(r => r.status === 'open');
-  const orders = BTData.orders.all().filter(o => o.status === 'active');
-  const saved = BTData.saved.all();
-  const notifs = BTData.notifications.all().filter(n => !n.read);
+  async function init() {
+    let requests = [], orders = [], saved = [], notifs = [], services = [];
+    try {
+      [requests, orders, saved, notifs, services] = await Promise.all([
+        CustomerApi.requests.all().catch(() => []),
+        CustomerApi.orders.all('active').catch(() => []),
+        CustomerApi.saved.all().catch(() => []),
+        CustomerApi.notifications.all().catch(() => []),
+        CustomerApi.services.all().catch(() => []),
+      ]);
+    } catch (err) { /* individual calls already fall back to [] above */ }
 
-  document.getElementById('stat-requests').textContent = requests.length;
-  document.getElementById('stat-orders').textContent = orders.length;
-  document.getElementById('stat-saved').textContent = saved.length;
-  document.getElementById('stat-notifs').textContent = notifs.length;
+    const openRequests = requests.filter(r => r.status === 'open');
+    const unreadNotifs = notifs.filter(n => !n.read);
 
-  /* Recent activity = merge orders + requests + notifications, sorted */
-  const activity = [
-    ...BTData.orders.all().slice(0, 2).map(o => ({ icon: 'assignment', color: 'text-primary bg-blue-100', text: `Order "${o.title}" is ${o.status}`, time: BTData.formatDate(o.createdAt) })),
-    ...BTData.requests.all().slice(0, 2).map(r => ({ icon: 'edit_note', color: 'text-secondary bg-emerald-100', text: `Request "${r.title}" has ${r.offers.length} offer(s)`, time: BTData.formatDate(r.createdAt) })),
-  ];
-  const activityList = document.getElementById('bt-activity-list');
-  activityList.innerHTML = activity.map(a => `
-    <div class="flex items-center gap-4 p-4">
-      <div class="w-10 h-10 rounded-full ${a.color} flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-lg">${a.icon}</span></div>
-      <div class="flex-1"><p class="text-sm font-medium">${a.text}</p><p class="text-xs text-on-surface-variant">${a.time}</p></div>
-    </div>`).join('') || `<p class="p-6 text-sm text-on-surface-variant">No recent activity yet.</p>`;
+    document.getElementById('stat-requests').textContent = openRequests.length;
+    document.getElementById('stat-orders').textContent = orders.length;
+    document.getElementById('stat-saved').textContent = saved.length;
+    document.getElementById('stat-notifs').textContent = unreadNotifs.length;
 
-  /* Recommended services (first 4) */
-  const services = BTData.services.all().slice(0, 4);
-  document.getElementById('bt-recommended-list').innerHTML = services.map(s => `
-    <a href="../app/service/index.html?id=${s.id}" class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition flex gap-4 p-3">
-      <img src="${s.image}" class="w-24 h-24 rounded-2xl object-cover flex-shrink-0" alt="${s.title}" />
-      <div class="min-w-0">
-        <span class="text-xs font-semibold text-primary">${s.category}</span>
-        <p class="font-headline font-bold text-sm truncate mt-0.5">${s.title}</p>
-        <p class="text-xs text-on-surface-variant mt-1">⭐ ${s.rating} (${s.reviews})</p>
-        <p class="text-sm font-bold text-primary mt-1">From ${s.price} EGP</p>
-      </div>
-    </a>`).join('');
+    /* Recent activity = merge orders + requests. Note: neither OrderResponse nor
+       RequestResponse expose a created/updated timestamp on the backend, so there's
+       no time label to show here (unlike the old mock, which had a fake createdAt). */
+    const activity = [
+      ...orders.slice(0, 2).map(o => ({ icon: 'assignment', color: 'text-primary bg-blue-100', text: `Order "${o.title}" is ${o.status}` })),
+      ...requests.slice(0, 2).map(r => ({ icon: 'edit_note', color: 'text-secondary bg-emerald-100', text: `Request "${r.title}" has ${r.offers.length} offer(s)` })),
+    ];
+    document.getElementById('bt-activity-list').innerHTML = activity.map(a => `
+      <div class="flex items-center gap-4 p-4">
+        <div class="w-10 h-10 rounded-full ${a.color} flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-lg">${a.icon}</span></div>
+        <div class="flex-1"><p class="text-sm font-medium">${a.text}</p></div>
+      </div>`).join('') || `<p class="p-6 text-sm text-on-surface-variant">No recent activity yet.</p>`;
 
-  /* Recent providers */
-  const providers = BTData.providers.all().slice(0, 3);
-  document.getElementById('bt-recent-providers').innerHTML = providers.map(p => `
-    <div class="flex items-center gap-3">
-      <img src="${p.avatar}" class="w-11 h-11 rounded-full object-cover" alt="${p.name}" />
-      <div class="min-w-0 flex-1">
-        <p class="font-bold text-sm truncate">${p.name}</p>
-        <p class="text-xs text-on-surface-variant">${p.category} · ⭐ ${p.rating}</p>
-      </div>
-    </div>`).join('');
+    /* Recommended services (first 4) - real ServiceResponse has an icon, not an image */
+    document.getElementById('bt-recommended-list').innerHTML = services.slice(0, 4).map(s => `
+      <a href="../app/service/index.html?id=${s.id}" class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition flex gap-4 p-3">
+        <div class="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-primary text-3xl">${s.icon || 'home_repair_service'}</span></div>
+        <div class="min-w-0">
+          <span class="text-xs font-semibold text-primary">${s.category}</span>
+          <p class="font-headline font-bold text-sm truncate mt-0.5">${s.title}</p>
+          <p class="text-xs text-on-surface-variant mt-1">⭐ ${s.rating}</p>
+          <p class="text-sm font-bold text-primary mt-1">From ${(s.tiers && s.tiers.basic && s.tiers.basic.price) || 0} EGP</p>
+        </div>
+      </a>`).join('');
+  }
+
+  init();
 </script>
 </body>
 </html>

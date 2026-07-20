@@ -36,100 +36,87 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   const requestId = params.get('id');
+  let request = null;
 
-  function offerCard(o, request) {
+  // OfferResponse only has { id, providerId, amount, currency, durationInDays,
+  // notes, status } - no providerName/avatar/rating/message fields exist on the
+  // backend DTO, so this card shows only what's actually returned. No reject
+  // endpoint exists on the backend (only accept), so Reject isn't wired.
+  function offerCard(o) {
     return `
     <div class="bg-white rounded-3xl shadow p-6 flex flex-col md:flex-row md:items-center gap-5">
-      <img src="${o.avatar}" class="w-16 h-16 rounded-full object-cover shrink-0" alt="${o.providerName}" />
+      <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary shrink-0">
+        <span class="material-symbols-outlined">person</span>
+      </div>
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <p class="font-headline font-bold">${o.providerName}</p>
-          <span class="text-sm text-yellow-500">⭐ ${o.rating}</span>
-        </div>
-        <p class="text-sm text-on-surface-variant mt-1">${o.message}</p>
+        <p class="font-headline font-bold">Provider offer</p>
+        ${o.notes ? `<p class="text-sm text-on-surface-variant mt-1">${o.notes}</p>` : ''}
         <div class="flex items-center gap-4 mt-2 text-sm">
-          <span class="font-bold text-primary">${o.price} EGP</span>
-          <span class="text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span>${o.delivery}</span>
+          <span class="font-bold text-primary">${o.amount} ${o.currency}</span>
+          <span class="text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span>${o.durationInDays} day(s)</span>
+          <span class="text-xs font-bold px-2 py-1 rounded-full bg-surface-container-low text-on-surface-variant">${o.status}</span>
         </div>
       </div>
       <div class="flex md:flex-col gap-2 shrink-0">
-        ${request.status === 'open' ? `
-          <button data-accept="${o.id}" class="px-5 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim transition">Accept</button>
-          <button data-reject="${o.id}" class="px-5 py-2.5 border-2 border-red-200 text-error rounded-full font-bold text-sm hover:bg-red-50 transition">Reject</button>` : ''}
-        <a href="../messages/index.html" class="px-5 py-2.5 border-2 border-outline-variant/30 rounded-full font-bold text-sm hover:border-primary hover:text-primary transition text-center">View Profile</a>
+        ${request.status === 'open' && o.status === 'Pending' ? `
+          <button data-accept="${o.id}" class="px-5 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim transition">Accept</button>` : ''}
       </div>
     </div>`;
   }
 
-  function render() {
-    const request = BTData.requests.byId(requestId);
+  async function render() {
+    const content = document.getElementById('bt-request-content');
+    content.innerHTML = `<p class="text-center text-on-surface-variant py-24">Loading…</p>`;
+    try {
+      request = await CustomerApi.requests.byId(requestId);
+    } catch (err) {
+      content.innerHTML = `<p class="text-center text-error py-24">Could not load this request: ${err.message}</p>`;
+      return;
+    }
     if (!request) {
-      document.getElementById('bt-request-content').innerHTML = `<p class="text-center text-on-surface-variant py-24">Request not found. <a href="../requests/index.html" class="text-primary font-bold">Go back</a></p>`;
+      content.innerHTML = `<p class="text-center text-on-surface-variant py-24">Request not found. <a href="../requests/index.html" class="text-primary font-bold">Go back</a></p>`;
       return;
     }
 
-    document.getElementById('bt-request-content').innerHTML = `
+    content.innerHTML = `
       <a href="../requests/index.html" class="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary mb-6"><span class="material-symbols-outlined text-base">arrow_back</span> Back to My Requests</a>
 
       <div class="bg-white rounded-3xl shadow p-6 md:p-8 mb-8">
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 class="font-headline font-extrabold text-2xl md:text-3xl">${request.title}</h1>
-            <p class="text-sm text-on-surface-variant mt-2">${request.category}${request.subcategory ? ' · ' + request.subcategory : ''}</p>
           </div>
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full ${request.status === 'open' ? 'bg-blue-100 text-primary' : 'bg-gray-100 text-on-surface-variant'}">${request.status === 'open' ? 'Open' : 'Closed'}</span>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-full ${request.status === 'open' ? 'bg-blue-100 text-primary' : request.status === 'assigned' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-on-surface-variant'}">${request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span>
         </div>
 
-        <p class="text-on-surface-variant leading-relaxed mt-5">${request.description}</p>
-
-        <div class="grid sm:grid-cols-3 gap-4 mt-6">
-          <div class="bg-surface-container-low rounded-2xl p-4">
-            <p class="text-xs text-on-surface-variant">Budget</p>
-            <p class="font-bold text-primary text-lg mt-1">${request.budget} EGP</p>
-          </div>
-          <div class="bg-surface-container-low rounded-2xl p-4">
-            <p class="text-xs text-on-surface-variant">Deadline</p>
-            <p class="font-bold text-lg mt-1">${BTData.formatDate(request.deadline)}</p>
-          </div>
+        <div class="grid sm:grid-cols-1 gap-4 mt-6">
           <div class="bg-surface-container-low rounded-2xl p-4">
             <p class="text-xs text-on-surface-variant">Location</p>
-            <p class="font-bold text-lg mt-1">${request.location}</p>
+            <p class="font-bold text-lg mt-1">${request.location || 'Not specified'}</p>
           </div>
         </div>
-
-        ${request.images && request.images.length ? `
-        <div class="mt-6">
-          <p class="text-sm font-semibold mb-2">Uploaded Images</p>
-          <div class="flex gap-3 flex-wrap">${request.images.map(i => `<img src="${i}" class="w-24 h-24 rounded-xl object-cover" />`).join('')}</div>
-        </div>` : ''}
       </div>
 
       <h2 class="font-headline font-bold text-xl mb-4">Offers (${request.offers.length})</h2>
       <div class="space-y-4" id="bt-offers-list">
-        ${request.offers.map(o => offerCard(o, request)).join('') || `<p class="text-on-surface-variant text-sm py-6">No offers yet. Providers will reach out soon.</p>`}
+        ${request.offers.map(offerCard).join('') || `<p class="text-on-surface-variant text-sm py-6">No offers yet. Providers will reach out soon.</p>`}
       </div>
     `;
 
-    document.querySelectorAll('[data-accept]').forEach(btn => btn.addEventListener('click', () => {
-      const offer = request.offers.find(o => o.id === btn.dataset.accept);
-      if (!offer) return;
-      BTData.orders.add({
-        id: BTData.uid('ord'), serviceId: null, title: request.title, provider: offer.providerName,
-        avatar: offer.avatar, price: offer.price, status: 'active', progress: 10, createdAt: new Date().toISOString(),
-        timeline: [{ label: 'Order Placed', done: true }, { label: 'Provider Confirmed', done: true },
-                   { label: 'In Progress', done: false }, { label: 'Completed', done: false }],
-      });
-      BTData.requests.update(request.id, { status: 'closed' });
-      window.location.href = '../orders/index.html';
-    }));
-    document.querySelectorAll('[data-reject]').forEach(btn => btn.addEventListener('click', () => {
-      const updated = { ...request, offers: request.offers.filter(o => o.id !== btn.dataset.reject) };
-      BTData.requests.update(request.id, { offers: updated.offers });
-      render();
+    document.querySelectorAll('[data-accept]').forEach(btn => btn.addEventListener('click', async () => {
+      btn.disabled = true; btn.textContent = 'Accepting…';
+      try {
+        await CustomerApi.requests.acceptOffer(request.id, btn.dataset.accept);
+        window.location.href = '../orders/index.html';
+      } catch (err) {
+        alert(err.message || 'Could not accept this offer.');
+        btn.disabled = false; btn.textContent = 'Accept';
+      }
     }));
   }
 

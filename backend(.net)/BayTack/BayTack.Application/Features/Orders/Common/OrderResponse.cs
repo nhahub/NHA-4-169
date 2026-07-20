@@ -11,7 +11,8 @@ namespace BayTack.Application.Features.Orders.Common
 		string? Avatar,
 		decimal Price,
 		string Status,
-		int Progress)
+		int Progress,
+		DateTime CreatedAt)
 	{
 		/// <summary>"active" | "completed" | "cancelled" bucket used by the ?status= filter.</summary>
 		public static string StatusGroupOf(string status) => status switch

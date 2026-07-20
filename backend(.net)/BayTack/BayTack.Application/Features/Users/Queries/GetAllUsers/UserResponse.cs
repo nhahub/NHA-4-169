@@ -8,6 +8,7 @@ namespace BayTack.Application.Features.Users.Queries.GetAllUsers
 	string Id,
 	string FullName,
 	string? Email,
+	string? PhoneNumber,
 	string Status,
 	IReadOnlyList<string> Roles,
 	DateTime CreatedAt);

@@ -8,21 +8,23 @@ namespace BayTack.Domain.ValueObjects
 	public sealed class Address : ValueObject
 	{
 		public string Details { get; private set; }
-		public int CityId { get; private set; }
-		public int? AreaId { get; private set; }
+		public string CityId { get; private set; }
+		public string? AreaId { get; private set; }
 
-		private Address() { Details = string.Empty; }
+		private Address() { Details = string.Empty; CityId = string.Empty; }
 
-		private Address(string details, int cityId, int? areaId)
+		private Address(string details, string cityId, string? areaId)
 		{
 			if (string.IsNullOrWhiteSpace(details))
 				throw new ArgumentException("Address details are required.", nameof(details));
+			if (string.IsNullOrWhiteSpace(cityId))
+				throw new ArgumentException("A city is required.", nameof(cityId));
 			Details = details;
 			CityId = cityId;
 			AreaId = areaId;
 		}
 
-		public static Address Create(string details, int cityId, int? areaId = null) => new(details, cityId, areaId);
+		public static Address Create(string details, string cityId, string? areaId = null) => new(details, cityId, areaId);
 
 		protected override IEnumerable<object?> GetEqualityComponents()
 		{

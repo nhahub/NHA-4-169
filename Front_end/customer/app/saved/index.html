@@ -42,34 +42,43 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
-  function render() {
-    const savedIds = BTData.saved.all();
-    const services = BTData.services.all().filter(s => savedIds.includes(s.id));
+  // Note: GET /customer/saved returns a different Service shape than GET /services
+  // (name/minPrice/maxPrice/currency, no provider/avatar/rating/icon) - see
+  // BayTack-Customer-Portal-Audit.md. Card layout below only shows what this
+  // endpoint actually returns.
+  async function render() {
+    const grid = document.getElementById('bt-grid');
+    grid.innerHTML = `<p class="col-span-full text-center text-on-surface-variant py-16">Loading saved services…</p>`;
+    document.getElementById('bt-empty').classList.add('hidden');
+
+    let services;
+    try {
+      services = await CustomerApi.saved.all();
+    } catch (err) {
+      grid.innerHTML = `<p class="col-span-full text-center text-error py-16">Could not load saved services: ${err.message}</p>`;
+      return;
+    }
+
     document.getElementById('bt-empty').classList.toggle('hidden', services.length > 0);
-    document.getElementById('bt-grid').innerHTML = services.map(s => `
-      <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition">
-        <a href="../service/index.html?id=${s.id}" class="block relative">
-          <img src="${s.image}" class="h-48 w-full object-cover" alt="${s.title}" />
-          <span class="absolute top-3 left-3 bg-white/90 text-primary text-xs font-bold px-3 py-1 rounded-full">${s.category}</span>
-        </a>
-        <div class="p-6">
-          <div class="flex justify-between items-start gap-2">
-            <a href="../service/index.html?id=${s.id}"><h3 class="font-headline font-bold text-lg leading-snug hover:text-primary transition">${s.title}</h3></a>
-            <button data-remove="${s.id}" aria-label="Remove from favorites"><span class="material-symbols-outlined text-error" style="font-variation-settings:'FILL' 1">favorite</span></button>
-          </div>
-          <div class="flex items-center gap-2 mt-3"><img src="${s.avatar}" class="w-7 h-7 rounded-full object-cover" alt="${s.provider}" /><span class="text-sm text-on-surface-variant">${s.provider}</span></div>
-          <div class="flex items-center justify-between mt-5">
-            <span class="font-bold text-primary">From ${s.price} EGP</span>
-            <a href="../service/index.html?id=${s.id}" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dim transition">View</a>
-          </div>
+    grid.innerHTML = services.map(s => `
+      <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition p-6">
+        <div class="flex justify-between items-start gap-2">
+          <a href="../service/index.html?id=${s.id}"><h3 class="font-headline font-bold text-lg leading-snug hover:text-primary transition">${s.name}</h3></a>
+          <button data-remove="${s.id}" aria-label="Remove from favorites"><span class="material-symbols-outlined text-error" style="font-variation-settings:'FILL' 1">favorite</span></button>
+        </div>
+        ${s.description ? `<p class="text-sm text-on-surface-variant mt-2 line-clamp-2">${s.description}</p>` : ''}
+        <div class="flex items-center justify-between mt-5">
+          <span class="font-bold text-primary">${s.minPrice}${s.maxPrice && s.maxPrice !== s.minPrice ? `–${s.maxPrice}` : ''} ${s.currency}</span>
+          <a href="../service/index.html?id=${s.id}" class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dim transition">View</a>
         </div>
       </div>`).join('');
 
-    document.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => {
-      BTData.saved.toggle(btn.dataset.remove);
-      render();
+    document.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', async () => {
+      try { await CustomerApi.saved.remove(btn.dataset.remove); render(); }
+      catch (err) { alert(err.message || 'Could not remove this service.'); }
     }));
   }
   render();

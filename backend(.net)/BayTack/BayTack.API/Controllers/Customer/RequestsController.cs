@@ -3,6 +3,7 @@ using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Jobs.Commands.AcceptOffer;
 using BayTack.Application.Features.Jobs.Commands.CreateRequest;
 using BayTack.Application.Features.Jobs.Commands.DeleteRequest;
+using BayTack.Application.Features.Jobs.Commands.RejectOffer;
 using BayTack.Application.Features.Jobs.Queries.GetMyRequests;
 using BayTack.Application.Features.Jobs.Queries.GetRequestById;
 using Microsoft.AspNetCore.Authorization;
@@ -16,8 +17,8 @@ namespace BayTack.API.Controllers.Customer
         string Title,
         string Description,
         string LocationDetails,
-        int CityId,
-        int? AreaId,
+        string CityId,
+        string? AreaId,
         decimal? Budget,
         DateTime? Deadline,
         string? PreferredPayment);
@@ -100,6 +101,18 @@ namespace BayTack.API.Controllers.Customer
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new AcceptOfferCommand(id, offerId, userId), ct);
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+		[HttpPost("{id}/offers/{offerId}/reject")]
+		[Authorize(Policy = "Permissions.Requests.CustomerRejectOffer")] // صلاحية رفض العروض المقدمة
+		public async Task<IActionResult> RejectOffer(string id, string offerId, CancellationToken ct)
+		{
+			var userId = _currentUser.UserId;
+			if (userId is null) return Unauthorized();
+
+			var result = await Sender.Send(new RejectOfferCommand(id, offerId, userId), ct);
 			var response = result.ToApiResponse();
 			return StatusCode(response.StatusCode, response);
 		}

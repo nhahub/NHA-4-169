@@ -8,7 +8,8 @@ public sealed record CreateProviderProfileCommand(
     string UserId,
     ProviderType ProviderType,
     int YearsOfExperience,
-    string? Bio) : ICommand<CreateProviderProfileResponse>;
+    string? Bio,
+    string? CategoryId) : ICommand<CreateProviderProfileResponse>;
 
 public sealed record CreateProviderProfileResponse(
     string ProviderProfileId,

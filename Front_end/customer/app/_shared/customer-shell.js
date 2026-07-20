@@ -164,9 +164,20 @@
 
     const logoutBtn = document.getElementById('bt-logout-btn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
+      logoutBtn.addEventListener('click', async () => {
+        try { if (window.CustomerApi) await CustomerApi.auth.logout(); }
+        catch (err) { /* still clear local session below even if the network call fails */ }
         localStorage.removeItem('ek_user_session');
         window.location.href = `${SITE}index.html`;
+      });
+    }
+
+    const headerSearch = document.getElementById('bt-header-search');
+    if (headerSearch) {
+      headerSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && headerSearch.value.trim()) {
+          window.location.href = `${R}app/browse/index.html?q=${encodeURIComponent(headerSearch.value.trim())}`;
+        }
       });
     }
   }

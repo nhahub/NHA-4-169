@@ -26,7 +26,9 @@ namespace BayTack.Application.Features.Jobs.Commands.CreateRequest
                     request.Title,
                     request.Description,
                     location,
-                    request.PreferredPayment);
+                    request.PreferredPayment,
+                    request.Budget,
+                    request.Deadline);
             }
             catch (ArgumentException ex)
             {

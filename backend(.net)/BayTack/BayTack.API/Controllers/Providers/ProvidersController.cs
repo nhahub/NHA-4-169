@@ -7,6 +7,8 @@ using BayTack.Application.Features.Providers.Commands.SetAvailability;
 using BayTack.Application.Features.Providers.Commands.SetWorkshopAddress;
 using BayTack.Application.Features.Providers.Commands.UpdateProviderBio;
 using BayTack.Application.Features.Providers.Commands.VerifyProvider;
+using BayTack.Application.Features.Providers.Queries.GetMyOpenJobs;
+using BayTack.Application.Features.Providers.Queries.GetMyProviderProfile;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
 using BayTack.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +19,27 @@ namespace BayTack.API.Controllers.Providers
 	[Authorize]
 	public class ProvidersController : ApiController
 	{
+		// NOTE: must be declared before "{id}" below so routing doesn't treat "me" as an :id value.
+		[HttpGet("me")]
+		[Authorize(Policy = "Permissions.Providers.ProfileView")]
+		public async Task<IActionResult> GetMyProfile()
+		{
+			var userId = CurrentUserId ?? throw new InvalidOperationException("User ID is required.");
+			var result = await Sender.Send(new GetMyProviderProfileQuery(userId));
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
+		[HttpGet("me/requests")]
+		[Authorize(Policy = "Permissions.Providers.ProfileView")]
+		public async Task<IActionResult> GetMyOpenJobs()
+		{
+			var userId = CurrentUserId ?? throw new InvalidOperationException("User ID is required.");
+			var result = await Sender.Send(new GetMyOpenJobsQuery(userId));
+			var response = result.ToApiResponse();
+			return StatusCode(response.StatusCode, response);
+		}
+
 		[HttpPost]
 		[Authorize(Policy = "Permissions.Providers.ProfileManage")] // إنشاء البروفايل لأول مرة (متاح للـ Provider)
 		public async Task<IActionResult> Create([FromBody] CreateProviderProfileRequest request)
@@ -25,7 +48,8 @@ namespace BayTack.API.Controllers.Providers
 				request.UserId,
 				request.ProviderType,
 				request.YearsOfExperience,
-				request.Bio);
+				request.Bio,
+				request.CategoryId);
 
 			var result = await Sender.Send(command);
 			var response = result.ToApiResponse();
@@ -114,7 +138,8 @@ namespace BayTack.API.Controllers.Providers
 		string UserId,
 		ProviderType ProviderType,
 		int YearsOfExperience,
-		string? Bio);
+		string? Bio,
+		string? CategoryId);
 
 	public sealed record UpdateProviderBioRequest(string Bio, string UpdatedBy);
 
@@ -124,5 +149,5 @@ namespace BayTack.API.Controllers.Providers
 
 	public sealed record SetAvailabilityRequest(DayOfWeek DayOfWeek, TimeSpan StartTime, TimeSpan EndTime);
 
-	public sealed record SetWorkshopAddressRequest(string Details, int CityId, int? AreaId, string UpdatedBy);
+	public sealed record SetWorkshopAddressRequest(string Details, string CityId, string? AreaId, string UpdatedBy);
 }

@@ -22,8 +22,8 @@ namespace BayTack.Infrastructure.Persistence.Configurations.Provider
 			builder.OwnsOne(p => p.WorkshopAddress, a =>
 			{
 				a.Property(x => x.Details).HasColumnName("WorkshopAddressDetails").HasColumnType("nvarchar(max)");
-				a.Property(x => x.CityId).HasColumnName("WorkshopCityId");
-				a.Property(x => x.AreaId).HasColumnName("WorkshopAreaId");
+				a.Property(x => x.CityId).HasColumnName("WorkshopCityId").HasMaxLength(450);
+				a.Property(x => x.AreaId).HasColumnName("WorkshopAreaId").HasMaxLength(450);
 			});
 
 			builder.HasOne<AppUser>().WithOne().HasForeignKey<ProviderProfile>(p => p.UserId).OnDelete(DeleteBehavior.Cascade);

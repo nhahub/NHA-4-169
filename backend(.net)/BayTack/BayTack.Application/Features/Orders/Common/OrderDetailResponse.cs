@@ -18,6 +18,7 @@ namespace BayTack.Application.Features.Orders.Common
 		string Currency,
 		string Status,
 		int Progress,
+		DateTime CreatedAt,
 		DateTime StartDate,
 		DateTime? EndDate,
 		IReadOnlyList<OrderHistoryEntry> History);

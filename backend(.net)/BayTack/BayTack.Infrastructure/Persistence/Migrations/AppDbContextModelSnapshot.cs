@@ -761,6 +761,45 @@ namespace BayTack.Infrastructure.Persistence.Migrations
                     b.ToTable("AuditLogs");
                 });
 
+            modelBuilder.Entity("BayTack.Domain.Entities.SystemEntities.PlatformSettings", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DefaultUserRole")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("MaintenanceMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PlatformActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("PlatformFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SupportEmail")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlatformSettings");
+                });
+
             modelBuilder.Entity("BayTack.Domain.Entities.UserFeatures.Favorite", b =>
                 {
                     b.Property<string>("Id")

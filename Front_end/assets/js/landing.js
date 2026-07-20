@@ -13,7 +13,7 @@
 const BayTack = (() => {
 
   // Talks to the real BayTack.API backend. Swap to http://localhost:5025/api for local dev.
-  const API_BASE_URL = 'https://baytack.runasp.net/api';
+    const API_BASE_URL = 'http://localhost:5025/api';
 
   /* ── Modal IDs ── */
   const MODALS = {

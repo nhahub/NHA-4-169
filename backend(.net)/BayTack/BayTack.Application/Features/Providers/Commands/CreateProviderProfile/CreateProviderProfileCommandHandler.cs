@@ -23,7 +23,8 @@ public sealed class CreateProviderProfileCommandHandler(
             command.UserId,
             command.ProviderType,
             command.YearsOfExperience,
-            command.Bio);
+            command.Bio,
+            command.CategoryId);
 
         providerProfiles.Add(newProfile);
         await unitOfWork.SaveChangesAsync(cancellationToken);

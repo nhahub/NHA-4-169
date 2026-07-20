@@ -47,16 +47,18 @@
         </div>
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold ml-1 mb-1 block">Category</label>
-            <select required id="req-category" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
-              <option value="">Select category</option>
-              <option>Plumbing</option><option>Electrical</option><option>AC Repair</option>
-              <option>Cleaning</option><option>Carpentry</option><option>Painting</option><option>Other</option>
+            <label class="text-sm font-semibold ml-1 mb-1 block">Service</label>
+            <select required id="req-service" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+              <option value="">Loading services…</option>
             </select>
           </div>
           <div>
-            <label class="text-sm font-semibold ml-1 mb-1 block">Subcategory</label>
-            <input id="req-subcategory" type="text" placeholder="e.g. Faucet repair" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+            <label class="text-sm font-semibold ml-1 mb-1 block">Preferred Payment</label>
+            <select id="req-payment" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+              <option value="">No preference</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+            </select>
           </div>
         </div>
         <div>
@@ -71,12 +73,12 @@
       <h2 class="font-headline font-bold text-lg mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">payments</span> Budget &amp; Timing</h2>
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
-          <label class="text-sm font-semibold ml-1 mb-1 block">Budget (EGP)</label>
-          <input required id="req-budget" type="number" min="0" placeholder="e.g. 300" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+          <label class="text-sm font-semibold ml-1 mb-1 block">Budget (EGP) <span class="text-on-surface-variant font-normal">(optional)</span></label>
+          <input id="req-budget" type="number" min="0" placeholder="e.g. 300" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
         </div>
         <div>
-          <label class="text-sm font-semibold ml-1 mb-1 block">Deadline</label>
-          <input required id="req-deadline" type="date" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+          <label class="text-sm font-semibold ml-1 mb-1 block">Deadline <span class="text-on-surface-variant font-normal">(optional)</span></label>
+          <input id="req-deadline" type="date" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
         </div>
       </div>
     </div>
@@ -84,25 +86,22 @@
     <!-- Section: Location -->
     <div>
       <h2 class="font-headline font-bold text-lg mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Location</h2>
-      <input required id="req-location" type="text" placeholder="e.g. Tanta, Gharbia" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
-    </div>
-
-    <!-- Section: Attachments -->
-    <div>
-      <h2 class="font-headline font-bold text-lg mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">attach_file</span> Images &amp; Attachments</h2>
-      <label class="cursor-pointer block">
-        <div class="border-2 border-dashed border-outline-variant rounded-2xl p-8 text-center hover:border-primary hover:bg-primary/5 transition-all">
-          <span class="material-symbols-outlined text-outline text-3xl block mb-2">add_a_photo</span>
-          <span class="text-sm font-semibold text-on-surface-variant" id="req-file-label">Click to upload photos or files (optional)</span>
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="text-sm font-semibold ml-1 mb-1 block">City</label>
+          <select required id="req-city" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+            <option value="">Loading cities…</option>
+          </select>
         </div>
-        <input type="file" multiple accept="image/*,.pdf" class="hidden" id="req-files" />
-      </label>
-    </div>
-
-    <!-- Section: Required skills -->
-    <div>
-      <h2 class="font-headline font-bold text-lg mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">construction</span> Required Skills</h2>
-      <input id="req-skills" type="text" placeholder="e.g. Plumbing, Faucet repair (comma separated)" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
+        <div>
+          <label class="text-sm font-semibold ml-1 mb-1 block">Area <span class="text-on-surface-variant font-normal">(optional)</span></label>
+          <select id="req-area" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+            <option value="">Select a city first</option>
+          </select>
+        </div>
+      </div>
+      <label class="text-sm font-semibold ml-1 mb-1 block">Address Details</label>
+      <input required id="req-location" type="text" placeholder="e.g. Street name, building number, floor" class="w-full px-5 py-3.5 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" />
     </div>
 
     <button type="submit" class="w-full bg-primary text-on-primary py-4 rounded-full font-bold text-lg hover:bg-primary-dim transition shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
@@ -114,31 +113,73 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
-  document.getElementById('req-files').addEventListener('change', (e) => {
-    const label = document.getElementById('req-file-label');
-    label.textContent = e.target.files.length ? `${e.target.files.length} file(s) selected` : 'Click to upload photos or files (optional)';
+  let cities = [];
+
+  async function loadServices() {
+    const select = document.getElementById('req-service');
+    try {
+      const services = await CustomerApi.services.all();
+      select.innerHTML = '<option value="">Select a service</option>' +
+        services.map(s => `<option value="${s.id}">${s.title} (${s.category})</option>`).join('');
+    } catch (err) {
+      select.innerHTML = '<option value="">Could not load services</option>';
+    }
+  }
+
+  async function loadCities() {
+    const citySelect = document.getElementById('req-city');
+    try {
+      cities = await CustomerApi.locations.cities();
+      citySelect.innerHTML = '<option value="">Select a city</option>' +
+        cities.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    } catch (err) {
+      citySelect.innerHTML = '<option value="">Could not load cities</option>';
+    }
+  }
+
+  document.getElementById('req-city').addEventListener('change', (e) => {
+    const areaSelect = document.getElementById('req-area');
+    const city = cities.find(c => c.id === e.target.value);
+    if (!city || !city.areas.length) {
+      areaSelect.innerHTML = '<option value="">No areas for this city</option>';
+      return;
+    }
+    areaSelect.innerHTML = '<option value="">Select an area</option>' +
+      city.areas.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
   });
 
-  document.getElementById('bt-request-form').addEventListener('submit', (e) => {
+  document.getElementById('bt-request-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const skills = document.getElementById('req-skills').value.split(',').map(s => s.trim()).filter(Boolean);
-    const request = {
-      id: BTData.uid('req'),
+    const budgetValue = document.getElementById('req-budget').value;
+    const deadlineValue = document.getElementById('req-deadline').value;
+    const payload = {
+      serviceId: document.getElementById('req-service').value,
       title: document.getElementById('req-title').value,
-      category: document.getElementById('req-category').value,
-      subcategory: document.getElementById('req-subcategory').value,
       description: document.getElementById('req-description').value,
-      budget: Number(document.getElementById('req-budget').value),
-      deadline: new Date(document.getElementById('req-deadline').value).toISOString(),
-      location: document.getElementById('req-location').value,
-      images: [],
-      skills, status: 'open', createdAt: new Date().toISOString(), offers: [],
+      locationDetails: document.getElementById('req-location').value,
+      cityId: document.getElementById('req-city').value,
+      areaId: document.getElementById('req-area').value || null,
+      budget: budgetValue ? Number(budgetValue) : null,
+      deadline: deadlineValue ? new Date(deadlineValue).toISOString() : null,
+      preferredPayment: document.getElementById('req-payment').value || null,
     };
-    BTData.requests.add(request);
-    window.location.href = '../requests/index.html';
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    try {
+      await CustomerApi.requests.create(payload);
+      window.location.href = '../requests/index.html';
+    } catch (err) {
+      alert(err.message || 'Could not submit your request. Please check all fields and try again.');
+      btn.disabled = false; btn.innerHTML = 'Submit Request <span class="material-symbols-outlined">arrow_forward</span>';
+    }
   });
+
+  loadServices();
+  loadCities();
 </script>
 </body>
 </html>

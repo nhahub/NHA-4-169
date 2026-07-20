@@ -16,6 +16,8 @@ namespace BayTack.Domain.Entities.JobAggregate
 		public string Description { get; private set; } = string.Empty;
 		public Address Location { get; private set; } = null!;
 		public string? PreferredPayment { get; private set; }
+		public decimal? Budget { get; private set; }
+		public DateTime? Deadline { get; private set; }
 		public JobStatus Status { get; private set; } = JobStatus.Open;
 		private readonly List<JobImage> _images = new();
 		public IReadOnlyCollection<JobImage> Images => _images.AsReadOnly();
@@ -23,7 +25,7 @@ namespace BayTack.Domain.Entities.JobAggregate
 		public IReadOnlyCollection<ProviderBid> Bids => _bids.AsReadOnly();
 		private CustomerJob() { }
 		public static CustomerJob Create(string customerId, string serviceId, string title, string description,
-			Address location, string? preferredPayment = null)
+			Address location, string? preferredPayment = null, decimal? budget = null, DateTime? deadline = null)
 		{
 			if (string.IsNullOrWhiteSpace(title))
 				throw new ArgumentException("Title is required.", nameof(title));
@@ -36,6 +38,8 @@ namespace BayTack.Domain.Entities.JobAggregate
 				Description = description,
 				Location = location,
 				PreferredPayment = preferredPayment,
+				Budget = budget,
+				Deadline = deadline,
 				Status = JobStatus.Open
 			};
 		}

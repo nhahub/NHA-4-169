@@ -37,9 +37,6 @@
     <div class="bg-white rounded-3xl shadow p-6 text-center h-fit">
       <div class="relative w-28 h-28 mx-auto">
         <img id="bt-profile-avatar" src="https://i.pravatar.cc/200?img=68" class="w-28 h-28 rounded-full object-cover" alt="Profile photo" />
-        <button class="absolute bottom-0 right-0 w-9 h-9 bg-primary text-on-primary rounded-full flex items-center justify-center border-4 border-white" aria-label="Change photo">
-          <span class="material-symbols-outlined text-base">photo_camera</span>
-        </button>
       </div>
       <p class="font-headline font-bold text-xl mt-4" id="bt-profile-name">—</p>
       <p class="text-on-surface-variant text-sm">Customer since 2026</p>
@@ -54,7 +51,7 @@
       <form id="bt-personal-form" class="bg-white rounded-3xl shadow p-6 space-y-4">
         <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">person</span> Personal Information</h2>
         <div class="grid sm:grid-cols-2 gap-4">
-          <div><label class="text-sm font-semibold ml-1 mb-1 block">Full Name</label><input id="p-name" type="text" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
+          <div><label class="text-sm font-semibold ml-1 mb-1 block">Full Name</label><input id="p-name" type="text" required class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
           <div><label class="text-sm font-semibold ml-1 mb-1 block">Phone Number</label><input id="p-phone" type="tel" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
         </div>
         <button type="submit" class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:bg-primary-dim transition">Save Changes</button>
@@ -63,28 +60,13 @@
       <!-- Contact info -->
       <div class="bg-white rounded-3xl shadow p-6 space-y-4">
         <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">contact_mail</span> Contact Information</h2>
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div><label class="text-sm font-semibold ml-1 mb-1 block">Email</label><input id="p-email" type="email" placeholder="you@example.com" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
-          <div><label class="text-sm font-semibold ml-1 mb-1 block">Alternate Phone</label><input type="tel" placeholder="Optional" class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none" /></div>
-        </div>
+        <div><label class="text-sm font-semibold ml-1 mb-1 block">Email</label><input id="p-email" type="email" disabled class="w-full px-5 py-3 bg-surface-container-low rounded-2xl outline-none border-none opacity-70 cursor-not-allowed" /><p class="text-xs text-on-surface-variant mt-1 ml-1">Changing your email isn't available yet.</p></div>
       </div>
 
       <!-- Addresses -->
       <div class="bg-white rounded-3xl shadow p-6 space-y-4">
-        <div class="flex justify-between items-center">
-          <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Saved Locations</h2>
-          <button class="text-primary font-bold text-sm hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">add</span> Add</button>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-3">
-          <div class="bg-surface-container-low rounded-2xl p-4 flex items-start gap-3">
-            <span class="material-symbols-outlined text-primary">home</span>
-            <div><p class="font-bold text-sm">Home</p><p class="text-xs text-on-surface-variant mt-1">Tanta University Dormitory, Tanta, Gharbia</p></div>
-          </div>
-          <div class="bg-surface-container-low rounded-2xl p-4 flex items-start gap-3 opacity-60">
-            <span class="material-symbols-outlined text-outline-variant">add_location</span>
-            <div><p class="font-bold text-sm text-on-surface-variant">Add another address</p></div>
-          </div>
-        </div>
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Saved Locations</h2>
+        <p class="text-sm text-on-surface-variant">Saved addresses aren't available yet - coming soon.</p>
       </div>
 
       <!-- Payment methods -->
@@ -94,7 +76,14 @@
           <div class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary">payments</span><p class="font-bold text-sm">Cash on Delivery</p></div>
           <span class="text-xs font-bold text-secondary bg-emerald-100 px-3 py-1 rounded-full">Default</span>
         </div>
-        <button class="text-primary font-bold text-sm hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-base">add</span> Add Payment Method</button>
+        <p class="text-xs text-on-surface-variant">Additional payment methods aren't available yet.</p>
+      </div>
+
+      <!-- Delete account -->
+      <div class="bg-white rounded-3xl shadow p-6 border-2 border-red-100">
+        <h2 class="font-headline font-bold text-lg flex items-center gap-2 text-error"><span class="material-symbols-outlined">warning</span> Delete Account</h2>
+        <p class="text-sm text-on-surface-variant mt-2">This will deactivate your account. This action cannot be undone from here - contact support to reactivate.</p>
+        <button id="bt-delete-account" class="mt-4 px-6 py-3 border-2 border-error text-error rounded-full font-bold text-sm hover:bg-red-50 transition">Delete My Account</button>
       </div>
 
       <!-- Security -->
@@ -119,28 +108,72 @@
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
 <script>
   const user = BTData.currentUser();
   document.getElementById('bt-profile-name').textContent = user.name;
-  document.getElementById('p-name').value = user.name;
-  document.getElementById('p-phone').value = user.phone;
-  document.getElementById('bt-profile-orders').textContent = BTData.orders.all().length;
-  document.getElementById('bt-profile-requests').textContent = BTData.requests.all().length;
+  document.getElementById('p-email').value = user.email;
 
-  document.getElementById('bt-personal-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const session = BTData.getSession() || {};
-    session.name = document.getElementById('p-name').value;
-    session.phone = document.getElementById('p-phone').value;
-    localStorage.setItem('ek_user_session', JSON.stringify(session));
-    alert('Profile updated successfully!');
-    location.reload();
+  // Load the real profile (name/phone) from the backend rather than trusting the
+  // login-session snapshot, which can go stale.
+  CustomerApi.profile.get().then(profile => {
+    document.getElementById('p-name').value = profile.fullName;
+    document.getElementById('p-phone').value = profile.phoneNumber || '';
+  }).catch(() => {
+    document.getElementById('p-name').value = user.name;
+    document.getElementById('p-phone').value = user.phone;
   });
 
-  document.getElementById('bt-security-form').addEventListener('submit', (e) => {
+  Promise.all([
+    CustomerApi.orders.all().catch(() => []),
+    CustomerApi.requests.all().catch(() => []),
+  ]).then(([orders, requests]) => {
+    document.getElementById('bt-profile-orders').textContent = orders.length;
+    document.getElementById('bt-profile-requests').textContent = requests.length;
+  });
+
+  document.getElementById('bt-personal-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    alert('Password updated successfully!');
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try {
+      await CustomerApi.profile.update(document.getElementById('p-name').value, document.getElementById('p-phone').value);
+      alert('Profile updated successfully!');
+    } catch (err) {
+      alert(err.message || 'Could not update your profile.');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('bt-delete-account').addEventListener('click', async () => {
+    if (!confirm('Are you sure you want to delete your account? This cannot be undone from here.')) return;
+    try {
+      await CustomerApi.profile.remove();
+      localStorage.removeItem('ek_user_session');
+      window.location.href = window.BT_SITE_ROOT + 'index.html';
+    } catch (err) {
+      alert(err.message || 'Could not delete your account.');
+    }
+  });
+
+  document.getElementById('bt-security-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const currentPassword = document.getElementById('bt-current-password').value;
+    const newPassword = document.getElementById('bt-new-password').value;
+    if (!currentPassword || !newPassword) { alert('Please fill in both password fields.'); return; }
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try {
+      await CustomerApi.auth.changePassword(currentPassword, newPassword);
+      alert('Password updated successfully!');
+      e.target.reset();
+    } catch (err) {
+      alert(err.message || 'Could not update your password.');
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   function toggleProfilePw(id, btn) {

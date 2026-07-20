@@ -1,4 +1,5 @@
 ﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Common.Security;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,7 +31,10 @@ namespace BayTack.Infrastructure.Services.Authentication
 			};
 			foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));
 
-			foreach (var perm in permissions) claims.Add(new Claim("Permission", perm));
+			// BUG FIX: was `new Claim("Permission", perm)` - capital P, while the authorization
+			// policies require Permissions.ClaimType ("permission", lowercase). Claim types are
+			// exact-string matches, so no permission claim issued here ever matched any policy.
+			foreach (var perm in permissions) claims.Add(new Claim(Permissions.ClaimType, perm));
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));
 

@@ -1,3 +1,4 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
@@ -9,11 +10,13 @@ namespace BayTack.Application.Features.Categories.Commands.ToggleCategoryActive
 	{
 		private readonly IRepository<ServiceCategory, string> _categories;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserService _currentUser;
 
-		public ToggleCategoryActiveCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork)
+		public ToggleCategoryActiveCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
 		{
 			_categories = categories;
 			_unitOfWork = unitOfWork;
+			_currentUser = currentUser;
 		}
 
 		public async Task<Result<CategoryResponse>> Handle(ToggleCategoryActiveCommand request, CancellationToken cancellationToken)
@@ -22,7 +25,7 @@ namespace BayTack.Application.Features.Categories.Commands.ToggleCategoryActive
 			if (category is null)
 				return Result<CategoryResponse>.NotFound($"Category '{request.Id}' not found");
 
-			category.ToggleActive(updatedBy: null); // TODO: wire real current-user once JWT auth exists
+			category.ToggleActive(updatedBy: _currentUser.UserId);
 			_categories.Update(category);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 

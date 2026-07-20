@@ -51,6 +51,7 @@ namespace BayTack.Infrastructure.Persistence
 
 		public DbSet<Attachment> Attachments => Set<Attachment>();
 		public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+		public DbSet<PlatformSettings> PlatformSettings => Set<PlatformSettings>();
 
        // public object Conversations { get; internal set; }
         public DbSet<Conversation> Conversations => Set<Conversation>();

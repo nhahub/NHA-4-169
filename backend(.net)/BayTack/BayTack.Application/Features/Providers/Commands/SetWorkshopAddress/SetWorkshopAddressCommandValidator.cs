@@ -8,7 +8,7 @@ public sealed class SetWorkshopAddressCommandValidator : AbstractValidator<SetWo
     {
         RuleFor(c => c.ProviderProfileId).NotEmpty();
         RuleFor(c => c.Details).NotEmpty().MaximumLength(500);
-        RuleFor(c => c.CityId).GreaterThan(0);
+        RuleFor(c => c.CityId).NotEmpty();
         RuleFor(c => c.UpdatedBy).NotEmpty();
     }
 }

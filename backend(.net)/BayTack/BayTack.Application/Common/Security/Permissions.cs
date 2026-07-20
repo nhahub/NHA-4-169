@@ -21,6 +21,7 @@
 		public const string RequestsCustomerCreate = "requests.customer_create";
 		public const string RequestsCustomerDelete = "requests.customer_delete";
 		public const string RequestsCustomerAcceptOffer = "requests.customer_accept_offer";
+		public const string RequestsCustomerRejectOffer = "requests.customer_reject_offer";
 		#endregion
 
 		#region Customer Orders
@@ -103,6 +104,9 @@
 		/// </summary>
 		public static IReadOnlyList<PermissionDefinition> All { get; } = new List<PermissionDefinition>
 		{
+        // Auth & Profile General
+        new(AuthGeneral, "General Account Self-Service", "Auth & Profile"),
+
         // Categories
         new(CategoriesView, "View Categories", "Categories"),
 		new(CategoriesCreate, "Create Category", "Categories"),
@@ -114,6 +118,7 @@
 		new(RequestsCustomerCreate, "Create Customer Request", "Requests"),
 		new(RequestsCustomerDelete, "Delete Customer Request", "Requests"),
 		new(RequestsCustomerAcceptOffer, "Accept Offer for Request", "Requests"),
+		new(RequestsCustomerRejectOffer, "Reject Offer for Request", "Requests"),
 
         // Orders
         new(OrdersCustomerView, "View Customer Orders", "Orders"),
@@ -185,12 +190,11 @@
 		/// </summary>
 		public static List<string> GetAdminPermissions()
 		{
-			var adminPermissions = new List<string>();
-			foreach (var permission in All)
-			{
-				adminPermissions.Add(permission.Label);
-			}
-			return adminPermissions;
+			// BUG FIX: this used to return permission.Label ("View Categories") instead of
+			// permission.Id ("categories.view") - the seeded Admin role's claims held display
+			// text instead of the actual permission ids, so no [Authorize(Policy=...)] check
+			// could ever match for Admin either, same failure as every other role.
+			return All.Select(p => p.Id).ToList();
 		}
 
 		/// <summary>
@@ -200,11 +204,13 @@
 		{
 			return new List<string>
 		{
+			AuthGeneral,
 			CategoriesView,
 			RequestsCustomerView,
 			RequestsCustomerCreate,
 			RequestsCustomerDelete,
 			RequestsCustomerAcceptOffer,
+			RequestsCustomerRejectOffer,
 			OrdersCustomerView,
 			OrdersCustomerCreate,
 			OrdersCustomerCancel,
@@ -231,6 +237,7 @@
 		{
 			return new List<string>
 		{
+			AuthGeneral,
 			CategoriesView,
 			JobsViewBids,
 			BidsProviderSubmit,

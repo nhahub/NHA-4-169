@@ -36,38 +36,39 @@
 <div id="bt-header-mount"></div>
 
 <main class="max-w-4xl mx-auto px-6 pb-24">
-  <h1 class="font-headline font-extrabold text-3xl md:text-4xl mb-8">Settings</h1>
+  <h1 class="font-headline font-extrabold text-3xl md:text-4xl mb-2">Settings</h1>
+  <p class="text-sm text-on-surface-variant mb-8">Preferences below aren't saved yet - this section is coming soon.</p>
 
-  <div class="space-y-6">
+  <div class="space-y-6 opacity-60 pointer-events-none">
     <!-- General -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">tune</span> General</h2>
       <div class="flex items-center justify-between">
         <div><p class="font-medium text-sm">Show active job widget on dashboard</p><p class="text-xs text-on-surface-variant">Display live tracking when a provider is en route</p></div>
-        <div class="bt-switch on" data-setting="active-widget"></div>
+        <div class="bt-switch on"></div>
       </div>
     </div>
 
     <!-- Notifications -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">notifications</span> Notifications</h2>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">New offers on my requests</p><div class="bt-switch on" data-setting="notif-offers"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Order status updates</p><div class="bt-switch on" data-setting="notif-orders"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Promotions &amp; offers</p><div class="bt-switch" data-setting="notif-promo"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">SMS notifications</p><div class="bt-switch" data-setting="notif-sms"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">New offers on my requests</p><div class="bt-switch on"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Order status updates</p><div class="bt-switch on"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Promotions &amp; offers</p><div class="bt-switch"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">SMS notifications</p><div class="bt-switch"></div></div>
     </div>
 
     <!-- Privacy -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">privacy_tip</span> Privacy</h2>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Show my profile to providers I've messaged</p><div class="bt-switch on" data-setting="privacy-profile"></div></div>
-      <div class="flex items-center justify-between"><p class="font-medium text-sm">Share location with active orders</p><div class="bt-switch on" data-setting="privacy-location"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Show my profile to providers I've messaged</p><div class="bt-switch on"></div></div>
+      <div class="flex items-center justify-between"><p class="font-medium text-sm">Share location with active orders</p><div class="bt-switch on"></div></div>
     </div>
 
     <!-- Language -->
     <div class="bg-white rounded-3xl shadow p-6 space-y-4">
       <h2 class="font-headline font-bold text-lg flex items-center gap-2"><span class="material-symbols-outlined text-primary">translate</span> Language</h2>
-      <select class="w-full sm:w-64 px-5 py-3 bg-surface-container-low rounded-2xl outline-none focus:ring-2 focus:ring-primary/40 border-none">
+      <select disabled class="w-full sm:w-64 px-5 py-3 bg-surface-container-low rounded-2xl outline-none border-none">
         <option>English</option>
         <option>العربية</option>
       </select>
@@ -81,32 +82,15 @@
         <button class="flex-1 border-2 border-outline-variant/30 rounded-2xl p-4 text-center font-bold text-sm text-on-surface-variant">Dark (coming soon)</button>
       </div>
     </div>
-
-    <!-- Delete account -->
-    <div class="bg-white rounded-3xl shadow p-6 border-2 border-red-100">
-      <h2 class="font-headline font-bold text-lg flex items-center gap-2 text-error"><span class="material-symbols-outlined">warning</span> Delete Account</h2>
-      <p class="text-sm text-on-surface-variant mt-2">This will permanently delete your account, orders and messages. This action cannot be undone.</p>
-      <button id="bt-delete-account" class="mt-4 px-6 py-3 border-2 border-error text-error rounded-full font-bold text-sm hover:bg-red-50 transition">Delete My Account</button>
-    </div>
   </div>
+
+  <p class="text-sm text-on-surface-variant mt-6">Looking to delete your account? Head to your <a href="../profile/index.html" class="text-primary font-bold hover:underline">Profile page</a>.</p>
 </main>
 
 <div id="bt-footer-mount"></div>
 
 <script src="../_shared/customer-data.js"></script>
+<script src="../_shared/customer-api.js"></script>
 <script src="../_shared/customer-shell.js"></script>
-<script>
-  document.querySelectorAll('.bt-switch').forEach(sw => {
-    sw.addEventListener('click', () => sw.classList.toggle('on'));
-  });
-
-  document.getElementById('bt-delete-account').addEventListener('click', () => {
-    if (confirm('Are you absolutely sure you want to delete your account? This cannot be undone.')) {
-      Object.values(BTData.KEYS).forEach(k => localStorage.removeItem(k));
-      localStorage.removeItem('ek_user_session');
-      window.location.href = window.BT_SITE_ROOT + 'index.html';
-    }
-  });
-</script>
 </body>
 </html>

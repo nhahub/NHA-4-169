@@ -59,7 +59,7 @@ namespace BayTack.Infrastructure.Repositorty
 			{
 				var roles = await _userManager.GetRolesAsync(user);
 				items.Add(new UserResponse(
-					user.Id, user.FullName, user.Email,
+					user.Id, user.FullName, user.Email, user.PhoneNumber,
 					user.Status.ToString(), roles.ToList(), user.CreatedAt));
 			}
 
@@ -81,7 +81,7 @@ namespace BayTack.Infrastructure.Repositorty
 				.Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name!)
 				.ToListAsync(ct);
 
-			return new UserResponse(user.Id, user.FullName, user.Email, user.Status.ToString(), roles, user.CreatedAt);
+			return new UserResponse(user.Id, user.FullName, user.Email, user.PhoneNumber, user.Status.ToString(), roles, user.CreatedAt);
 		}
 
 		public async Task<Address> GetAddressAsync(string customerId, CancellationToken ct)

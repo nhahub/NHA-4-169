@@ -1,3 +1,4 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Abstractions.Messaging;
 using BayTack.Application.Common.Models;
@@ -10,11 +11,13 @@ namespace BayTack.Application.Features.Categories.Commands.UpdateCategory
 	{
 		private readonly IRepository<ServiceCategory, string> _categories;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserService _currentUser;
 
-		public UpdateCategoryCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork)
+		public UpdateCategoryCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
 		{
 			_categories = categories;
 			_unitOfWork = unitOfWork;
+			_currentUser = currentUser;
 		}
 
 		public async Task<Result<CategoryResponse>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -30,8 +33,7 @@ namespace BayTack.Application.Features.Categories.Commands.UpdateCategory
 					return Result<CategoryResponse>.Failure($"Category '{request.Name}' already exists" );
 			}
 
-			// TODO: pass the real signed-in user id once JWT auth (see Program.cs note) is wired up.
-			category.UpdateDetails(request.Name, request.Icon, request.Description, request.IsActive, updatedBy: null);
+			category.UpdateDetails(request.Name, request.Icon, request.Description, request.IsActive, updatedBy: _currentUser.UserId);
 			_categories.Update(category);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
