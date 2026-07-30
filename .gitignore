@@ -36,3 +36,4 @@ artifacts/
 /backend(.net)/BayTack/BayTack.API/appsettings.json
 /backend(.net)/BayTack/BayTack.API/Properties/PublishProfiles
 /backend(.net)/BayTack/BayTack.API/appsettings.Development.json
+/backend(.net)/BayTack/BayTack.API/appsettings.Development.json
