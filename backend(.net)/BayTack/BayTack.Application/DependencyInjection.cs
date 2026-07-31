@@ -9,13 +9,13 @@ namespace BayTack.Application
 		{
 			var assembly = typeof(DependencyInjection).Assembly;
 
-			Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-			Console.WriteLine(assembly);
-			foreach (var type in assembly.GetTypes())
-			{
-				Console.WriteLine(type.FullName);
-			}
-			Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			//Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			//Console.WriteLine(assembly);
+			//foreach (var type in assembly.GetTypes())
+			//{
+			//	Console.WriteLine(type.Name);
+			//}
+			//Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 
 			services.AddMediatR(cfg =>

@@ -143,6 +143,7 @@ namespace BayTack.Infrastructure
 			services.AddScoped<IUserRepository, UserRepository>(); 
 			services.AddScoped<IOrdersReadRepository, OrdersReadRepository>();
 			services.AddScoped<IConversationRepository, ConversationRepository>();
+			services.AddScoped<IServiceRepository, ServiceRepository>();
 			services.AddScoped<IProviderRepository, ProviderRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
