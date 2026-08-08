@@ -49,24 +49,55 @@ try
 
 
 
+
+
 	builder.Services.AddSwaggerGen(doc =>
 	{
 		//var xmlFile = Path.Combine(AppContext.BaseDirectory, "ApiDocumentation.xml");
 		//doc.IncludeXmlComments(xmlFile);
-		doc.SwaggerDoc("v1",
-			new OpenApiInfo
+		doc.SwaggerDoc("v1", new OpenApiInfo
+		{
+			Version = "v1",
+			Title = "BayTack API",  
+			Description = "BayTack - Home Maintenance Marketplace Platform API",  
+			Contact = new OpenApiContact
 			{
-				Version = "v1",
-				Title = "Jooobs API",
-				Description = "API for managing job applications, user profiles, and related functionalities.",
-				Contact = new OpenApiContact
-				{
-					Name = "mahmoud mohamed salah"
-				}
+				Name = "BayTack Team",
+				Email = "mahmoud.salah8411@gmail.com"   
+			},
+			License = new OpenApiLicense   
+			{
+				Name = "MIT",
+				Url = new Uri("https://opensource.org/licenses/MIT")
 			}
-		);
-	});
+		});
 
+		// ✅ أضف JWT Auth في Swagger
+		doc.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+		{
+			Name = "Authorization",
+			Type = SecuritySchemeType.Http,
+			Scheme = "Bearer",
+			BearerFormat = "JWT",
+			In = ParameterLocation.Header,
+			Description = "Enter 'Bearer' [space] and then your valid token."
+		});
+
+		//doc.AddSecurityRequirement(new OpenApiSecurityRequirement
+		//{
+		//{
+		//	new OpenApiSecurityScheme
+		//	{
+		//		Reference = new OpenApiReference
+		//		{
+		//			Type = ReferenceType.SecurityScheme,
+		//			Id = "Bearer"
+		//		}
+		//	},
+		//	Array.Empty<string>()
+		//}
+		//});
+	});
 
 
 
@@ -79,7 +110,7 @@ try
 
 
 
-	app.UseRequestLogging();
+	app.UseRequestLogging();// for logging request and response details
 
 
 	app.UseExceptionHandler();
