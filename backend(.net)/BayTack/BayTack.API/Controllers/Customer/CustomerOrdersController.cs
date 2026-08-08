@@ -4,6 +4,7 @@ using BayTack.Application.Features.Orders.Commands.CancelOrder;
 using BayTack.Application.Features.Orders.Commands.CreateOrder;
 using BayTack.Application.Features.Orders.Queries.GetMyOrders;
 using BayTack.Application.Features.Orders.Queries.GetOrderById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,13 @@ namespace BayTack.API.Controllers.Customer
 {
     // Backs: Front_end/customer/app/orders, dashboard (was mocked -> bt_c_orders)
     [Authorize]
-    [Route("customer/orders")]
-    public class CustomerOrdersController : ApiController
+	[Route("customer/orders")]
+	public class CustomerOrdersController : ApiController
     {
-        private readonly ICurrentUserService _currentUser;
-
-        public CustomerOrdersController(ICurrentUserService currentUser) => _currentUser = currentUser;
+		public CustomerOrdersController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
 
         /// <summary>
         /// GET /customer/orders?status=
@@ -26,7 +28,7 @@ namespace BayTack.API.Controllers.Customer
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? status, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new GetMyOrdersQuery(userId, status), ct);
@@ -38,7 +40,7 @@ namespace BayTack.API.Controllers.Customer
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new GetOrderByIdQuery(userId, id), ct);
@@ -50,7 +52,7 @@ namespace BayTack.API.Controllers.Customer
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOrderRequest payload, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new CreateOrderCommand(userId, payload.ServiceId, payload.Tier), ct);
@@ -62,7 +64,7 @@ namespace BayTack.API.Controllers.Customer
         [HttpPatch("{id}/cancel")]
         public async Task<IActionResult> Cancel(string id, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new CancelOrderCommand(userId, id), ct);

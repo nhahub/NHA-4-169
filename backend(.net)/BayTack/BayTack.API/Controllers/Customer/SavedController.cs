@@ -3,6 +3,7 @@ using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.SavedServices.Commands.AddSavedService;
 using BayTack.Application.Features.SavedServices.Commands.RemoveSavedService;
 using BayTack.Application.Features.SavedServices.Queries.GetSavedServices;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +14,16 @@ namespace BayTack.API.Controllers.Customer
 	[Route("customer/saved")]
 	public class SavedController : ApiController
 	{
-		private readonly ICurrentUserService _currentUser;
-
-		public SavedController(ICurrentUserService currentUser) => _currentUser = currentUser;
+		public SavedController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
 
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Saved.CustomerView")]
 		public async Task<IActionResult> GetAll(CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new GetSavedServicesQuery(userId), ct);
@@ -33,7 +35,7 @@ namespace BayTack.API.Controllers.Customer
 		[Authorize(Policy = "Permissions.Saved.CustomerManage")] // صلاحية إضافة خدمة للمفضلة
 		public async Task<IActionResult> Add(string serviceId, CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new AddSavedServiceCommand(userId, serviceId), ct);
@@ -45,7 +47,7 @@ namespace BayTack.API.Controllers.Customer
 		[Authorize(Policy = "Permissions.Saved.CustomerManage")] // صلاحية حذف خدمة من المفضلة
 		public async Task<IActionResult> Remove(string serviceId, CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new RemoveSavedServiceCommand(userId, serviceId), ct);

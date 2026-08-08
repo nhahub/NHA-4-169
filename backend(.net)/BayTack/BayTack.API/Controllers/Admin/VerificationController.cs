@@ -1,9 +1,11 @@
 ﻿using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Providers.Commands.VerifyProvider;
 using BayTack.Application.Features.Verification.Commands.MarkUnderReview;
 using BayTack.Application.Features.Verification.Commands.Reject;
 using BayTack.Application.Features.Verification.Queries.GetDetail;
 using BayTack.Application.Features.Verification.Queries.GetQueue;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +14,10 @@ namespace BayTack.API.Controllers.Admin
 	[Authorize]
 	public class VerificationController : ApiController
 	{
+		public VerificationController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Verification.View")]
 		public async Task<IActionResult> GetQueue([FromQuery] string? status)

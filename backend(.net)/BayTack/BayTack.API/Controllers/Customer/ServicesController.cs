@@ -1,6 +1,8 @@
-﻿using BayTack.Application.Common.DTO;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Services.Queries.GetAllServices;
 using BayTack.Application.Features.Services.Queries.GetServiceById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Customer
@@ -10,11 +12,15 @@ namespace BayTack.API.Controllers.Customer
     [Route("services")]
     public class ServicesController : ApiController
     {
-        /// <summary>
-        /// GET /services?category=&search=
-        /// -> Service[] { id, title, category, icon, provider, providerId, avatar, rating, tiers: { basic, standard, premium } }
-        /// </summary>
-        [HttpGet]
+		public ServicesController(ISender sender, ICurrentUserService currentUser)
+								: base(sender, currentUser)
+		{
+		}
+		/// <summary>
+		/// GET /services?category=&search=
+		/// -> Service[] { id, title, category, icon, provider, providerId, avatar, rating, tiers: { basic, standard, premium } }
+		/// </summary>
+		[HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? category, [FromQuery] string? search, CancellationToken ct)
         {
             var result = await Sender.Send(new GetAllServicesQuery(category, search), ct);

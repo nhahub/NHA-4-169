@@ -3,6 +3,7 @@ using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Users.Command.DeleteUser;
 using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetUserById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,15 +21,17 @@ namespace BayTack.API.Controllers.Customer
     [Route("customer/profile")]
     public class ProfileController : ApiController
     {
-        private readonly ICurrentUserService _currentUser;
+		public ProfileController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
 
-        public ProfileController(ICurrentUserService currentUser) => _currentUser = currentUser;
 
-        [HttpGet]
+		[HttpGet]
         [Authorize(Policy = "Permissions.Auth.General")]
         public async Task<IActionResult> GetMyProfile(CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new GetUserByIdQuery(userId), ct);
@@ -40,8 +43,8 @@ namespace BayTack.API.Controllers.Customer
         [Authorize(Policy = "Permissions.Auth.General")]
         public async Task<IActionResult> UpdateMyProfile(UpdateMyProfileRequest request, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
-            var email = _currentUser.Email;
+            var userId = CurrentUser.UserId;
+            var email = CurrentUser.Email;
             if (userId is null || email is null) return Unauthorized();
 
             // Role intentionally left null - UpdateUserCommandHandler/UpdateUserAsync only
@@ -57,7 +60,7 @@ namespace BayTack.API.Controllers.Customer
         [Authorize(Policy = "Permissions.Auth.General")]
         public async Task<IActionResult> DeleteMyAccount(CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new DeleteUserCommand(userId, userId, "Deleted by customer via profile settings."), ct);

@@ -1,9 +1,11 @@
 using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
 using BayTack.Application.Features.Providers.Commands.DeletePortfolioItem;
 using BayTack.Application.Features.Providers.Commands.UpdatePortfolioItem;
 using BayTack.Application.Features.Providers.Queries.GetAllPortfolioItems;
 using BayTack.Application.Features.Providers.Queries.GetPortfolioItemById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +14,11 @@ namespace BayTack.API.Controllers.Providers
 	[Authorize]
 	public class PortfolioController : ApiController
 	{
+		public PortfolioController(ISender sender, ICurrentUserService currentUser)
+										: base(sender, currentUser)
+		{
+		}
+
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Portfolio.View")] // مسموح للكل لرؤية أعمال الـ Provider
 		public async Task<IActionResult> GetAll([FromQuery] string providerProfileId)

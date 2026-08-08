@@ -1,4 +1,5 @@
-﻿using BayTack.Application.Common.DTO;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Providers.Commands.ApproveProvider;
 using BayTack.Application.Features.Providers.Commands.ReinstateProvider;
 using BayTack.Application.Features.Providers.Commands.SuspendProvider;
@@ -7,6 +8,7 @@ using BayTack.Application.Features.Providers.Queries.GetAllProviders;
 using BayTack.Application.Features.Providers.Queries.GetProviderById;
 using BayTack.Application.Features.Providers.Queries.GetProviderStats;
 using BayTack.Application.Features.Providers.Queries.GetRecentProviders;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,11 @@ namespace BayTack.API.Controllers.Admin
 	[Route("api/admin/providers")]
 	public class ProvidersController : ApiController
 	{
+		public ProvidersController(ISender sender, ICurrentUserService currentUser)
+					: base(sender, currentUser)
+		{
+		}
+
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Providers.View")]
 		public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] string? categoryId, [FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int limit = 20)

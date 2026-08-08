@@ -2,6 +2,7 @@
 using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Preferences.Commands.UpdateMyPreferences;
 using BayTack.Application.Features.Preferences.Queries.GetMyPreferences;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,15 +28,16 @@ namespace BayTack.API.Controllers.Preferences
     [Route("preferences")]
     public class PreferencesController : ApiController
     {
-        private readonly ICurrentUserService _currentUser;
+		public PreferencesController(ISender sender, ICurrentUserService currentUser)
+								: base(sender, currentUser)
+		{
+		}
 
-        public PreferencesController(ICurrentUserService currentUser) => _currentUser = currentUser;
-
-        [HttpGet]
+		[HttpGet]
         [Authorize(Policy = "Permissions.Auth.General")]
         public async Task<IActionResult> GetMyPreferences(CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var result = await Sender.Send(new GetMyPreferencesQuery(userId), ct);
@@ -47,7 +49,7 @@ namespace BayTack.API.Controllers.Preferences
         [Authorize(Policy = "Permissions.Auth.General")]
         public async Task<IActionResult> UpdateMyPreferences(UpdatePreferencesRequest request, CancellationToken ct)
         {
-            var userId = _currentUser.UserId;
+            var userId = CurrentUser.UserId;
             if (userId is null) return Unauthorized();
 
             var command = new UpdateMyPreferencesCommand(

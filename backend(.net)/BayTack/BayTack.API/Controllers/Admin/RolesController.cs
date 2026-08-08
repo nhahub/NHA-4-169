@@ -1,3 +1,4 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Roles.Commands.CreateRole;
 using BayTack.Application.Features.Roles.Commands.DeleteRole;
@@ -5,6 +6,7 @@ using BayTack.Application.Features.Roles.Commands.SetRolePermissions;
 using BayTack.Application.Features.Roles.Commands.UpdateRole;
 using BayTack.Application.Features.Roles.Queries.GetAllRoles;
 using BayTack.Application.Features.Roles.Queries.GetPermissions;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,11 @@ namespace BayTack.API.Controllers.Admin
 	[Authorize]
 	public class RolesController : ApiController
 	{
+		public RolesController(ISender sender, ICurrentUserService currentUser)
+						: base(sender, currentUser)
+		{
+		}
+
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Roles.View")]
 		public async Task<IActionResult> GetAll()

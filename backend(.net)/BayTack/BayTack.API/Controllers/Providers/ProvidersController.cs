@@ -1,4 +1,5 @@
 using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
 using BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 using BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
@@ -11,6 +12,7 @@ using BayTack.Application.Features.Providers.Queries.GetMyOpenJobs;
 using BayTack.Application.Features.Providers.Queries.GetMyProviderProfile;
 using BayTack.Application.Features.Providers.Queries.GetProviderProfileById;
 using BayTack.Domain.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +21,11 @@ namespace BayTack.API.Controllers.Providers
 	[Authorize]
 	public class ProvidersController : ApiController
 	{
+		public ProvidersController(ISender sender, ICurrentUserService currentUser)
+											: base(sender, currentUser)
+		{
+		}
+
 		// NOTE: must be declared before "{id}" below so routing doesn't treat "me" as an :id value.
 		[HttpGet("me")]
 		[Authorize(Policy = "Permissions.Providers.ProfileView")]

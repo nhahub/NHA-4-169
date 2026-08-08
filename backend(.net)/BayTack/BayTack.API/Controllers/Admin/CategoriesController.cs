@@ -1,3 +1,4 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Categories.Commands.CreateCategory;
 using BayTack.Application.Features.Categories.Commands.DeleteCategory;
@@ -5,6 +6,7 @@ using BayTack.Application.Features.Categories.Commands.ToggleCategoryActive;
 using BayTack.Application.Features.Categories.Commands.UpdateCategory;
 using BayTack.Application.Features.Categories.Queries.GetAllCategories;
 using BayTack.Application.Features.Categories.Queries.GetCategoryById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,12 @@ namespace BayTack.API.Controllers.Admin
 	[Authorize]
 	public class CategoriesController : ApiController
 	{
+		public CategoriesController(ISender sender, ICurrentUserService currentUser)
+					: base(sender, currentUser)
+		{
+		}
+
+
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Categories.View")]
 		public async Task<IActionResult> GetAll()

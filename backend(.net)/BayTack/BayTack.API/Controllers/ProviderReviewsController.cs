@@ -1,8 +1,10 @@
 using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Providers.Commands.RespondToReview;
 using BayTack.Application.Features.Providers.Queries.ExportProviderReviewsCsv;
 using BayTack.Application.Features.Providers.Queries.GetProviderReviews;
 using BayTack.Application.Features.Providers.Queries.GetProviderReviewStats;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -12,6 +14,10 @@ namespace BayTack.API.Controllers
 	[Authorize]
 	public class ProviderReviewsController : ApiController
 	{
+		public ProviderReviewsController(ISender sender, ICurrentUserService currentUser)
+													: base(sender, currentUser)
+		{
+		}
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Reviews.View")] // مسموح للكل لرؤية تقييمات مقدم الخدمة لتسهيل اختيار العميل
 		public async Task<IActionResult> GetReviews(

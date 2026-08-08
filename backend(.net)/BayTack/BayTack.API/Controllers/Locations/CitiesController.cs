@@ -1,5 +1,7 @@
-﻿using BayTack.Application.Common.DTO;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Locations.Queries.GetCities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Locations
@@ -9,8 +11,13 @@ namespace BayTack.API.Controllers.Locations
     [Route("cities")]
     public class CitiesController : ApiController
     {
-        /// <summary>GET /cities -> City[] { id, name, areas: [{ id, name }] }</summary>
-        [HttpGet]
+		public CitiesController(ISender sender, ICurrentUserService currentUser)
+								: base(sender, currentUser)
+		{
+		}
+
+		/// <summary>GET /cities -> City[] { id, name, areas: [{ id, name }] }</summary>
+		[HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken ct)
         {
             var result = await Sender.Send(new GetCitiesQuery(), ct);

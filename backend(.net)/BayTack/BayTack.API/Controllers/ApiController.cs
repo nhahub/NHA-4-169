@@ -8,16 +8,14 @@ namespace BayTack.API.Controllers
 	[Route("api/[controller]")]
 	public abstract class ApiController : ControllerBase
 	{
-		private ISender? _sender;
-		private ICurrentUserService? _currentUser;
+		protected ApiController(ISender sender, ICurrentUserService currentUser)
+		{
+			Sender = sender;
+			CurrentUser = currentUser;
+		}
 
-
-
-		protected ISender Sender => 
-			_sender ??= HttpContext.RequestServices.GetRequiredService<ISender>();
-
-		protected ICurrentUserService CurrentUser =>
-			_currentUser ??= HttpContext.RequestServices.GetRequiredService<ICurrentUserService>();
+		protected ISender Sender { get; }
+		protected ICurrentUserService CurrentUser { get; }
 
 		protected string? CurrentUserId => CurrentUser.UserId;
 		protected string? CurrentUserName => CurrentUser.Email;

@@ -1,10 +1,12 @@
 ﻿using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Users.Command;
 using BayTack.Application.Features.Users.Command.DeactivateUser;
 using BayTack.Application.Features.Users.Command.DeleteUser;
 using BayTack.Application.Features.Users.Command.UpdateUser;
 using BayTack.Application.Features.Users.Queries.GetAllUsers;
 using BayTack.Application.Features.Users.Queries.GetUserById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,10 @@ namespace BayTack.API.Controllers.Admin
 	[Authorize]
 	public class UsersController : ApiController
 	{
+		public UsersController(ISender sender, ICurrentUserService currentUser)
+						: base(sender, currentUser)
+		{
+		}
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Users.View")]
 		public async Task<IActionResult> GetAll(

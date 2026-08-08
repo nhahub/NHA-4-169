@@ -3,28 +3,26 @@ using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Messages.Commands.SendMessage;
 using BayTack.Application.Features.Messages.Queries.GetConversationById;
 using BayTack.Application.Features.Messages.Queries.GetMyConversations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Customer
 {
-	// Backs: Front_end/customer/app/messages  (was mocked -> bt_c_messages)
-	// Same Conversation/Message model is reused for the provider side inbox - a Provider
-	// controller can call GetMyConversationsQuery/GetConversationByIdQuery/SendMessageCommand
-	// with (customerId: conversation.CustomerId, providerId acting as sender) the same way.
 	[Authorize]
 	[Route("customer/messages")]
 	public class MessagesController : ApiController
 	{
-		private readonly ICurrentUserService _currentUser;
-
-		public MessagesController(ICurrentUserService currentUser) => _currentUser = currentUser;
+		public MessagesController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
 
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Messages.CustomerView")]
 		public async Task<IActionResult> GetConversations(CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new GetMyConversationsQuery(userId), ct);
@@ -36,7 +34,7 @@ namespace BayTack.API.Controllers.Customer
 		[Authorize(Policy = "Permissions.Messages.CustomerView")]
 		public async Task<IActionResult> GetConversation(string conversationId, CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new GetConversationByIdQuery(userId, conversationId), ct);
@@ -49,7 +47,7 @@ namespace BayTack.API.Controllers.Customer
 		public async Task<IActionResult> SendMessage(
 			string conversationId, [FromBody] SendMessageRequest payload, CancellationToken ct)
 		{
-			var userId = _currentUser.UserId;
+			var userId = CurrentUser.UserId;
 			if (userId is null) return Unauthorized();
 
 			var result = await Sender.Send(new SendMessageCommand(userId, conversationId, payload.Text), ct);

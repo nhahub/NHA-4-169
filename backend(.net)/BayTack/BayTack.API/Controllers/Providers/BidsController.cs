@@ -1,6 +1,8 @@
 using BayTack.API.Extensions;
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Features.Jobs.Commands.RetractBid;
 using BayTack.Application.Features.Jobs.Commands.SubmitBid;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,11 @@ namespace BayTack.API.Controllers.Providers
 	[Authorize]
 	public class BidsController : ApiController
 	{
+		public BidsController(ISender sender, ICurrentUserService currentUser)
+									: base(sender, currentUser)
+		{
+		}
+
 		[HttpPost]
 		[Authorize(Policy = "Permissions.Bids.ProviderSubmit")] // صلاحية تقديم عرض من مقدم الخدمة
 		public async Task<IActionResult> Submit([FromBody] SubmitBidRequest request)

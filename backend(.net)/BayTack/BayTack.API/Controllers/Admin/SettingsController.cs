@@ -1,6 +1,8 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Settings.Commands.UpdateSettings;
 using BayTack.Application.Features.Settings.Queries.GetSettings;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,11 @@ namespace BayTack.API.Controllers.Admin
 	[Authorize]
 	public class SettingsController : ApiController
 	{
+		public SettingsController(ISender sender, ICurrentUserService currentUser)
+					: base(sender, currentUser)
+		{
+		}
+
 		[HttpGet]
 		[Authorize(Policy = "Permissions.Settings.View")]
 		public async Task<IActionResult> Get()

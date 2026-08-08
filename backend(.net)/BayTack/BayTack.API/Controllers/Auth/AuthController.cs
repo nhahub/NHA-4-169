@@ -1,10 +1,12 @@
-﻿using BayTack.Application.Common.DTO;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Application.Common.DTO;
 using BayTack.Application.Common.DTO.Auth;
 using BayTack.Application.Features.Identity.Command.ChangePassword;
 using BayTack.Application.Features.Identity.Command.Login;
 using BayTack.Application.Features.Identity.Command.Logout;
 using BayTack.Application.Features.Identity.Command.RefreshToken;
 using BayTack.Application.Features.Identity.Command.Register;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +15,11 @@ namespace BayTack.API.Controllers.Auth
 	[AllowAnonymous] 
 	public class AuthController : ApiController
 	{
+		public AuthController(ISender sender, ICurrentUserService currentUser)
+							: base(sender, currentUser)
+		{
+		}
+
 		[HttpPost("login")]
 		public async Task<IActionResult> Login(LoginCommand command)
 		{
