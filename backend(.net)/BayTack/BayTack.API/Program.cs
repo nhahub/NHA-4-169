@@ -47,7 +47,8 @@ try
 		});
 	});
 
-
+	// Rate Limiting
+	builder.Services.AddCustomRateLimiter();
 
 
 
@@ -111,7 +112,9 @@ try
 
 
 	app.UseRequestLogging();// for logging request and response details
-
+	
+	// Rate Limiter (before auth)
+	app.UseRateLimiter();
 
 	app.UseExceptionHandler();
 
