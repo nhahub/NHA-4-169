@@ -9,7 +9,7 @@ namespace BayTack.API.Controllers.Customer
 {
     // Backs: Front_end/customer/app/browse, service/, saved/  (currently mocked in customer-data.js -> bt_c_services)
     // Public catalog browsing - no [Authorize], matches the original stub.
-    [Route("services")]
+    [Route("api/v{version:apiVersion}/services")]
     public class ServicesController : ApiController
     {
 		public ServicesController(ISender sender, ICurrentUserService currentUser)

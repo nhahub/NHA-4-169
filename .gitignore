@@ -38,3 +38,4 @@ artifacts/
 /backend(.net)/BayTack/BayTack.API/appsettings.Development.json
 /backend(.net)/BayTack/BayTack.API/appsettings.Development.json
 /backend(.net)/BayTack/BayTack.API/Logs/log-20260801.txt
+/backend(.net)/BayTack/BayTack.API/Extensions/ResultExtensions.cs

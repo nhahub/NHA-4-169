@@ -25,7 +25,7 @@ namespace BayTack.API.Controllers.Preferences
     // pending this endpoint) and can back the equivalent Provider/Admin settings pages
     // once those exist, since the fields don't differ by role.
     [Authorize]
-    [Route("preferences")]
+    [Route("api/v{version:apiVersion}/preferences")]
     public class PreferencesController : ApiController
     {
 		public PreferencesController(ISender sender, ICurrentUserService currentUser)

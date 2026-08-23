@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.DTO;
 using BayTack.Application.Features.Roles.Commands.CreateRole;
@@ -65,7 +66,7 @@ namespace BayTack.API.Controllers.Admin
 			return StatusCode(response.StatusCode, response);
 		}
 
-		[HttpGet("/api/Permissions")]
+		[HttpGet("/Permissions")]
 		[Authorize(Policy = "Permissions.Permissions.View")] // صلاحية عرض قائمة كل الـ Permissions
 		public async Task<IActionResult> GetPermissions()
 		{

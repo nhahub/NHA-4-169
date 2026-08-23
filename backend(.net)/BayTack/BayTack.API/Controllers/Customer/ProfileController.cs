@@ -18,7 +18,7 @@ namespace BayTack.API.Controllers.Customer
     // duplicating that logic, scoped to the caller's own id and without a Role parameter
     // so a customer can't grant themselves a different role.
     [Authorize]
-    [Route("customer/profile")]
+    [Route("api/v{version:apiVersion}/customer/profile")]
     public class ProfileController : ApiController
     {
 		public ProfileController(ISender sender, ICurrentUserService currentUser)

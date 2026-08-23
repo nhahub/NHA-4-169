@@ -11,7 +11,7 @@ namespace BayTack.API.Controllers.Customer
 {
 	// Backs: Front_end/customer/app/notifications  (was mocked -> bt_c_notifications)
 	[Authorize]
-	[Route("customer/notifications")]
+	[Route("api/v{version:apiVersion}/customer/notifications")]
 	public class NotificationsController : ApiController
 	{
 		public NotificationsController(ISender sender, ICurrentUserService currentUser)

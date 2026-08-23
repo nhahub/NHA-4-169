@@ -15,7 +15,7 @@ namespace BayTack.API.Controllers.Customer
 	// Backs: Front_end/customer/app/post-request, requests/  (was mocked -> bt_c_requests)
 	// A "request" is a customer job post (CustomerJob) that providers submit offers (ProviderBid) against.
 	[Authorize]
-	[Route("customer/requests")]
+	[Route("api/v{version:apiVersion}/customer/requests")]
 	public class RequestsController : ApiController
 	{
 		public RequestsController(ISender sender, ICurrentUserService currentUser)

@@ -1,12 +1,14 @@
+using Asp.Versioning.ApiExplorer;
 using BayTack.API.Extensions;
 using BayTack.API.Middlewares;
+using BayTack.API.Swagger;
 using BayTack.Application;
 using BayTack.Infrastructure;
 using BayTack.Infrastructure.Identity;
-using Microsoft.OpenApi;
+using Microsoft.Extensions.Options;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
-
 
 try
 {
@@ -50,55 +52,14 @@ try
 	// Rate Limiting
 	builder.Services.AddCustomRateLimiter();
 
+	builder.Services.AddCustomApiVersioning();
 
+	// for configration of swagger
+	builder.Services.AddSwaggerGen();
 
-	builder.Services.AddSwaggerGen(doc =>
-	{
-		//var xmlFile = Path.Combine(AppContext.BaseDirectory, "ApiDocumentation.xml");
-		//doc.IncludeXmlComments(xmlFile);
-		doc.SwaggerDoc("v1", new OpenApiInfo
-		{
-			Version = "v1",
-			Title = "BayTack API",  
-			Description = "BayTack - Home Maintenance Marketplace Platform API",  
-			Contact = new OpenApiContact
-			{
-				Name = "BayTack Team",
-				Email = "mahmoud.salah8411@gmail.com"   
-			},
-			License = new OpenApiLicense   
-			{
-				Name = "MIT",
-				Url = new Uri("https://opensource.org/licenses/MIT")
-			}
-		});
+	builder.Services.AddTransient< IConfigureOptions<SwaggerGenOptions>, 
+	ConfigureSwaggerOptions>();
 
-		// ✅ أضف JWT Auth في Swagger
-		doc.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-		{
-			Name = "Authorization",
-			Type = SecuritySchemeType.Http,
-			Scheme = "Bearer",
-			BearerFormat = "JWT",
-			In = ParameterLocation.Header,
-			Description = "Enter 'Bearer' [space] and then your valid token."
-		});
-
-		//doc.AddSecurityRequirement(new OpenApiSecurityRequirement
-		//{
-		//{
-		//	new OpenApiSecurityScheme
-		//	{
-		//		Reference = new OpenApiReference
-		//		{
-		//			Type = ReferenceType.SecurityScheme,
-		//			Id = "Bearer"
-		//		}
-		//	},
-		//	Array.Empty<string>()
-		//}
-		//});
-	});
 
 
 
@@ -123,9 +84,19 @@ try
 		await Seeder.SeedAsync(scope.ServiceProvider);
 	}
 
-	app.MapOpenApi();
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(options =>
+	{
+		var provider = app.Services
+			.GetRequiredService<IApiVersionDescriptionProvider>();
+
+		foreach (var description in provider.ApiVersionDescriptions)
+		{
+			options.SwaggerEndpoint(
+				$"/swagger/{description.GroupName}/swagger.json",
+				$"BayTack API {description.GroupName.ToUpperInvariant()}");
+		}
+	});
 
 	app.UseHttpsRedirection();
 

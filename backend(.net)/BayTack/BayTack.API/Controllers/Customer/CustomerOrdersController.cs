@@ -12,7 +12,7 @@ namespace BayTack.API.Controllers.Customer
 {
     // Backs: Front_end/customer/app/orders, dashboard (was mocked -> bt_c_orders)
     [Authorize]
-	[Route("customer/orders")]
+	[Route("api/v{version:apiVersion}/customer/orders")]
 	public class CustomerOrdersController : ApiController
     {
 		public CustomerOrdersController(ISender sender, ICurrentUserService currentUser)

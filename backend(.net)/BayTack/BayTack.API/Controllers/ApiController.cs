@@ -1,11 +1,15 @@
-﻿using BayTack.Application.Abstractions.Interfaces;
+﻿using Asp.Versioning;
+using BayTack.Application.Abstractions.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	//[Route("api/[controller]")]
+	[ApiVersion(1.0)]
+	[Route("api/v{version:apiVersion}/[controller]")]
+
 	public abstract class ApiController : ControllerBase
 	{
 		protected ApiController(ISender sender, ICurrentUserService currentUser)

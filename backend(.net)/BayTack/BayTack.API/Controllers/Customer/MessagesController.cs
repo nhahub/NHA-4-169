@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BayTack.API.Controllers.Customer
 {
 	[Authorize]
-	[Route("customer/messages")]
+	[Route("api/v{version:apiVersion}/customer/messages")]
 	public class MessagesController : ApiController
 	{
 		public MessagesController(ISender sender, ICurrentUserService currentUser)
