@@ -1,0 +1,100 @@
+name: CD
+
+on:
+
+  # =========================
+  # Run automatically after CI
+  # =========================
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+  # =========================
+  # Manual deployment
+  # =========================
+  workflow_dispatch:
+    inputs:
+      ci_run_id:
+        description: 'CI Workflow Run ID containing the artifacts'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+
+jobs:
+
+  # ==========================================================
+  # Backend Deployment
+  # ==========================================================
+  deploy-backend:
+    name: Deploy Backend to MonsterASP
+    runs-on: windows-latest
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'develop'
+      )
+
+    environment: development
+
+    steps:
+
+      # ======================================================
+      # Determine CI Run ID
+      # ======================================================
+      - name: Set CI Run ID
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_run") {
+            "CI_RUN_ID=${{ github.event.workflow_run.id }}" |
+              Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+          else {
+            "CI_RUN_ID=${{ github.event.inputs.ci_run_id }}" |
+              Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+
+      # ======================================================
+      # Download Backend Artifact
+      # ======================================================
+      - name: Download Backend Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifact
+          run-id: ${{ env.CI_RUN_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/backend
+
+      # ======================================================
+      # Check Backend Artifact
+      # ======================================================
+      - name: Check Backend Artifact
+        shell: pwsh
+        run: |
+          Write-Host "Backend artifact contents:"
+
+          if (-not (Test-Path "./artifacts/backend")) {
+            Write-Error "Backend artifact folder does not exist."
+            exit 1
+          }
+
+          Get-ChildItem "artifacts/backend" -Recurse
+
+      # ======================================================
+      # Deploy Backend
+      # ======================================================
+      - name: Deploy Backend to MonsterASP
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.BACKEND_WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.BACKEND_SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.BACKEND_SERVER_USERNAME }}
+          server-password: ${{ secrets.BACKEND_SERVER_PASSWORD }}
+          source-path: 'artifacts/backend/'
