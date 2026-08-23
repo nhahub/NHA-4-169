@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BayTack.API.Controllers.Admin
 {
 	[Authorize]
-	[Route("api/admin/providers")]
+	[Route("api/v{version:apiVersion}/admin/providers")]
 	public class ProvidersController : ApiController
 	{
 		public ProvidersController(ISender sender, ICurrentUserService currentUser)

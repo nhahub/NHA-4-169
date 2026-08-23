@@ -11,7 +11,7 @@ namespace BayTack.API.Controllers.Customer
 {
 	// Backs: Front_end/customer/app/saved  (was mocked -> bt_c_saved, an array of service ids)
 	[Authorize]
-	[Route("customer/saved")]
+	[Route("api/v{version:apiVersion}/customer/saved")]
 	public class SavedController : ApiController
 	{
 		public SavedController(ISender sender, ICurrentUserService currentUser)

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BayTack.API.Controllers.Auth
 {
-	[AllowAnonymous] 
+	[AllowAnonymous]
 	public class AuthController : ApiController
 	{
 		public AuthController(ISender sender, ICurrentUserService currentUser)

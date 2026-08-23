@@ -8,7 +8,7 @@ namespace BayTack.API.Controllers.Locations
 {
     // Backs: Front_end/customer/app/post-request (city/area picker) and the provider
     // workshop-address flow. Public reference data - no [Authorize], matches ServicesController.
-    [Route("cities")]
+    [Route("api/v{version:apiVersion}/cities")]
     public class CitiesController : ApiController
     {
 		public CitiesController(ISender sender, ICurrentUserService currentUser)
