@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BayTack.Contracts\BayTack.Contracts.csproj" />
     <ProjectReference Include="..\BayTack.Domain\BayTack.Domain.csproj" />
   </ItemGroup>
 

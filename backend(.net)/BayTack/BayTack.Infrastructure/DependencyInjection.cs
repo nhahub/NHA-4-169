@@ -3,9 +3,11 @@ using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Common.Security;
 using BayTack.Infrastructure.Common;
 using BayTack.Infrastructure.Identity;
+using BayTack.Infrastructure.Messaging;
 using BayTack.Infrastructure.Persistence;
 using BayTack.Infrastructure.Repositorty;
 using BayTack.Infrastructure.Services.Authentication;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -19,10 +21,7 @@ namespace BayTack.Infrastructure
 {
 	public static class DependencyInjection
 	{
-		/// <summary>Controllers use [Authorize(Policy = "Permissions.Categories.View")] - PascalCase,
-		/// dot-separated, "Permissions." prefix - built from a Permissions.Id like "categories.view"
-		/// (lowercase, dot/underscore-separated). This turns one into the other so the registered
-		/// policy names actually match what's on the controllers.</summary>
+		 
 		public static string ToPolicyName(string permissionId) =>
 			"Permissions." + string.Join(".", permissionId.Split('.').Select(segment =>
 				string.Concat(segment.Split('_').Select(word =>
@@ -34,10 +33,6 @@ namespace BayTack.Infrastructure
 			{
 				foreach (var permission in Permissions.All)
 				{
-					// BUG FIX: this used to register policies under the bare permission.Id
-					// ("categories.view") and require a claim of type "Permission" (capital P) -
-					// neither matched what the controllers or the seeded claims actually use
-					// (see ToPolicyName above, and Permissions.ClaimType = "permission", lowercase).
 					options.AddPolicy(ToPolicyName(permission.Id),
 						policy => policy.RequireClaim(Permissions.ClaimType, permission.Id));
 				}
@@ -95,13 +90,7 @@ namespace BayTack.Infrastructure
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenSettings:SecretKey"]!))
 				};
 
-				// BUG FIX: these two handlers used to be set via two separate
-				// `options.Events = new JwtBearerEvents { ... }` assignments - the second
-				// one silently replaced the first, so OnMessageReceived (which reads the
-				// access token out of the httpOnly cookie) never ran. Every [Authorize]
-				// endpoint would fail authentication because no Authorization header is
-				// sent by the frontend and the cookie was never being read. Merged into
-				// a single JwtBearerEvents instance so both handlers actually run.
+			
 				options.Events = new JwtBearerEvents
 				{
 					OnMessageReceived = context =>
@@ -147,6 +136,40 @@ namespace BayTack.Infrastructure
 			services.AddScoped<IProviderRepository, ProviderRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			return services;
+		}
+
+
+		public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
+
+			services.AddMassTransit(busConfigurator =>
+			{
+				busConfigurator.SetKebabCaseEndpointNameFormatter();
+
+				busConfigurator.UsingRabbitMq((context, cfg) =>
+				{
+					var options = context.GetRequiredService<Microsoft.Extensions.Options.IOptions<RabbitMqOptions>>().Value;
+
+					cfg.Host(options.Host, options.VirtualHost, h =>
+					{
+						h.Username(options.Username);
+						h.Password(options.Password);
+					});
+
+					cfg.UseMessageRetry(retry => retry.Exponential(
+						retryLimit: 5,
+						minInterval: TimeSpan.FromSeconds(1),
+						maxInterval: TimeSpan.FromSeconds(30),
+						intervalDelta: TimeSpan.FromSeconds(5)));
+
+					cfg.ConfigureEndpoints(context);
+				});
+			});
+
+			services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 
 			return services;
 		}
