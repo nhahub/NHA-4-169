@@ -1,6 +1,4 @@
 ﻿using BayTack.Domain.Common;
-using System;
-using System.Collections.Generic;
 
 namespace BayTack.Domain.ValueObjects
 {

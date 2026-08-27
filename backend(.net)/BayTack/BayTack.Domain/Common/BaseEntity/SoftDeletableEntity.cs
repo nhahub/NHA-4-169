@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace BayTack.Domain.Common.BaseEntity
 {
 	public abstract class SoftDeletableEntity<TId> : AuditableEntity<TId>, ISoftDelete

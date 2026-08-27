@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace BayTack.Application.Abstractions.Interfaces
 {
 	public interface IIntegrationEvent
@@ -9,5 +6,4 @@ namespace BayTack.Application.Abstractions.Interfaces
 		Guid EventId { get; }
 		DateTime OccurredOn { get; }
 	}
-
 }

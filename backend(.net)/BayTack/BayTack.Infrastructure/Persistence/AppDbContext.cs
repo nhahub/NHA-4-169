@@ -1,4 +1,6 @@
-﻿using BayTack.Domain.Common.BaseEntity;
+﻿using BayTack.Application.Abstractions.Interfaces;
+using BayTack.Domain.Common.BaseEntity;
+using BayTack.Domain.Common.Events;
 using BayTack.Domain.Entities;
 using BayTack.Domain.Entities.JobAggregate;
 using BayTack.Domain.Entities.Location;
@@ -10,16 +12,27 @@ using BayTack.Domain.Entities.ServiceAggregate;
 using BayTack.Domain.Entities.SystemEntities;
 using BayTack.Domain.Entities.UserFeatures;
 using BayTack.Infrastructure.Identity;
+using BayTack.Infrastructure.Persistence.Outbox;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace BayTack.Infrastructure.Persistence
 {
 	public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<string>, string>
 	{
-		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+		private readonly IEnumerable<IIntegrationEventMapper> _integrationEventMappers;
+
+		public AppDbContext(DbContextOptions<AppDbContext> options, IEnumerable<IIntegrationEventMapper> integrationEventMappers)
+			: base(options)
+		{
+			_integrationEventMappers = integrationEventMappers;
+		}
+
+		public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+
 
 		public DbSet<City> Cities => Set<City>();
 		public DbSet<Area> Areas => Set<Area>();
@@ -54,7 +67,6 @@ namespace BayTack.Infrastructure.Persistence
 		public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 		public DbSet<PlatformSettings> PlatformSettings => Set<PlatformSettings>();
 
-       // public object Conversations { get; internal set; }
         public DbSet<Conversation> Conversations => Set<Conversation>();
         public DbSet<Message> Messages => Set<Message>();
 
@@ -70,8 +82,7 @@ namespace BayTack.Infrastructure.Persistence
 
 			builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-			// Applies a global "WHERE IsDeleted = 0" filter to every entity that
-			// implements ISoftDelete, instead of relying on every query to remember it.
+			// Apply global query filters for soft delete
 			foreach (var entityType in builder.Model.GetEntityTypes())
 			{
 				if (!typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType)) continue;
@@ -82,16 +93,40 @@ namespace BayTack.Infrastructure.Persistence
 				var lambda = Expression.Lambda(condition, parameter);
 				builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
 			}
+		}
 
 
 
 
 
-				builder.Entity<RefreshToken>()
-				.HasOne(rt => rt.AppUser)
-				.WithMany(u => u.RefreshTokens)
-				.HasForeignKey(rt => rt.UserId)
-				.IsRequired(false); 
+		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+		{
+			var entitiesWithEvents = ChangeTracker.Entries<IHasDomainEvents>()
+				.Select(e => e.Entity)
+				.Where(e => e.DomainEvents.Count > 0)
+				.ToList();
+
+			foreach (var entity in entitiesWithEvents)
+			{
+				foreach (var domainEvent in entity.DomainEvents)
+				{
+					var mapper = _integrationEventMappers.FirstOrDefault(m => m.TryMap(domainEvent, out _));
+					if (mapper is null || !mapper.TryMap(domainEvent, out var integrationEvent) || integrationEvent is null)
+						continue; 
+
+					OutboxMessages.Add(new Outbox.OutboxMessage
+					{
+						Id = integrationEvent.EventId,
+						Type = integrationEvent.GetType().AssemblyQualifiedName!,
+						Content = JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType()),
+						OccurredOnUtc = integrationEvent.OccurredOn
+					});
+				}
+
+				entity.ClearDomainEvents();
+			}
+
+			return await base.SaveChangesAsync(cancellationToken);
 		}
 	}
 }

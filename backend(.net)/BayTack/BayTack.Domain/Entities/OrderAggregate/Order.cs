@@ -1,9 +1,7 @@
 ﻿using BayTack.Domain.Common.BaseEntity;
+using BayTack.Domain.Entities.OrderAggregate.Event;
 using BayTack.Domain.Enums;
 using BayTack.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BayTack.Domain.Entities.OrderAggregate
 {
@@ -33,6 +31,7 @@ namespace BayTack.Domain.Entities.OrderAggregate
 				Status = OrderStatus.Pending
 			};
 			order._history.Add(OrderStatusHistory.Create(order.Id, OrderStatus.Pending, createdBy));
+			order.AddDomainEvent(new OrderCreatedDomainEvent(order.Id, customerJobId, providerId, finalPrice, startDate));
 			return order;
 		}
 
@@ -45,7 +44,7 @@ namespace BayTack.Domain.Entities.OrderAggregate
 			if (newStatus == OrderStatus.Completed) EndDate = DateTime.UtcNow;
 			_history.Add(OrderStatusHistory.Create(Id, newStatus, changedBy));
 			SetUpdated(changedBy);
+			AddDomainEvent(new OrderStatusChangedDomainEvent(Id, newStatus, changedBy));
 		}
 	}
-
 }

@@ -1,6 +1,7 @@
 ﻿using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Common.Security;
+using BayTack.Application.EventMapping;
 using BayTack.Infrastructure.Common;
 using BayTack.Infrastructure.Identity;
 using BayTack.Infrastructure.Messaging;
@@ -170,6 +171,8 @@ namespace BayTack.Infrastructure
 			});
 
 			services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
+			services.AddScoped<IIntegrationEventMapper, OrderIntegrationEventMapper>();
+			services.AddHostedService<OutboxDispatcher>();
 
 			return services;
 		}
