@@ -148,7 +148,7 @@ namespace BayTack.Infrastructure
 
 			services.AddMassTransit(busConfigurator =>
 			{
-				busConfigurator.SetKebabCaseEndpointNameFormatter();
+				busConfigurator.SetKebabCaseEndpointNameFormatter(); // for example, "baytack.order-created-event" instead of "BayTack.OrderCreatedEvent"
 
 				busConfigurator.UsingRabbitMq((context, cfg) =>
 				{
