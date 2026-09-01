@@ -4,4 +4,6 @@
   <Project Path="BayTack.Contracts/BayTack.Contracts.csproj" Id="f0929bdc-80fc-48b7-8775-f7c7440570c6" />
   <Project Path="BayTack.Domain/BayTack.Domain.csproj" />
   <Project Path="BayTack.Infrastructure/BayTack.Infrastructure.csproj" />
+  <Project Path="BayTack.ReadStore.Worker/BayTack.ReadStore.Worker.csproj" Id="fc5aec4e-4204-4d91-9645-2f88a8888b70" />
+  <Project Path="BayTack.ReadStore/BayTack.ReadStore.csproj" Id="02d81510-a38c-4216-880d-c5b35c99f3b0" />
 </Solution>

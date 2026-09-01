@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-BayTack.ReadStore.Worker-32bad236-d9c6-4e6b-a763-56cda82768d3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="9.2.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="9.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BayTack.Contracts\BayTack.Contracts.csproj" />
+    <ProjectReference Include="..\BayTack.ReadStore\BayTack.ReadStore.csproj" />
+  </ItemGroup>
+</Project>
