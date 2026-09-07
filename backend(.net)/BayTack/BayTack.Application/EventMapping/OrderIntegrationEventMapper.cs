@@ -14,8 +14,13 @@ namespace BayTack.Application.EventMapping
 				case OrderCreatedDomainEvent e:
 					integrationEvent = new OrderCreatedIntegrationEvent(
 						OrderId: e.OrderId,
+						CustomerId: e.CustomerId,
 						CustomerJobId: e.CustomerJobId,
+						ServiceId: e.ServiceId,
+						Title: e.Title,
+						Description: e.Description,
 						ProviderId: e.ProviderId,
+						ProviderName: e.ProviderName,
 						FinalPriceAmount: e.FinalPrice.Amount,
 						FinalPriceCurrency: e.FinalPrice.Currency,
 						StartDate: e.StartDate,

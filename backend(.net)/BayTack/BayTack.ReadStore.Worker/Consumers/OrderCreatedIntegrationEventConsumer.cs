@@ -22,9 +22,7 @@ namespace BayTack.ReadStore.Worker.Consumers
 			var message = context.Message;
 			var ct = context.CancellationToken;
 
-			// Idempotency check first - if MassTransit redelivers this message (broker restart,
-			// a previous attempt crashed after the DB commit but before acking), this makes the
-			// second delivery a no-op instead of a duplicate row.
+			// Idempotency check first 
 			if (await _db.ProcessedEvents.FindAsync(new object[] { message.EventId }, ct) is not null)
 			{
 				_logger.LogInformation("OrderCreated {EventId} already processed - skipping", message.EventId);
@@ -48,8 +46,6 @@ namespace BayTack.ReadStore.Worker.Consumers
 				CreatedAtUtc = message.OccurredOn
 			});
 
-			// Seeds the history list so GetByIdForCustomerAsync always has at least the initial
-			// "Pending" entry, matching what the Write side's OrderStatusHistory does on Order.Create.
 			_db.OrderHistory.Add(new OrderHistoryReadModel
 			{
 				OrderId = message.OrderId,
@@ -65,9 +61,7 @@ namespace BayTack.ReadStore.Worker.Consumers
 				ProcessedAtUtc = DateTime.UtcNow
 			});
 
-			// All three inserts commit together - a message is never "half applied".
 			await _db.SaveChangesAsync(ct);
 		}
 	}
-
 }

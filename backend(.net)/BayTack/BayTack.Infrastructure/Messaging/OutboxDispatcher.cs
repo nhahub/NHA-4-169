@@ -83,7 +83,7 @@ namespace BayTack.Infrastructure.Messaging
 					message.RetryCount++;
 					message.Error = ex.Message;
 					_logger.LogWarning(ex, "Failed to publish outbox message {Id} (attempt {Attempt}/{Max})",
-						message.Id, message.RetryCount, MaxRetryCount);
+					message.Id, message.RetryCount, MaxRetryCount);
 				}
 			}
 

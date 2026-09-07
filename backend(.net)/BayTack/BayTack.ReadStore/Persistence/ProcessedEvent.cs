@@ -10,5 +10,4 @@ namespace BayTack.ReadStore.Persistence
 		public string EventType { get; set; } = default!;
 		public DateTime ProcessedAtUtc { get; set; }
 	}
-
 }

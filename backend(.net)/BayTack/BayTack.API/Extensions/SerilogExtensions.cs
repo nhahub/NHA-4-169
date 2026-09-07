@@ -6,7 +6,7 @@ namespace BayTack.API.Extensions
 {
 	public static class SerilogExtensions
 	{
-		public static void UseBootstrapLogger() //for logging during app startup
+		public static void UseBootstrapLogger()  
 		{
 			Log.Logger = new LoggerConfiguration()
 				.MinimumLevel.Information()
@@ -16,7 +16,7 @@ namespace BayTack.API.Extensions
 		}
 
 		
-		public static WebApplicationBuilder AddSerilogLogging(this WebApplicationBuilder builder) // for logging after app startup
+		public static WebApplicationBuilder AddSerilogLogging(this WebApplicationBuilder builder)  
 		{
 			builder.Host.UseSerilog((context, services, configuration) => configuration
 				.ReadFrom.Configuration(context.Configuration)
@@ -28,7 +28,7 @@ namespace BayTack.API.Extensions
 		}
 
 		
-		public static WebApplication UseRequestLogging(this WebApplication app) // for logging HTTP requests and responses
+		public static WebApplication UseRequestLogging(this WebApplication app)  
 		{
 			app.UseSerilogRequestLogging(options =>
 			{

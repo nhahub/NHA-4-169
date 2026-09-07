@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -148,11 +149,11 @@ namespace BayTack.Infrastructure
 
 			services.AddMassTransit(busConfigurator =>
 			{
-				busConfigurator.SetKebabCaseEndpointNameFormatter(); // for example, "baytack.order-created-event" instead of "BayTack.OrderCreatedEvent"
+				busConfigurator.SetKebabCaseEndpointNameFormatter(); 
 
 				busConfigurator.UsingRabbitMq((context, cfg) =>
 				{
-					var options = context.GetRequiredService<Microsoft.Extensions.Options.IOptions<RabbitMqOptions>>().Value;
+					var options = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
 
 					cfg.Host(options.Host, options.VirtualHost, h =>
 					{
