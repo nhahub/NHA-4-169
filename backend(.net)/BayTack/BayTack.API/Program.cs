@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
-
+using OpenTelemetry.Trace;
 try
 {
 
@@ -60,8 +60,16 @@ try
 	builder.Services.AddTransient< IConfigureOptions<SwaggerGenOptions>, 
 	ConfigureSwaggerOptions>();
 
-
-
+	// OpenTelemetry Tracing
+	builder.Services
+		.AddOpenTelemetry()
+		.WithTracing(tracing =>
+		{
+			tracing
+				.AddAspNetCoreInstrumentation() // for tracing incoming HTTP requests
+				.AddHttpClientInstrumentation() // for tracing outgoing HTTP requests
+				.AddConsoleExporter();
+		});
 
 
 
