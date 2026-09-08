@@ -21,13 +21,16 @@ namespace BayTack.Application.Features.Jobs.Commands.AcceptOffer
     {
         private readonly IRepository<CustomerJob, string> _jobRepository;
         private readonly IRepository<Order, string> _orderRepository;
+		private readonly IUserRepository _userRepository;
 
-        public AcceptOfferCommandHandler(
+		public AcceptOfferCommandHandler(
             IRepository<CustomerJob, string> jobRepository,
-            IRepository<Order, string> orderRepository)
+            IRepository<Order, string> orderRepository,
+			IUserRepository userRepository)
         {
             _jobRepository = jobRepository;
             _orderRepository = orderRepository;
+			_userRepository = userRepository;
         }
 
         public async Task<Result<RequestResponse>> Handle(AcceptOfferCommand request, CancellationToken ct)
@@ -51,15 +54,22 @@ namespace BayTack.Application.Features.Jobs.Commands.AcceptOffer
                 return Result<RequestResponse>.Failure(ex.Message);
             }
 
-            var order = Order.Create(job.Id, offer.ProviderId, offer.ProposedPrice, DateTime.UtcNow, request.CustomerId);
+			// Needed for OrderCreatedDomainEvent -> OrderCreatedIntegrationEvent, so the Read
+			// side gets the provider's display name without ever querying the Write DB.
+			var provider = await _userRepository.GetByIdAsync(offer.ProviderId, ct);
+			var providerName = provider?.FullName ?? "Unknown provider";
 
-            _jobRepository.Update(job);
+			var order = Order.Create(
+				request.CustomerId, job.Id, job.ServiceId, job.Title, job.Description,
+				offer.ProviderId, providerName, offer.ProposedPrice, DateTime.UtcNow, request.CustomerId);
+
+			_jobRepository.Update(job);
             _orderRepository.Add(order);
             // NOTE: no SaveChangesAsync call here - UnitOfWorkBehavior does it automatically.
             // Both aggregates are saved in the same transaction since this handler runs inside
             // a single UnitOfWorkBehavior-triggered SaveChanges call.
 
-            return RequestResponse.FromEntity(job);
+			return RequestResponse.FromEntity(job);
         }
     }
 }

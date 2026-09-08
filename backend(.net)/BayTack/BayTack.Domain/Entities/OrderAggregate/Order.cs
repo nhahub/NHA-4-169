@@ -1,5 +1,6 @@
 ﻿using BayTack.Domain.Common.BaseEntity;
 using BayTack.Domain.Entities.OrderAggregate.Event;
+using BayTack.Domain.Entities.ServiceAggregate;
 using BayTack.Domain.Enums;
 using BayTack.Domain.ValueObjects;
 
@@ -19,7 +20,8 @@ namespace BayTack.Domain.Entities.OrderAggregate
 
 		private Order() { }
 
-		public static Order Create(string customerJobId, string providerId, Money finalPrice, DateTime startDate, string createdBy)
+		public static Order Create(string customerId, string customerJobId, string serviceId, string title, string description,
+			string providerId, string providerName, Money finalPrice, DateTime startDate, string createdBy)
 		{
 			var order = new Order
 			{
@@ -31,7 +33,9 @@ namespace BayTack.Domain.Entities.OrderAggregate
 				Status = OrderStatus.Pending
 			};
 			order._history.Add(OrderStatusHistory.Create(order.Id, OrderStatus.Pending, createdBy));
-			order.AddDomainEvent(new OrderCreatedDomainEvent(order.Id, customerJobId, providerId, finalPrice, startDate));
+			order.AddDomainEvent(new OrderCreatedDomainEvent(
+				order.Id, customerId, customerJobId, serviceId, title, description,
+				providerId, providerName, finalPrice, startDate));
 			return order;
 		}
 
