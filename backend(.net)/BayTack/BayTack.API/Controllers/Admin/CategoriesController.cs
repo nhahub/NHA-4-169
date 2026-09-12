@@ -40,7 +40,7 @@ namespace BayTack.API.Controllers.Admin
 		}
 
 		[HttpPost]
-		[Authorize(Policy = "Permissions.Categories.Create")]
+		//[Authorize(Policy = "Permissions.Categories.Create")]
 		public async Task<IActionResult> Create([FromBody] CreateCategoryRequest body)
 		{
 			var result = await Sender.Send(new CreateCategoryCommand(body.Name, body.Icon, body.Description));
