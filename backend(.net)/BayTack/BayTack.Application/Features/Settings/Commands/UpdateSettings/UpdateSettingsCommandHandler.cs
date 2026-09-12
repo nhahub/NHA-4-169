@@ -10,13 +10,11 @@ namespace BayTack.Application.Features.Settings.Commands.UpdateSettings
 	public sealed class UpdateSettingsCommandHandler : ICommandHandler<UpdateSettingsCommand, SettingsResponse>
 	{
 		private readonly IRepository<PlatformSettings, string> _settings;
-		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserService _currentUser;
 
-		public UpdateSettingsCommandHandler(IRepository<PlatformSettings, string> settings, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
+		public UpdateSettingsCommandHandler(IRepository<PlatformSettings, string> settings , ICurrentUserService currentUser)
 		{
 			_settings = settings;
-			_unitOfWork = unitOfWork;
 			_currentUser = currentUser;
 		}
 
@@ -31,7 +29,6 @@ namespace BayTack.Application.Features.Settings.Commands.UpdateSettings
 			if (isNew) _settings.Add(settings);
 			else _settings.Update(settings);
 
-			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<SettingsResponse>.Success(GetSettingsQueryHandler.Map(settings));
 		}

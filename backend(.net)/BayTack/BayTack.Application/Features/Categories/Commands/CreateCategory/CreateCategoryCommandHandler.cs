@@ -9,12 +9,10 @@ namespace BayTack.Application.Features.Categories.Commands.CreateCategory
 	public sealed class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryCommand, CategoryResponse>
 	{
 		private readonly IRepository<ServiceCategory, string> _categories;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public CreateCategoryCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork)
+		public CreateCategoryCommandHandler(IRepository<ServiceCategory, string> categories )
 		{
 			_categories = categories;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<CategoryResponse>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -25,7 +23,6 @@ namespace BayTack.Application.Features.Categories.Commands.CreateCategory
 
 			var category = ServiceCategory.Create(request.Name, request.Icon, request.Description);
 			_categories.Add(category);
-			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<CategoryResponse>.Success(
 				new CategoryResponse(category.Id, category.Name, request.Icon, category.Description, category.IsActive, category.CreatedAt));

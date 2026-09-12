@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.SetAvailability;
 
 public sealed class SetAvailabilityCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<SetAvailabilityCommand, SetAvailabilityResponse>
+    IRepository<ProviderProfile, string> providerProfiles  : ICommandHandler<SetAvailabilityCommand, SetAvailabilityResponse>
 {
     public async Task<Result<SetAvailabilityResponse>> Handle(SetAvailabilityCommand command, CancellationToken cancellationToken)
     {
@@ -27,7 +26,6 @@ public sealed class SetAvailabilityCommandHandler(
         }
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<SetAvailabilityResponse>.Success(new SetAvailabilityResponse(
             providerProfile.Id,

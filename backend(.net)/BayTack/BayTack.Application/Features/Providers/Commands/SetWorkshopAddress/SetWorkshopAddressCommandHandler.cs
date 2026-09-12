@@ -7,8 +7,7 @@ using BayTack.Domain.ValueObjects;
 namespace BayTack.Application.Features.Providers.Commands.SetWorkshopAddress;
 
 public sealed class SetWorkshopAddressCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<SetWorkshopAddressCommand, SetWorkshopAddressResponse>
+    IRepository<ProviderProfile, string> providerProfiles ) : ICommandHandler<SetWorkshopAddressCommand, SetWorkshopAddressResponse>
 {
     public async Task<Result<SetWorkshopAddressResponse>> Handle(SetWorkshopAddressCommand command, CancellationToken cancellationToken)
     {
@@ -22,7 +21,6 @@ public sealed class SetWorkshopAddressCommandHandler(
         providerProfile.SetWorkshopAddress(workshopAddress, command.UpdatedBy);
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<SetWorkshopAddressResponse>.Success(new SetWorkshopAddressResponse(
             providerProfile.Id,

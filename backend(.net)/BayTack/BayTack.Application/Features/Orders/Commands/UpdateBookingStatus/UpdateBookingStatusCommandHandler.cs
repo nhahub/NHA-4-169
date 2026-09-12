@@ -9,12 +9,10 @@ namespace BayTack.Application.Features.Orders.Commands.UpdateBookingStatus
 		: ICommandHandler<UpdateBookingStatusCommand, UpdateBookingStatusResponse>
 	{
 		private readonly IRepository<Order, string> _orderRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public UpdateBookingStatusCommandHandler(IRepository<Order, string> orderRepository, IUnitOfWork unitOfWork)
+		public UpdateBookingStatusCommandHandler(IRepository<Order, string> orderRepository )
 		{
 			_orderRepository = orderRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<UpdateBookingStatusResponse>> Handle(
@@ -35,7 +33,6 @@ namespace BayTack.Application.Features.Orders.Commands.UpdateBookingStatus
 			}
 
 			_orderRepository.Update(order);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			return Result<UpdateBookingStatusResponse>.Success(
 				new UpdateBookingStatusResponse(order.Id, order.Status.ToString()));

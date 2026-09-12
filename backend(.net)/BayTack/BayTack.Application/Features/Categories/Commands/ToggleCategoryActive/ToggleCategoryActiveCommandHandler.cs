@@ -9,13 +9,11 @@ namespace BayTack.Application.Features.Categories.Commands.ToggleCategoryActive
 	public sealed class ToggleCategoryActiveCommandHandler : ICommandHandler<ToggleCategoryActiveCommand, CategoryResponse>
 	{
 		private readonly IRepository<ServiceCategory, string> _categories;
-		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserService _currentUser;
 
-		public ToggleCategoryActiveCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
+		public ToggleCategoryActiveCommandHandler(IRepository<ServiceCategory, string> categories, ICurrentUserService currentUser)
 		{
 			_categories = categories;
-			_unitOfWork = unitOfWork;
 			_currentUser = currentUser;
 		}
 
@@ -27,7 +25,6 @@ namespace BayTack.Application.Features.Categories.Commands.ToggleCategoryActive
 
 			category.ToggleActive(updatedBy: _currentUser.UserId);
 			_categories.Update(category);
-			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<CategoryResponse>.Success(
 				new CategoryResponse(category.Id, category.Name, category.Icon, category.Description, category.IsActive, category.CreatedAt));

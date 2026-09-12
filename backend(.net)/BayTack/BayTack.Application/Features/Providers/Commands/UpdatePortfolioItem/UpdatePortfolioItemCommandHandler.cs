@@ -9,14 +9,11 @@ namespace BayTack.Application.Features.Providers.Commands.UpdatePortfolioItem
 		: ICommandHandler<UpdatePortfolioItemCommand, UpdatePortfolioItemResponse>
 	{
 		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
 		public UpdatePortfolioItemCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
+			IRepository<ProviderProfile, string> providerProfileRepository )
 		{
 			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<UpdatePortfolioItemResponse>> Handle(
@@ -38,7 +35,6 @@ namespace BayTack.Application.Features.Providers.Commands.UpdatePortfolioItem
 			}
 
 			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			var response = new UpdatePortfolioItemResponse(
 				request.ItemId, request.Title, request.Description, request.ImageUrl);

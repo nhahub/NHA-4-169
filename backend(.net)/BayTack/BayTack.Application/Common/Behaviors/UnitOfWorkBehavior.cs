@@ -14,7 +14,7 @@ namespace BayTack.Application.Common.Behaviors
 	/// requests only (queries never write, so they're left alone). Command handlers must NOT call
 	/// IUnitOfWork.SaveChangesAsync themselves - this behavior is the single place that does it.
 	/// </summary>
-	public sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+	public class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 		where TRequest : IRequest<TResponse>
 	{
 		private readonly IUnitOfWork _unitOfWork;

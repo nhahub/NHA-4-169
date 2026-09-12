@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.AddProviderDocument;
 
 public sealed class AddProviderDocumentCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<AddProviderDocumentCommand, AddProviderDocumentResponse>
+    IRepository<ProviderProfile, string> providerProfiles) : ICommandHandler<AddProviderDocumentCommand, AddProviderDocumentResponse>
 {
     public async Task<Result<AddProviderDocumentResponse>> Handle(AddProviderDocumentCommand command, CancellationToken cancellationToken)
     {
@@ -20,7 +19,6 @@ public sealed class AddProviderDocumentCommandHandler(
         var document = providerProfile.AddDocument(command.DocType, command.DocUrl);
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<AddProviderDocumentResponse>.Success(new AddProviderDocumentResponse(
             providerProfile.Id,

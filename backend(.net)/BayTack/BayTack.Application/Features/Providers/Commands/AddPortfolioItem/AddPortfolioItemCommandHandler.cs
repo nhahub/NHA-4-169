@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.AddPortfolioItem;
 
 public sealed class AddPortfolioItemCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<AddPortfolioItemCommand, AddPortfolioItemResponse>
+    IRepository<ProviderProfile, string> providerProfiles) : ICommandHandler<AddPortfolioItemCommand, AddPortfolioItemResponse>
 {
     public async Task<Result<AddPortfolioItemResponse>> Handle(AddPortfolioItemCommand command, CancellationToken cancellationToken)
     {
@@ -20,7 +19,6 @@ public sealed class AddPortfolioItemCommandHandler(
         var portfolioItem = providerProfile.AddPortfolioItem(command.Title, command.Description, command.ImageUrl);
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<AddPortfolioItemResponse>.Success(new AddPortfolioItemResponse(
             providerProfile.Id,

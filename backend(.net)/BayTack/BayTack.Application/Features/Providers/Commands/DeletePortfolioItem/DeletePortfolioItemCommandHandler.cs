@@ -9,14 +9,11 @@ namespace BayTack.Application.Features.Providers.Commands.DeletePortfolioItem
 		: ICommandHandler<DeletePortfolioItemCommand, DeletePortfolioItemResponse>
 	{
 		private readonly IRepository<ProviderProfile, string> _providerProfileRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
 		public DeletePortfolioItemCommandHandler(
-			IRepository<ProviderProfile, string> providerProfileRepository,
-			IUnitOfWork unitOfWork)
+			IRepository<ProviderProfile, string> providerProfileRepository )
 		{
 			_providerProfileRepository = providerProfileRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<DeletePortfolioItemResponse>> Handle(
@@ -38,7 +35,6 @@ namespace BayTack.Application.Features.Providers.Commands.DeletePortfolioItem
 			}
 
 			_providerProfileRepository.Update(profile);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			return Result<DeletePortfolioItemResponse>.Success(new DeletePortfolioItemResponse(request.ItemId, true));
 		}

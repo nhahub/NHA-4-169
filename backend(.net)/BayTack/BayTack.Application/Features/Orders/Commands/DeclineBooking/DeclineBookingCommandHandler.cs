@@ -9,12 +9,10 @@ namespace BayTack.Application.Features.Orders.Commands.DeclineBooking
 	public sealed class DeclineBookingCommandHandler : ICommandHandler<DeclineBookingCommand, DeclineBookingResponse>
 	{
 		private readonly IRepository<Order, string> _orderRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public DeclineBookingCommandHandler(IRepository<Order, string> orderRepository, IUnitOfWork unitOfWork)
+		public DeclineBookingCommandHandler(IRepository<Order, string> orderRepository )
 		{
 			_orderRepository = orderRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<DeclineBookingResponse>> Handle(DeclineBookingCommand request, CancellationToken ct)
@@ -34,7 +32,6 @@ namespace BayTack.Application.Features.Orders.Commands.DeclineBooking
 			}
 
 			_orderRepository.Update(order);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			return Result<DeclineBookingResponse>.Success(new DeclineBookingResponse(order.Id, order.Status.ToString()));
 		}

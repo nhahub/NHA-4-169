@@ -9,12 +9,10 @@ namespace BayTack.Application.Features.Orders.Commands.CompleteBooking
 	public sealed class CompleteBookingCommandHandler : ICommandHandler<CompleteBookingCommand, CompleteBookingResponse>
 	{
 		private readonly IRepository<Order, string> _orderRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public CompleteBookingCommandHandler(IRepository<Order, string> orderRepository, IUnitOfWork unitOfWork)
+		public CompleteBookingCommandHandler(IRepository<Order, string> orderRepository )
 		{
 			_orderRepository = orderRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<CompleteBookingResponse>> Handle(CompleteBookingCommand request, CancellationToken ct)
@@ -34,7 +32,6 @@ namespace BayTack.Application.Features.Orders.Commands.CompleteBooking
 			}
 
 			_orderRepository.Update(order);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			return Result<CompleteBookingResponse>.Success(
 				new CompleteBookingResponse(order.Id, order.Status.ToString(), order.EndDate));

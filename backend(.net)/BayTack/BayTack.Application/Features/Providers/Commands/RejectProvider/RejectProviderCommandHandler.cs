@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.RejectProvider;
 
 public sealed class RejectProviderCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<RejectProviderCommand, RejectProviderResponse>
+    IRepository<ProviderProfile, string> providerProfiles ) : ICommandHandler<RejectProviderCommand, RejectProviderResponse>
 {
     public async Task<Result<RejectProviderResponse>> Handle(RejectProviderCommand command, CancellationToken cancellationToken)
     {
@@ -20,7 +19,6 @@ public sealed class RejectProviderCommandHandler(
         providerProfile.Reject();
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<RejectProviderResponse>.Success(
             new RejectProviderResponse(providerProfile.Id, providerProfile.VerificationStatus.ToString()));

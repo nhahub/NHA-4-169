@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.CreateProviderProfile;
 
 public sealed class CreateProviderProfileCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<CreateProviderProfileCommand, CreateProviderProfileResponse>
+    IRepository<ProviderProfile, string> providerProfiles ) : ICommandHandler<CreateProviderProfileCommand, CreateProviderProfileResponse>
 {
     public async Task<Result<CreateProviderProfileResponse>> Handle(CreateProviderProfileCommand command, CancellationToken cancellationToken)
     {
@@ -27,7 +26,6 @@ public sealed class CreateProviderProfileCommandHandler(
             command.CategoryId);
 
         providerProfiles.Add(newProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<CreateProviderProfileResponse>.Success(new CreateProviderProfileResponse(
             newProfile.Id,

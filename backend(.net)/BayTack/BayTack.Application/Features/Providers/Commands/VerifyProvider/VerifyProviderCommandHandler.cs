@@ -6,8 +6,7 @@ using BayTack.Domain.Entities.ProviderAggregate;
 namespace BayTack.Application.Features.Providers.Commands.VerifyProvider;
 
 public sealed class VerifyProviderCommandHandler(
-    IRepository<ProviderProfile, string> providerProfiles,
-    IUnitOfWork unitOfWork) : ICommandHandler<VerifyProviderCommand, VerifyProviderResponse>
+    IRepository<ProviderProfile, string> providerProfiles ) : ICommandHandler<VerifyProviderCommand, VerifyProviderResponse>
 {
     public async Task<Result<VerifyProviderResponse>> Handle(VerifyProviderCommand command, CancellationToken cancellationToken)
     {
@@ -27,7 +26,6 @@ public sealed class VerifyProviderCommandHandler(
         }
 
         providerProfiles.Update(providerProfile);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<VerifyProviderResponse>.Success(
             new VerifyProviderResponse(providerProfile.Id, providerProfile.VerificationStatus.ToString()));

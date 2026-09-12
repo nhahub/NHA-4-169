@@ -10,13 +10,11 @@ namespace BayTack.Application.Features.Categories.Commands.UpdateCategory
 	public sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCategoryCommand, CategoryResponse>
 	{
 		private readonly IRepository<ServiceCategory, string> _categories;
-		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserService _currentUser;
 
-		public UpdateCategoryCommandHandler(IRepository<ServiceCategory, string> categories, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
+		public UpdateCategoryCommandHandler(IRepository<ServiceCategory, string> categories, ICurrentUserService currentUser)
 		{
 			_categories = categories;
-			_unitOfWork = unitOfWork;
 			_currentUser = currentUser;
 		}
 
@@ -35,7 +33,6 @@ namespace BayTack.Application.Features.Categories.Commands.UpdateCategory
 
 			category.UpdateDetails(request.Name, request.Icon, request.Description, request.IsActive, updatedBy: _currentUser.UserId);
 			_categories.Update(category);
-			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 			return Result<CategoryResponse>.Success(
 				new CategoryResponse(category.Id, category.Name, request.Icon, category.Description, category.IsActive, category.CreatedAt));

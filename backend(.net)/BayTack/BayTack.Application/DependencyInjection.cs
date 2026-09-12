@@ -22,6 +22,7 @@ namespace BayTack.Application
 			{
 				cfg.RegisterServicesFromAssembly(assembly);
 
+				cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
 				cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
 				cfg.AddOpenBehavior(typeof(ValidationBehavior<,>)); 
 				cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>)); 

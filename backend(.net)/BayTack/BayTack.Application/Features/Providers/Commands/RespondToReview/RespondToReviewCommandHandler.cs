@@ -8,12 +8,10 @@ namespace BayTack.Application.Features.Providers.Commands.RespondToReview
 	public sealed class RespondToReviewCommandHandler : ICommandHandler<RespondToReviewCommand, RespondToReviewResponse>
 	{
 		private readonly IRepository<Review, string> _reviewRepository;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public RespondToReviewCommandHandler(IRepository<Review, string> reviewRepository, IUnitOfWork unitOfWork)
+		public RespondToReviewCommandHandler(IRepository<Review, string> reviewRepository)
 		{
 			_reviewRepository = reviewRepository;
-			_unitOfWork = unitOfWork;
 		}
 
 		public async Task<Result<RespondToReviewResponse>> Handle(RespondToReviewCommand request, CancellationToken ct)
@@ -33,7 +31,6 @@ namespace BayTack.Application.Features.Providers.Commands.RespondToReview
 			}
 
 			_reviewRepository.Update(review);
-			await _unitOfWork.SaveChangesAsync(ct);
 
 			return Result<RespondToReviewResponse>.Success(new RespondToReviewResponse(review.Id, review.ProviderResponse!));
 		}
