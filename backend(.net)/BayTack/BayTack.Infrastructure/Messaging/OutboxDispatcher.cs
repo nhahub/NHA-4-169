@@ -32,6 +32,7 @@ namespace BayTack.Infrastructure.Messaging
 				try
 				{
 					await DispatchPendingAsync(stoppingToken);
+					Console.WriteLine("***************************************************************************************");
 				}
 				catch (Exception ex)
 				{

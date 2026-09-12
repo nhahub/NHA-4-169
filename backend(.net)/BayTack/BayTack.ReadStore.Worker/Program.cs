@@ -8,9 +8,6 @@
 
 
 
-//Log.Logger = new LoggerConfiguration()
-//	.WriteTo.Console()
-//	.CreateLogger();
 
 using BayTack.ReadStore.Persistence;
 using BayTack.ReadStore.Worker;
@@ -20,13 +17,15 @@ using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
 using Serilog;
-using System;
 
+
+
+
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Console()
+	.CreateLogger();
 try
 {
     var builder = WebApplication.CreateBuilder(args);

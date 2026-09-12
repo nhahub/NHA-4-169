@@ -36,7 +36,7 @@ namespace BayTack.Application.Features.Services.Commands.CreateService
 			{
 				foreach (var pmId in request.PaymentMethodIds)
 				{
-					service.AllowPaymentMethod(pmId);
+					//service.AllowPaymentMethod(pmId);
 				}
 			}
 			_serviceRepository.Add(service);

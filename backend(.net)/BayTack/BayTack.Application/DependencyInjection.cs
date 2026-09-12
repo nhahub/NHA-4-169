@@ -1,6 +1,8 @@
+using BayTack.Application.Abstractions.Interfaces;
 using BayTack.Application.Common.Behaviors;
-using Microsoft.Extensions.DependencyInjection;
+using BayTack.Application.EventMapping;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 namespace BayTack.Application
 {
 	public static class DependencyInjection
@@ -22,17 +24,18 @@ namespace BayTack.Application
 			{
 				cfg.RegisterServicesFromAssembly(assembly);
 
-				cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+				cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
 				cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
-				cfg.AddOpenBehavior(typeof(ValidationBehavior<,>)); 
-				cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>)); 
-
-
-
+				cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+				cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
 			});
 			
 			 services.AddValidatorsFromAssembly(assembly);
 
+
+
+
+			services.AddScoped<IIntegrationEventMapper, OrderIntegrationEventMapper>();
 
 			return services;
 

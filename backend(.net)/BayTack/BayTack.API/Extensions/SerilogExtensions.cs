@@ -1,5 +1,7 @@
 ﻿using Serilog;
 using Serilog.Exceptions;
+using Serilog.Exceptions.Core;
+using Serilog.Exceptions.EntityFrameworkCore.Destructurers;
 using System.Security.Claims;
 
 namespace BayTack.API.Extensions
@@ -22,7 +24,11 @@ namespace BayTack.API.Extensions
 				.ReadFrom.Configuration(context.Configuration)
 				.ReadFrom.Services(services)
 				.Enrich.FromLogContext()
-				.Enrich.WithExceptionDetails());
+				.Enrich.WithExceptionDetails()
+				// for Entity Framework Core exceptions, we can use the EntityFrameworkCoreDestructurer to get more detailed information about the exception
+				.Enrich.WithExceptionDetails(new DestructuringOptionsBuilder() 
+				.WithDefaultDestructurers()
+				.WithDestructurers(new[] { new DbUpdateExceptionDestructurer() })));
 
 			return builder;
 		}

@@ -54,9 +54,9 @@ namespace BayTack.Application.Features.Jobs.Commands.AcceptOffer
                 return Result<RequestResponse>.Failure(ex.Message);
             }
 
-			// Needed for OrderCreatedDomainEvent -> OrderCreatedIntegrationEvent, so the Read
-			// side gets the provider's display name without ever querying the Write DB.
-			var provider = await _userRepository.GetByIdAsync(offer.ProviderId, ct);
+            // Needed for OrderCreatedDomainEvent -> OrderCreatedIntegrationEvent, so the Read
+            // side gets the provider's display name without ever querying the Write DB.
+            var provider = await _userRepository.GetByIdAsync(offer.ProviderId, ct);
 			var providerName = provider?.FullName ?? "Unknown provider";
 
 			var order = Order.Create(

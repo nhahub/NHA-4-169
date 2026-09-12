@@ -139,6 +139,8 @@ namespace BayTack.Infrastructure
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+			services.AddMessaging(configuration);
+
 			return services;
 		}
 
@@ -174,6 +176,7 @@ namespace BayTack.Infrastructure
 			services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 			services.AddScoped<IIntegrationEventMapper, OrderIntegrationEventMapper>();
 			services.AddHostedService<OutboxDispatcher>();
+
 
 			return services;
 		}
