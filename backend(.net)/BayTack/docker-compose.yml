@@ -1,0 +1,67 @@
+
+services:
+
+  baytack.api:
+    image: ${DOCKER_REGISTRY-}baytackapi
+
+    build:
+      context: .
+      dockerfile: BayTack.API/Dockerfile
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=BayTackDb;User Id=sa;Password=BayTack@12345Strong;TrustServerCertificate=True;"
+
+    ports:
+      - "7212:7212"
+      - "8081:8081"
+
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+    networks:
+      - baytack-network
+
+
+
+
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
+    container_name: baytack-sqlserver
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "BayTack@12345Strong"
+
+    ports:
+      - "1433:1433"
+
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"BayTack@12345Strong\" -C -Q \"SELECT 1\" || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+    networks:
+      - baytack-network
+
+
+volumes:
+  sqlserver-data:
+
+
+networks:
+  baytack-network:
+    driver: bridge
