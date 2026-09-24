@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
-
+using BayTack.ReadStore;
 
 
 
@@ -31,8 +31,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 	//builder.AddSerilogLogging();
 
-	builder.Services.AddDbContext<ReadDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("ReadDbConnection")));
+	builder.Services.AddReadStore(builder.Configuration);
 
 	builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(RabbitMqOptions.SectionName));
 
