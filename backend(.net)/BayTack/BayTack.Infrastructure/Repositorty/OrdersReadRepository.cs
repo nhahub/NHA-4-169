@@ -1,108 +1,89 @@
 ﻿using BayTack.Application.Abstractions.IRepository;
 using BayTack.Application.Features.Orders.Common;
-using BayTack.Domain.Enums;
 using BayTack.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using BayTack.ReadStore.Persistence;
+
 
 namespace BayTack.Infrastructure.Repositorty
 {
-    public sealed class OrdersReadRepository : IOrdersReadRepository
-    {
-        private readonly AppDbContext _context;
+	public sealed class OrdersReadRepository : IOrdersReadRepository
+	{
+		private readonly AppDbContext _appDb;
+		private readonly ReadDbContext _readDb;
 
-        public OrdersReadRepository(AppDbContext context) => _context = context;
+		public OrdersReadRepository(ReadDbContext readDb, AppDbContext appDb)
+		{
+			_readDb = readDb;
+			_appDb = appDb;
+		}
 
-        public async Task<List<OrderResponse>> GetForCustomerAsync(
-            string customerId, string? statusGroup, CancellationToken ct = default)
-        {
-            var query =
-                from o in _context.Orders.AsNoTracking()
-                join cj in _context.CustomerJobs.AsNoTracking() on o.CustomerJobId equals cj.Id
-                where cj.CustomerId == customerId
-                select new { o, cj };
+		public async Task<List<OrderResponse>> GetForCustomerAsync(
+			string customerId, string? statusGroup, CancellationToken ct = default)
+		{
+			var rows = await _readDb.Orders.AsNoTracking()
+				.Where(o => o.CustomerId == customerId)
+				.OrderByDescending(o => o.CreatedAtUtc)
+				.ToListAsync(ct);
 
-            var rows = await query
-                .OrderByDescending(x => x.o.CreatedAt)
-                .Select(x => new
-                {
-                    x.o.Id,
-                    x.cj.ServiceId,
-                    x.cj.Title,
-                    x.o.ProviderId,
-                    x.o.FinalPrice.Amount,
-                    Status = x.o.Status.ToString(),
-                    x.o.CreatedAt
-                })
-                .ToListAsync(ct);
+			if (!string.IsNullOrWhiteSpace(statusGroup))
+				rows = rows.Where(r => OrderResponse.StatusGroupOf(r.Status) == statusGroup.ToLowerInvariant()).ToList();
 
-            if (!string.IsNullOrWhiteSpace(statusGroup))
-                rows = rows.Where(r => OrderResponse.StatusGroupOf(r.Status) == statusGroup.ToLowerInvariant()).ToList();
+			return rows.Select(r => new OrderResponse(
+				r.OrderId,
+				r.ServiceId,
+				r.Title,
+				r.ProviderName,
+				null, // avatar - same gap as the Write-side implementation had; not a real column yet
+				r.FinalPriceAmount,
+				r.Status,
+				OrderResponse.ProgressFor(r.Status),
+				r.CreatedAtUtc))
+				.ToList();
+		}
 
-            var providerIds = rows.Select(r => r.ProviderId).Distinct().ToList();
-            var providerNames = await _context.Users.AsNoTracking()
-                .Where(u => providerIds.Contains(u.Id))
-                .Select(u => new { u.Id, u.FullName })
-                .ToDictionaryAsync(u => u.Id, u => u.FullName, ct);
+		public async Task<OrderDetailResponse?> GetByIdForCustomerAsync(
+			string customerId, string orderId, CancellationToken ct = default)
+		{
+			var order = await _readDb.Orders.AsNoTracking()
+				.FirstOrDefaultAsync(o => o.OrderId == orderId && o.CustomerId == customerId, ct);
 
-            // NOTE: avatar isn't a real column on AppUser yet (same gap flagged in
-            // NotificationResponse / ConversationSummaryResponse) - returning null until it exists.
-            return rows.Select(r => new OrderResponse(
-                r.Id,
-                r.ServiceId,
-                r.Title,
-                providerNames.TryGetValue(r.ProviderId, out var name) ? name : "Unknown provider",
-                null,
-                r.Amount,
-                r.Status,
-                OrderResponse.ProgressFor(r.Status),
-                r.CreatedAt))
-                .ToList();
-        }
+			if (order is null) return null;
 
-        public async Task<OrderDetailResponse?> GetByIdForCustomerAsync(
-            string customerId, string orderId, CancellationToken ct = default)
-        {
-            var row = await (
-                from o in _context.Orders.AsNoTracking().Include(x => x.History)
-                join cj in _context.CustomerJobs.AsNoTracking() on o.CustomerJobId equals cj.Id
-                where o.Id == orderId && cj.CustomerId == customerId
-                select new { o, cj }
-            ).FirstOrDefaultAsync(ct);
+			var history = await _readDb.OrderHistory.AsNoTracking()
+				.Where(h => h.OrderId == orderId)
+				.OrderBy(h => h.ChangedAtUtc)
+				.Select(h => new OrderHistoryEntry(h.Status, h.ChangedAtUtc, h.ChangedBy))
+				.ToListAsync(ct);
 
-            if (row is null) return null;
+			return new OrderDetailResponse(
+				order.OrderId,
+				order.ServiceId,
+				order.Title,
+				order.Description,
+				order.ProviderName,
+				null,
+				order.FinalPriceAmount,
+				order.FinalPriceCurrency,
+				order.Status,
+				OrderResponse.ProgressFor(order.Status),
+				order.CreatedAtUtc,
+				order.StartDate,
+				order.EndDate,
+				history);
+		}
 
-            var providerName = await _context.Users.AsNoTracking()
-                .Where(u => u.Id == row.o.ProviderId)
-                .Select(u => u.FullName)
-                .FirstOrDefaultAsync(ct) ?? "Unknown provider";
 
-            var status = row.o.Status.ToString();
-            var history = row.o.History
-                .OrderBy(h => h.CreatedAt)
-                .Select(h => new OrderHistoryEntry(h.Status.ToString(), h.CreatedAt, h.ChangedBy))
-                .ToList();
 
-            return new OrderDetailResponse(
-                row.o.Id,
-                row.cj.ServiceId,
-                row.cj.Title,
-                row.cj.Description,
-                providerName,
-                null,
-                row.o.FinalPrice.Amount,
-                row.o.FinalPrice.Currency,
-                status,
-                OrderResponse.ProgressFor(status),
-                row.o.CreatedAt,
-                row.o.StartDate,
-                row.o.EndDate,
-                history);
-        }
+		/// <summary>Still used by command handlers assembling a response right after a
+		/// mutation (see CreateOrderCommandHandler notes) - a fresh read-side query would
+		/// miss the not-yet-projected change, same reasoning as before, just against the
+		/// read model's ProviderName column instead of a live join to Users.</summary>
+		public async Task<string?> GetProviderNameAsync(string providerId, CancellationToken ct = default) =>
+			await _readDb.Orders.AsNoTracking()
+				.Where(o => o.ProviderId == providerId)
+				.Select(o => o.ProviderName)
+				.FirstOrDefaultAsync(ct);
 
-        public async Task<string?> GetProviderNameAsync(string providerId, CancellationToken ct = default) =>
-            await _context.Users.AsNoTracking()
-                .Where(u => u.Id == providerId)
-                .Select(u => u.FullName)
-                .FirstOrDefaultAsync(ct);
-    }
+	}
 }
