@@ -1,67 +1,96 @@
+# Full local stack for the CQRS branch: SQL Server (both DBs), RabbitMQ, the API, and the
+# Read-side projection Worker. Run from this folder: docker compose up -d --build
+#
+# First run takes a while (dotnet restore + publish for both API and Worker images).
+# Migrations are NOT run automatically - see the "one-time setup" note at the bottom.
 
 services:
-
-  baytack.api:
-    image: ${DOCKER_REGISTRY-}baytackapi
-
-    build:
-      context: .
-      dockerfile: BayTack.API/Dockerfile
-
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=BayTackDb;User Id=sa;Password=BayTack@12345Strong;TrustServerCertificate=True;"
-
-    ports:
-      - "7212:7212"
-      - "8081:8081"
-
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-
-    networks:
-      - baytack-network
-
-
-
-
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-
     container_name: baytack-sqlserver
-
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "BayTack@12345Strong"
-
+      MSSQL_SA_PASSWORD: "BayTack_Dev_Pw1!"   # change for anything beyond local dev
+      MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
-
     volumes:
-      - sqlserver-data:/var/opt/mssql
-
+      - sqlserver_data:/var/opt/mssql
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"BayTack@12345Strong\" -C -Q \"SELECT 1\" || exit 1"
-        ]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 20s
 
-    networks:
-      - baytack-network
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: baytack-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP - what the API/Worker connect to
+      - "15672:15672" # Management UI - http://localhost:15672 (baytack / baytack_dev_pw)
+    environment:
+      RABBITMQ_DEFAULT_USER: baytack
+      RABBITMQ_DEFAULT_PASS: baytack_dev_pw
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
 
+  api:
+    build:
+      context: .
+      dockerfile: BayTack.API/Dockerfile
+    container_name: baytack-api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=BayTack;User Id=sa;Password=BayTack_Dev_Pw1!;TrustServerCertificate=True"
+      ConnectionStrings__ReadDbConnection: "Server=sqlserver;Database=BayTack.ReadDb;User Id=sa;Password=BayTack_Dev_Pw1!;TrustServerCertificate=True"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__VirtualHost: "/"
+      RabbitMq__Username: "baytack"
+      RabbitMq__Password: "baytack_dev_pw"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  readstore-worker:
+    build:
+      context: .
+      dockerfile: BayTack.ReadStore.Worker/Dockerfile
+    container_name: baytack-readstore-worker
+    ports:
+      - "8081:8080"   # /health only - no other endpoints on this service
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__ReadDbConnection: "Server=sqlserver;Database=BayTack.ReadDb;User Id=sa;Password=BayTack_Dev_Pw1!;TrustServerCertificate=True"
+      RabbitMq__Host: "rabbitmq"
+      RabbitMq__VirtualHost: "/"
+      RabbitMq__Username: "baytack"
+      RabbitMq__Password: "baytack_dev_pw"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
-  sqlserver-data:
+  sqlserver_data:
+  rabbitmq_data:
 
-
-networks:
-  baytack-network:
-    driver: bridge
+# One-time setup after `docker compose up -d --build`:
+#   1. Write DB migration (from the host, not inside the container):
+#        dotnet ef database update -p BayTack.Infrastructure -s BayTack.API \
+#          --connection "Server=localhost,1433;Database=BayTack;User Id=sa;Password=BayTack_Dev_Pw1!;TrustServerCertificate=True"
+#   2. Read DB: created automatically by the Worker on first start (EnsureCreatedAsync) -
+#      no action needed, just wait for the readstore-worker container to finish starting.
